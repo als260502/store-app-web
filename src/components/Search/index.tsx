@@ -1,17 +1,86 @@
 import { Bell, MagnifyingGlass } from "phosphor-react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  GetStoreUsersQuery,
+  useGetStoreUsersQuery,
+} from "../../graphql/generated";
 import { Button } from "../Button";
 
+interface SearchProps {
+  email: "string";
+  id: "string";
+  name: "string";
+  nickname: "string";
+  orders: [];
+  surname: "string";
+}
+
 export const Search = () => {
+  const [users, setUsers] = useState<GetStoreUsersQuery>();
+  const [text, setText] = useState("");
+  const [sugestions, setSugestions] = useState<SearchProps[]>([]);
+
+  const { data } = useGetStoreUsersQuery();
+
+  useEffect(() => {
+    setUsers(data);
+  }, [data]);
+
+  const onChangeHandler = useCallback(
+    (text: string) => {
+      if (text.length > 3) {
+        const regex = new RegExp(`${text}`, "gi");
+
+        const newUser = users?.storeUsers.filter(
+          user =>
+            regex.test(user.name) ||
+            regex.test(user.surname) ||
+            regex.test(String(user.email)) ||
+            regex.test(String(user.nickname)) ||
+            regex.test(`${user.name} ${user.surname}`)
+        );
+
+        console.log(newUser);
+
+        setSugestions(newUser);
+      } else {
+        setSugestions([]);
+      }
+      setText(text);
+    },
+    [users]
+  );
+
   return (
-    <div className="lg:w-full md:w-[600px] h-16 bg-gray-300">
+    <div className="h-16 bg-gray-300">
       <div className="w-full h-full flex flex-row items-center justify-between">
         <div className="h-8 w-full flex flex-row border-r-2 border-gray-400 items-center justify-between px-2 ">
           <div className="flex flex-row gap-2">
             <MagnifyingGlass size={20} color="#323238" />
-            <input
-              className="lg:w-[600px] md:w-[300px] bg-transparent focus:outline-none"
-              placeholder="buscar..."
-            ></input>
+            <div className="fixed mx-8">
+              <input
+                className="w-96 px-1 bg-transparent focus:outline-none border-b-[1px] border-b-gray-400"
+                placeholder="buscar..."
+                onChange={e => onChangeHandler(e.target.value)}
+                value={text}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setSugestions([]);
+                  }, 100);
+                }}
+              />
+              {sugestions &&
+                sugestions.map((sugestion, i) => (
+                  <>
+                    <div
+                      key={i}
+                      className="bg-gray-300 relative lg:w-[600px] font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors  md:w-[300px] px-4 border border-gray-400 border-t-0 my-1"
+                    >
+                      {`${sugestion.name} ${sugestion.surname} - ${sugestion.nickname}`}
+                    </div>
+                  </>
+                ))}
+            </div>
           </div>
           <div className="relative">
             <span className="rounded-full w-3 absolute top-0 right-1 text-center text-[8px] bg-blue-700 text-gray-50">

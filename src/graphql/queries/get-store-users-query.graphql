@@ -1,0 +1,12 @@
+query GetStoreUsers {
+  storeUsers(orderBy: name_ASC, stage: DRAFT) {
+    name
+    nickname
+    surname
+    email
+    id
+    orders {
+      id
+    }
+  }
+}

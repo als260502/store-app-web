@@ -5,5 +5,7 @@ export const client = new ApolloClient({
   headers: {
     Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_ACCESS_TOKEN_DEV}`,
   },
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+  }),
 });
