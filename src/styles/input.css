@@ -1,0 +1,11 @@
+.input {
+  @apply h-9 rounded-md border-2 border-gray-300 bg-gray-100;
+}
+
+.input.input-text {
+  @apply px-2;
+}
+
+.input.input-price {
+  @apply pl-8;
+}

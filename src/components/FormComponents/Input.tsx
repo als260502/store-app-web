@@ -31,13 +31,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
           {label}
         </label>
       )}
-      <input
-        name={name}
-        id={name}
-        {...rest}
-        ref={ref}
-        className="h-9 px-2 rounded-md border-2 border-gray-300 bg-gray-100"
-      />
+      <input name={name} id={name} {...rest} ref={ref} />
       {!!error && <p className="text-red-700">{error.message}</p>}
     </div>
   );

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   CaretDown,
   TShirt,
@@ -23,35 +24,36 @@ export const Sidebar = () => {
         </div>
 
         <div className="my-8 px-4 flex flex-col gap-2">
-          <a
-            href="#"
-            className="flex flex-col lg:flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300 ease-in-out"
-          >
-            <UserCirclePlus size={24} color="#323238" />
-            <span className="font-medium text-sm text-gray-500 ">
-              Novo usuário
-            </span>
-          </a>
+          <div className="w-full border-b-2 text-gray-500">
+            <h2 className="text-sm font-bold">CADASTROS</h2>
+          </div>
 
-          <a
-            href="#"
-            className="flex flex-col lg:flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300"
-          >
-            <Wallet size={24} color="#323238" />
-            <span className="py-1 font-medium text-sm text-gray-500">
-              Novo pedido
-            </span>
-          </a>
+          <Link href="/users/create">
+            <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300 ease-in-out">
+              <UserCirclePlus size={20} color="#323238" />
+              <span className="font-medium text-sm text-gray-500 ">
+                Usuários
+              </span>
+            </a>
+          </Link>
 
-          <a
-            href="#"
-            className="flex flex-col lg:flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300"
-          >
-            <TShirt size={24} color="#323238" />
-            <span className="py-1 font-medium text-sm text-gray-500">
-              Novo produto
-            </span>
-          </a>
+          <Link href="/orders/create">
+            <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
+              <Wallet size={20} color="#323238" />
+              <span className="py-1 font-medium text-sm text-gray-500">
+                Pedidos
+              </span>
+            </a>
+          </Link>
+
+          <Link href="/products/create">
+            <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
+              <TShirt size={20} color="#323238" />
+              <span className="py-1 font-medium text-sm text-gray-500">
+                Produtos
+              </span>
+            </a>
+          </Link>
         </div>
       </div>
     </aside>

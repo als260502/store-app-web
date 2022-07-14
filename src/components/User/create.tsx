@@ -1,16 +1,19 @@
-import { Input } from "../Input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { Button } from "../Button";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useCreateStoreUserMutation } from "../../graphql/generated";
 
 import toast, { Toaster } from "react-hot-toast";
 
+import { Button } from "../Button";
+import { Input } from "../FormComponents/Input";
+import { Header } from "../Header";
+
 interface CreateUserFormData {
   name: string;
   surname: string;
+  phones: string;
   nickname: string;
   email: string;
   description: string;
@@ -18,9 +21,10 @@ interface CreateUserFormData {
 
 const createUserFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
-  surname: yup.string().required("Digite seu sobrenome"),
+  surname: yup.string().required("Sobrenome obrigatório"),
+  phones: yup.string().required("Digite pelo menos um telefone"),
   nickname: yup.string(),
-  email: yup.string().required("E-mail obrigatório").email("E-mail inválido"),
+  email: yup.string().email("E-mail inválido"),
   description: yup.string(),
 });
 
@@ -57,15 +61,12 @@ export const CreateComponent = () => {
 
   return (
     <>
-      <div className="bg-gray-200 sm:h-full">
+      <div className="bg-gray-200 h-full">
         <div className="p-8">
-          <div className="font-medium lg:text-2xl md:text-xl">
-            Adicionar novo usuario
-          </div>
+          <Header title="Novo usuário" loading={loading} />
 
           <form
-            className=" pt-8 flex flex-col gap-4"
-            action=""
+            className="mt-8 flex flex-col gap-4"
             onSubmit={handleSubmit(handleCreateUser)}
           >
             <div className=" w-[450px] flex gap-4 flex-col sm:gap-4 md:gap-4 lg:flex-row ">
@@ -76,6 +77,7 @@ export const CreateComponent = () => {
                 label="Nome"
                 type="text"
                 placeholder="Digite seu nome"
+                className="input input-text"
               />
               <Input
                 {...register("surname")}
@@ -83,16 +85,18 @@ export const CreateComponent = () => {
                 name="surname"
                 label="Sobrenome"
                 placeholder="Digite seu sobrenome"
+                className="input input-text"
               />
             </div>
 
             <div className=" w-[450px]">
               <Input
-                {...register("nickname")}
-                error={errors.nickname}
-                name="nickname"
-                label="Apelido"
-                placeholder="Digite um apelido "
+                {...register("phones")}
+                error={errors.phones}
+                name="phones"
+                label="Telefones"
+                placeholder="2199999999,2126260000"
+                className="input input-text"
               />
             </div>
 
@@ -103,7 +107,18 @@ export const CreateComponent = () => {
                 name="email"
                 label="E-mail"
                 type="email"
+                className="input input-text"
                 placeholder="Digite o email"
+              />
+            </div>
+            <div className=" w-[450px]">
+              <Input
+                {...register("nickname")}
+                error={errors.nickname}
+                name="nickname"
+                label="Apelido"
+                placeholder="Digite um apelido "
+                className="input input-text"
               />
             </div>
 
@@ -114,10 +129,12 @@ export const CreateComponent = () => {
                 name="description"
                 label="Referência"
                 placeholder="Digite uma referência do trabalho ou etc..."
+                className="input input-text"
               />
             </div>
             <div className="flex flex-row gap-6 items-center w-full mt-4 ">
               <Button
+                disabled={loading}
                 className="btn btn-primary btn-sm md:btn-md"
                 type="submit"
               >
@@ -125,7 +142,8 @@ export const CreateComponent = () => {
               </Button>
               <Button
                 onClick={handleCancel}
-                className="btn btn-outline  btn-sm md:btn-md"
+                loading={loading}
+                className="btn btn-outline btn-sm md:btn-md"
               >
                 Cancelar
               </Button>

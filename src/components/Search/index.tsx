@@ -13,6 +13,7 @@ interface SearchProps {
   nickname: "string";
   orders: [];
   surname: "string";
+  phones: "string";
 }
 
 export const Search = () => {
@@ -37,7 +38,8 @@ export const Search = () => {
             regex.test(user.surname) ||
             regex.test(String(user.email)) ||
             regex.test(String(user.nickname)) ||
-            regex.test(`${user.name} ${user.surname}`)
+            regex.test(`${user.name} ${user.surname}`) ||
+            regex.test(`${user.phones}}`)
         );
 
         console.log(newUser);

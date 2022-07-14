@@ -3,6 +3,7 @@ query GetStoreUsers {
     name
     nickname
     surname
+    phones
     email
     id
     orders {

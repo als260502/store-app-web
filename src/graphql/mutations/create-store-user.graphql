@@ -1,6 +1,7 @@
 mutation CreateStoreUser(
   $name: String!
   $surname: String!
+  $phones: String!
   $description: String
   $email: String
   $nickname: String
@@ -9,6 +10,7 @@ mutation CreateStoreUser(
     data: {
       name: $name
       surname: $surname
+      phones: $phones
       email: $email
       description: $description
       nickname: $nickname

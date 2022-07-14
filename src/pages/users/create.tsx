@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { Search } from "../../components/Search";
 import { Sidebar } from "../../components/Sidebar";
-import { CreateComponent } from "../../components/User/Create";
+import { CreateComponent } from "../../components/User/create";
 
 const Create: NextPage = () => {
   return (
