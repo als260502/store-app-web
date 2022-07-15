@@ -1,15 +1,31 @@
+import { SelectHTMLAttributes, useCallback, useState } from "react";
+import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { Plus, PlusCircle } from "phosphor-react";
 import classNames from "classnames";
-import { PlusCircle } from "phosphor-react";
-import { useCallback, useState } from "react";
-import { FieldError } from "react-hook-form";
+
 import { Input } from "./Input";
 
-interface SelectProps {
+interface Category {
+  id: string;
   name: string;
-  options: string[];
+}
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  name: string;
+  options?: Category[];
   error?: FieldError;
   label?: string;
 }
+
+interface CreateCategoryFormData {
+  name: string;
+}
+
+const createCategoryFormSchema = yup.object().shape({
+  name: yup.string().required("Nome obrigatório"),
+});
 
 export function Select({
   options,
@@ -18,10 +34,6 @@ export function Select({
   error = null,
   ...rest
 }: SelectProps) {
-  const [category, setCategory] = useState("");
-
-  const handleAddCategory = useCallback(async () => {}, []);
-
   return (
     <div>
       <div className="flex flex-col gap-2">
@@ -35,33 +47,15 @@ export function Select({
           {label}
         </label>
 
-        <div className="flex flex-row items-center gap-4 text-gray-400">
-          <select {...rest}>
-            {options.map(value => (
-              <option key={value} value={value}>
-                {value}
+        <div className="flex flex-row z-10 items-center gap-4 text-gray-400">
+          <select {...rest} className="input">
+            {options?.map(value => (
+              <option key={value.id} value={value.name}>
+                {value.name}
               </option>
             ))}
           </select>
-
-          <button
-            type="button"
-            className="flex flex-row items-center gap-1 rounded-2xl p-2 border border-gray-400
-             hover:bg-blue-600 hover:text-gray-200 text-gray-400 transition-colors ease-in-out duration-300"
-          >
-            <PlusCircle size={20} />
-            <strong className="text-sm">Nova categoria</strong>
-          </button>
         </div>
-        {category && (
-          <Input
-            name="category"
-            label="Nome"
-            type="text"
-            placeholder="Camisa polo"
-            className="input input-text"
-          />
-        )}
       </div>
       {!!error && <p className="text-red-700">{error.message}</p>}
     </div>

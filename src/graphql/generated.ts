@@ -6189,11 +6189,12 @@ export type Product = Node & {
   localizations: Array<Product>;
   name: Scalars['String'];
   orderItems: Array<OrderItem>;
-  price: Scalars['Int'];
+  price: Scalars['Float'];
   /** The time the document was published. Null on documents in draft stage. */
   publishedAt?: Maybe<Scalars['DateTime']>;
   /** User that last published this document */
   publishedBy?: Maybe<User>;
+  quantity: Scalars['Int'];
   reviews: Array<Review>;
   scheduledIn: Array<ScheduledOperation>;
   slug: Scalars['String'];
@@ -6874,7 +6875,8 @@ export type ProductCreateInput = {
   name: Scalars['String'];
   orderItems?: InputMaybe<OrderItemCreateManyInlineInput>;
   /** price input for default locale (pt_BR) */
-  price: Scalars['Int'];
+  price: Scalars['Float'];
+  quantity: Scalars['Int'];
   reviews?: InputMaybe<ReviewCreateManyInlineInput>;
   /** slug input for default locale (pt_BR) */
   slug: Scalars['String'];
@@ -6886,7 +6888,7 @@ export type ProductCreateLocalizationDataInput = {
   createdAt?: InputMaybe<Scalars['DateTime']>;
   description: Scalars['String'];
   name: Scalars['String'];
-  price: Scalars['Int'];
+  price: Scalars['Float'];
   slug: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
@@ -6998,6 +7000,21 @@ export type ProductManyWhereInput = {
   /** All values that are not contained in given list. */
   publishedAt_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
   publishedBy?: InputMaybe<UserWhereInput>;
+  quantity?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  quantity_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  quantity_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  quantity_in?: InputMaybe<Array<Scalars['Int']>>;
+  /** All values less than the given value. */
+  quantity_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  quantity_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  quantity_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  quantity_not_in?: InputMaybe<Array<Scalars['Int']>>;
   reviews_every?: InputMaybe<ReviewWhereInput>;
   reviews_none?: InputMaybe<ReviewWhereInput>;
   reviews_some?: InputMaybe<ReviewWhereInput>;
@@ -7035,6 +7052,8 @@ export enum ProductOrderByInput {
   PriceDesc = 'price_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
+  QuantityAsc = 'quantity_ASC',
+  QuantityDesc = 'quantity_DESC',
   SlugAsc = 'slug_ASC',
   SlugDesc = 'slug_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
@@ -8083,7 +8102,8 @@ export type ProductUpdateInput = {
   name?: InputMaybe<Scalars['String']>;
   orderItems?: InputMaybe<OrderItemUpdateManyInlineInput>;
   /** price input for default locale (pt_BR) */
-  price?: InputMaybe<Scalars['Int']>;
+  price?: InputMaybe<Scalars['Float']>;
+  quantity?: InputMaybe<Scalars['Int']>;
   reviews?: InputMaybe<ReviewUpdateManyInlineInput>;
   /** slug input for default locale (pt_BR) */
   slug?: InputMaybe<Scalars['String']>;
@@ -8093,7 +8113,7 @@ export type ProductUpdateInput = {
 export type ProductUpdateLocalizationDataInput = {
   description?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  price?: InputMaybe<Scalars['Int']>;
+  price?: InputMaybe<Scalars['Float']>;
   slug?: InputMaybe<Scalars['String']>;
 };
 
@@ -8135,12 +8155,13 @@ export type ProductUpdateManyInput = {
   /** Optional updates to localizations */
   localizations?: InputMaybe<ProductUpdateManyLocalizationsInput>;
   /** price input for default locale (pt_BR) */
-  price?: InputMaybe<Scalars['Int']>;
+  price?: InputMaybe<Scalars['Float']>;
+  quantity?: InputMaybe<Scalars['Int']>;
 };
 
 export type ProductUpdateManyLocalizationDataInput = {
   description?: InputMaybe<Scalars['String']>;
-  price?: InputMaybe<Scalars['Int']>;
+  price?: InputMaybe<Scalars['Float']>;
 };
 
 export type ProductUpdateManyLocalizationInput = {
@@ -8393,21 +8414,21 @@ export type ProductWhereInput = {
   orderItems_every?: InputMaybe<OrderItemWhereInput>;
   orderItems_none?: InputMaybe<OrderItemWhereInput>;
   orderItems_some?: InputMaybe<OrderItemWhereInput>;
-  price?: InputMaybe<Scalars['Int']>;
+  price?: InputMaybe<Scalars['Float']>;
   /** All values greater than the given value. */
-  price_gt?: InputMaybe<Scalars['Int']>;
+  price_gt?: InputMaybe<Scalars['Float']>;
   /** All values greater than or equal the given value. */
-  price_gte?: InputMaybe<Scalars['Int']>;
+  price_gte?: InputMaybe<Scalars['Float']>;
   /** All values that are contained in given list. */
-  price_in?: InputMaybe<Array<Scalars['Int']>>;
+  price_in?: InputMaybe<Array<Scalars['Float']>>;
   /** All values less than the given value. */
-  price_lt?: InputMaybe<Scalars['Int']>;
+  price_lt?: InputMaybe<Scalars['Float']>;
   /** All values less than or equal the given value. */
-  price_lte?: InputMaybe<Scalars['Int']>;
+  price_lte?: InputMaybe<Scalars['Float']>;
   /** All values that are not equal to given value. */
-  price_not?: InputMaybe<Scalars['Int']>;
+  price_not?: InputMaybe<Scalars['Float']>;
   /** All values that are not contained in given list. */
-  price_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  price_not_in?: InputMaybe<Array<Scalars['Float']>>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -8424,6 +8445,21 @@ export type ProductWhereInput = {
   /** All values that are not contained in given list. */
   publishedAt_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
   publishedBy?: InputMaybe<UserWhereInput>;
+  quantity?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  quantity_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  quantity_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  quantity_in?: InputMaybe<Array<Scalars['Int']>>;
+  /** All values less than the given value. */
+  quantity_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  quantity_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  quantity_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  quantity_not_in?: InputMaybe<Array<Scalars['Int']>>;
   reviews_every?: InputMaybe<ReviewWhereInput>;
   reviews_none?: InputMaybe<ReviewWhereInput>;
   reviews_some?: InputMaybe<ReviewWhereInput>;
@@ -11978,6 +12014,25 @@ export enum _SystemDateTimeFieldVariation {
   Localization = 'localization'
 }
 
+export type CreateCategoryMutationVariables = Exact<{
+  name: Scalars['String'];
+  slug: Scalars['String'];
+}>;
+
+
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory?: { __typename?: 'Category', id: string, name: string, slug: string } | null };
+
+export type CreateProductMutationVariables = Exact<{
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  description: Scalars['String'];
+  price: Scalars['Float'];
+  quantity: Scalars['Int'];
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string, slug: string } | null };
+
 export type CreateStoreUserMutationVariables = Exact<{
   name: Scalars['String'];
   surname: Scalars['String'];
@@ -11990,12 +12045,93 @@ export type CreateStoreUserMutationVariables = Exact<{
 
 export type CreateStoreUserMutation = { __typename?: 'Mutation', createStoreUser?: { __typename?: 'StoreUser', id: string } | null };
 
+export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string }> };
+
 export type GetStoreUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetStoreUsersQuery = { __typename?: 'Query', storeUsers: Array<{ __typename?: 'StoreUser', name: string, nickname?: string | null, surname: string, phones: string, email?: string | null, id: string, orders: Array<{ __typename?: 'Order', id: string }> }> };
 
 
+export const CreateCategoryDocument = gql`
+    mutation CreateCategory($name: String!, $slug: String!) {
+  createCategory(data: {name: $name, slug: $slug}) {
+    id
+    name
+    slug
+  }
+}
+    `;
+export type CreateCategoryMutationFn = Apollo.MutationFunction<CreateCategoryMutation, CreateCategoryMutationVariables>;
+
+/**
+ * __useCreateCategoryMutation__
+ *
+ * To run a mutation, you first call `useCreateCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCategoryMutation, { data, loading, error }] = useCreateCategoryMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateCategoryMutation, CreateCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCategoryMutation, CreateCategoryMutationVariables>(CreateCategoryDocument, options);
+      }
+export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
+export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
+export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($name: String!, $slug: String!, $description: String!, $price: Float!, $quantity: Int!) {
+  createProduct(
+    data: {name: $name, slug: $slug, description: $description, price: $price, quantity: $quantity}
+  ) {
+    id
+    slug
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      slug: // value for 'slug'
+ *      description: // value for 'description'
+ *      price: // value for 'price'
+ *      quantity: // value for 'quantity'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const CreateStoreUserDocument = gql`
     mutation CreateStoreUser($name: String!, $surname: String!, $phones: String!, $description: String, $email: String, $nickname: String) {
   createStoreUser(
@@ -12036,6 +12172,41 @@ export function useCreateStoreUserMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateStoreUserMutationHookResult = ReturnType<typeof useCreateStoreUserMutation>;
 export type CreateStoreUserMutationResult = Apollo.MutationResult<CreateStoreUserMutation>;
 export type CreateStoreUserMutationOptions = Apollo.BaseMutationOptions<CreateStoreUserMutation, CreateStoreUserMutationVariables>;
+export const GetCategoriesDocument = gql`
+    query GetCategories {
+  categories {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+      }
+export function useGetCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriesQuery, GetCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoriesQuery, GetCategoriesQueryVariables>(GetCategoriesDocument, options);
+        }
+export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQuery>;
+export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
+export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
 export const GetStoreUsersDocument = gql`
     query GetStoreUsers {
   storeUsers(orderBy: name_ASC, stage: DRAFT) {

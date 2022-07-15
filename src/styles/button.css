@@ -1,5 +1,5 @@
 .btn {
-  @apply shadow-sm transition ease-in-out
+  @apply shadow-sm transition ease-in-out flex justify-center
   duration-300 rounded-2xl leading-snug whitespace-nowrap text-base font-semibold disabled:opacity-30;
 }
 
@@ -11,17 +11,21 @@
   @apply text-blue-700 bg-transparent border border-blue-600 hover:bg-blue-600 hover:text-gray-100;
 }
 
-.btn.btn-xm {
-  @apply px-3 py-2 text-sm w-28;
+.btn.btn-xs {
+  @apply px-2 py-1 text-xs;
 }
 
 .btn.btn-sm {
-  @apply px-3 py-2 text-sm w-28;
+  @apply px-2 py-2 text-sm;
 }
 .btn.btn-md {
-  @apply px-5 py-2 w-32;
+  @apply px-3 py-2 text-base;
 }
 
 .btn.btn-lg {
-  @apply px-6 py-3 text-lg  w-36;
+  @apply px-3 py-2 text-lg;
+}
+
+.btn.btn-xl {
+  @apply px-3 py-2 text-xl;
 }
