@@ -27,7 +27,7 @@
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "rules": {
     "prettier/prettier": "error",
-    "space-before-function-paren": "off",
+    "space-before-function-parent": "off",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off"
   }

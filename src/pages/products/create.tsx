@@ -10,78 +10,43 @@ import { Search } from "../../components/Search";
 import { Sidebar } from "../../components/Sidebar";
 import { Header } from "../../components/Header";
 
-import { useCallback } from "react";
-import { useCreateProductMutation } from "../../graphql/generated";
+import { useCallback, useState } from "react";
+import { Product } from "../../graphql/generated";
 import { Button } from "../../components/Button";
 
 import toast, { Toaster } from "react-hot-toast";
-
-interface CreateProductFormData {
-  name: string;
-  description: string;
-  price: string;
-  quantity: string;
-}
+import { useProduct } from "../../context/ProductContext";
+import { useRouter } from "next/router";
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
-  description: yup.string().required("Decrição obrigatória"),
-  price: yup.string().required("Preço do produto e obrigatorio"),
+  description: yup.string().required("Descrição obrigatória"),
+  price: yup.string().required("Preço do produto e obrigatório"),
   quantity: yup.string().required("Informe a quantidade em estoque"),
 });
 
 const Create: NextPage = () => {
+  const { addProduct, product } = useProduct();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateProductFormData>({
+  } = useForm<Product>({
     resolver: yupResolver(createProductFormSchema),
   });
+
+  const navigate = useRouter();
+
   const handleResetForm = useCallback(() => {
     reset();
   }, [reset]);
 
-  const [createProduct, { loading }] = useCreateProductMutation();
-
-  const handleCreateProduct: SubmitHandler<
-    CreateProductFormData
-  > = async values => {
-    try {
-      const formatedSlug = values.name
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/ /g, "-")
-        .toLocaleLowerCase();
-
-      const formatedPrice = parseFloat(values.price);
-      const formatedQtd = parseInt(values.quantity);
-
-      const formData = {
-        ...values,
-        slug: formatedSlug,
-        price: formatedPrice,
-        quantity: formatedQtd,
-      };
-
-      const result = await createProduct({
-        variables: formData,
-      });
-
-      toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
-        duration: 6000,
-        icon: "👍",
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-      toast.success("Erro:\nErro ao cadastrar produto!", {
-        duration: 6000,
-        icon: "😒",
-      });
-    }
-  };
+  const handleCreateProduct: SubmitHandler<Product> = useCallback(values => {
+    const result = addProduct(values);
+    navigate.push("/category/create");
+    console.log(product);
+  }, []);
 
   return (
     <>
@@ -94,7 +59,7 @@ const Create: NextPage = () => {
             <div className="bg-gray-200 h-full">
               <div className="p-8">
                 <div>
-                  <Header title="Novo produto" loading={loading} />
+                  <Header title="Novo produto" />
                 </div>
                 <form
                   className="mt-8 w-[550px] flex flex-col gap-4"
@@ -106,7 +71,7 @@ const Create: NextPage = () => {
                     name="name"
                     label="Nome"
                     type="text"
-                    placeholder="tenis nike air max"
+                    placeholder="Nike Air Max"
                     className="input input-text"
                   />
 
@@ -116,7 +81,7 @@ const Create: NextPage = () => {
                     name="description"
                     label="Descrição"
                     type="text"
-                    placeholder="calçado leve e confortavel"
+                    placeholder="Calçado leve e confortável"
                     className="input input-text"
                   />
 
@@ -145,18 +110,16 @@ const Create: NextPage = () => {
                   />
                   <div className="flex flex-row gap-8 mt-4">
                     <Button
-                      disabled={loading}
-                      className="btn btn-primary btn-md "
+                      className="btn btn-primary btn-md w-24 "
                       type="submit"
                     >
-                      Adicionar categoria
+                      Próximo
                     </Button>
 
                     <Button
                       type="button"
                       onClick={handleResetForm}
-                      className="btn btn-outline btn-sm w-36"
-                      disabled={loading}
+                      className="btn btn-outline btn-sm w-24"
                     >
                       Cancelar
                     </Button>

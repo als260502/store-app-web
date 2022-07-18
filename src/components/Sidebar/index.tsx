@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   CaretDown,
+  CopySimple,
   TShirt,
   UserCirclePlus,
   Wall,
@@ -9,7 +10,7 @@ import {
 /* eslint-disable @next/next/no-img-element */
 export const Sidebar = () => {
   return (
-    <aside>
+    <aside className="">
       <div className="h-full w-[150px] md:w-[200px] bg-gray-100 py-8 px-2 flex flex-col border-r-2 border-gray-900 border-opacity-25 ">
         <div className="flex flex-col items-center pb-8">
           <img
@@ -51,6 +52,15 @@ export const Sidebar = () => {
               <TShirt size={20} color="#323238" />
               <span className="py-1 font-medium text-sm text-gray-500">
                 Produtos
+              </span>
+            </a>
+          </Link>
+
+          <Link href="/categories/create">
+            <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
+              <CopySimple size={20} color="#323238" />
+              <span className="py-1 font-medium text-sm text-gray-500">
+                Categorias
               </span>
             </a>
           </Link>

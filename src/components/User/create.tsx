@@ -135,7 +135,7 @@ export const CreateComponent = () => {
             <div className="flex flex-row gap-6 items-center w-full mt-4 ">
               <Button
                 disabled={loading}
-                className="btn btn-primary btn-sm md:btn-md"
+                className="btn btn-primary btn-sm md:btn-md w-24"
                 type="submit"
               >
                 Salvar
@@ -143,7 +143,7 @@ export const CreateComponent = () => {
               <Button
                 onClick={handleCancel}
                 loading={loading}
-                className="btn btn-outline btn-sm md:btn-md"
+                className="btn btn-outline btn-sm md:btn-md w-24"
               >
                 Cancelar
               </Button>
