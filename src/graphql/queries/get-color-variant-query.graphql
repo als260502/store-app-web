@@ -1,0 +1,6 @@
+query GetColorVariant {
+  productColorVariants {
+    color
+    id
+  }
+}

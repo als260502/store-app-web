@@ -1,7 +1,9 @@
-mutation CreateCategory($name: String!, $slug: String!) {
-  createCategory(data: { name: $name, slug: $slug }) {
+mutation CreateCategory($name: String!, $slug: String!, $description: String) {
+  createCategory(
+    data: { name: $name, slug: $slug, description: $description }
+  ) {
+    slug
     id
     name
-    slug
   }
 }

@@ -1,0 +1,18 @@
+mutation CreateProductVariant($name: String!, $color: String!, $size: String!) {
+  createProductSizeColorVariant(
+    data: {
+      name: $name
+      productColorVariants: { create: { color: $color } }
+      productSizeVariants: { create: { size: $size } }
+    }
+  ) {
+    id
+    name
+    productColorVariants {
+      color
+    }
+    productSizeVariants {
+      size
+    }
+  }
+}

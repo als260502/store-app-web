@@ -1,5 +1,5 @@
 .input {
-  @apply h-9 rounded-md border-2 border-gray-300 bg-gray-100;
+  @apply h-9 rounded-md border-2 border-gray-300 bg-gray-100 focus:outline-0;
 }
 
 .input.input-text {

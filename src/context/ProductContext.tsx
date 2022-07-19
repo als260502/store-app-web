@@ -6,7 +6,12 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import { Product, useCreateProductMutation } from "../graphql/generated";
+import {
+  Product,
+  useCreateCategoryMutation,
+  useCreateProductMutation,
+} from "../graphql/generated";
+import { formatSlug } from "../utils/formatSlug";
 
 interface ProductProviderProps {
   children: ReactNode;
@@ -21,7 +26,7 @@ type Category = {
 interface ProductContextData {
   product: Product;
   addProduct: (product: Product) => Product;
-  addProductCategory: (category: string) => void;
+  addProductCategory: (category: Category) => Promise<Category>;
 }
 
 const ProductContext = createContext({} as ProductContextData);
@@ -32,11 +37,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
   const addProduct = useCallback(
     (productData: Product): Product => {
       try {
-        const formattedSlug = productData.name
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/ /g, "-")
-          .toLocaleLowerCase();
+        const formattedSlug = formatSlug(String(productData.name));
 
         const formattedPrice = parseFloat(String(productData.price));
         const formattedQtd = parseInt(String(productData.quantity));
@@ -61,30 +62,33 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
     [product]
   );
 
-  const addProductCategory = useCallback((category: string): void => {
-    console.log(category);
-  }, []);
-
   const [createProduct, { loading }] = useCreateProductMutation();
 
-  const createNewProduct = useCallback(async (data: Product) => {
-    try {
-      const result = await createProduct({
-        variables: data,
-      });
+  const createNewProduct = useCallback(
+    async (data: Product) => {
+      try {
+        const result = await createProduct({
+          variables: data,
+        });
 
-      toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
-        duration: 6000,
-        icon: "👍",
-      });
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-      toast.success("Erro:\nErro ao cadastrar produto!", {
-        duration: 6000,
-        icon: "😒",
-      });
-    }
+        toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
+          duration: 6000,
+          icon: "👍",
+        });
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+        toast.error("Erro:\nErro ao cadastrar produto!", {
+          duration: 6000,
+          icon: "😒",
+        });
+      }
+    },
+    [createProduct]
+  );
+
+  const addProductCategory = useCallback((category: Category): void => {
+    console.log(category);
   }, []);
 
   return (

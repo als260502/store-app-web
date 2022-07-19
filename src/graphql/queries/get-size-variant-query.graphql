@@ -1,0 +1,6 @@
+query GetSizeVariant {
+  productSizeVariants {
+    id
+    size
+  }
+}

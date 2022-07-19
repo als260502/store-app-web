@@ -1,0 +1,6 @@
+mutation CreateColorVariant($color: String!) {
+  createProductColorVariant(data: { color: $color }) {
+    id
+    color
+  }
+}
