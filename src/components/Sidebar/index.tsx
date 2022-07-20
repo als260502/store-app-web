@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   CaretDown,
   CopySimple,
+  Palette,
   TShirt,
   UserCirclePlus,
   Wall,
@@ -37,17 +38,25 @@ export const Sidebar = () => {
               </span>
             </a>
           </Link>
-
-          <Link href="/orders/create">
+          <Link href="/categories/create">
             <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
-              <Wallet size={20} color="#323238" />
+              <CopySimple size={20} color="#323238" />
               <span className="py-1 font-medium text-sm text-gray-500">
-                Pedidos
+                Categorias
               </span>
             </a>
           </Link>
 
-          <Link href="/products/create">
+          <Link href="/variants/create">
+            <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
+              <Palette size={20} color="#323238" />
+              <span className="py-1 font-medium text-sm text-gray-500">
+                Cor/Tamanho
+              </span>
+            </a>
+          </Link>
+
+          <Link href="/products/add">
             <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
               <TShirt size={20} color="#323238" />
               <span className="py-1 font-medium text-sm text-gray-500">
@@ -56,11 +65,11 @@ export const Sidebar = () => {
             </a>
           </Link>
 
-          <Link href="/categories/create">
+          <Link href="/orders/create">
             <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
-              <CopySimple size={20} color="#323238" />
+              <Wallet size={20} color="#323238" />
               <span className="py-1 font-medium text-sm text-gray-500">
-                Categorias
+                Pedidos
               </span>
             </a>
           </Link>

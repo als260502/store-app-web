@@ -1,31 +1,18 @@
-import { SelectHTMLAttributes, useCallback, useState } from "react";
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { SelectHTMLAttributes } from "react";
+import { FieldError } from "react-hook-form";
 
-import { Plus, PlusCircle } from "phosphor-react";
 import classNames from "classnames";
 
-import { Input } from "./Input";
-
-interface Category {
+interface Options {
   id: string;
   name: string;
 }
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   name: string;
-  options?: Category[];
+  options?: Options[];
   error?: FieldError;
   label?: string;
 }
-
-interface CreateCategoryFormData {
-  name: string;
-}
-
-const createCategoryFormSchema = yup.object().shape({
-  name: yup.string().required("Nome obrigatório"),
-});
 
 export function Select({
   options,

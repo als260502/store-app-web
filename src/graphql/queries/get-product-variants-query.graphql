@@ -1,0 +1,12 @@
+query GetProductVariants {
+  productSizeColorVariants {
+    id
+    name
+    productColorVariants {
+      name
+    }
+    productSizeVariants {
+      name
+    }
+  }
+}

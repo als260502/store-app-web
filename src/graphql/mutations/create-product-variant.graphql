@@ -2,17 +2,17 @@ mutation CreateProductVariant($name: String!, $color: String!, $size: String!) {
   createProductSizeColorVariant(
     data: {
       name: $name
-      productColorVariants: { create: { color: $color } }
-      productSizeVariants: { create: { size: $size } }
+      productColorVariants: { create: { name: $color } }
+      productSizeVariants: { create: { name: $size } }
     }
   ) {
     id
     name
     productColorVariants {
-      color
+      name
     }
     productSizeVariants {
-      size
+      name
     }
   }
 }

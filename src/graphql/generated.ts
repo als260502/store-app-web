@@ -6306,7 +6306,6 @@ export enum ProductColor {
 
 export type ProductColorVariant = Node & {
   __typename?: 'ProductColorVariant';
-  color: Scalars['String'];
   /** The time the document was created */
   createdAt: Scalars['DateTime'];
   /** User that created this document */
@@ -6317,6 +6316,7 @@ export type ProductColorVariant = Node & {
   history: Array<Version>;
   /** The unique identifier */
   id: Scalars['ID'];
+  name: Scalars['String'];
   product?: Maybe<Product>;
   productSizeColorVariants: Array<ProductSizeColorVariant>;
   /** The time the document was published. Null on documents in draft stage. */
@@ -6407,8 +6407,8 @@ export type ProductColorVariantConnection = {
 };
 
 export type ProductColorVariantCreateInput = {
-  color: Scalars['String'];
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  name: Scalars['String'];
   product?: InputMaybe<ProductCreateOneInlineInput>;
   productSizeColorVariants?: InputMaybe<ProductSizeColorVariantCreateManyInlineInput>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
@@ -6447,25 +6447,6 @@ export type ProductColorVariantManyWhereInput = {
   OR?: InputMaybe<Array<ProductColorVariantWhereInput>>;
   /** Contains search across all appropriate fields. */
   _search?: InputMaybe<Scalars['String']>;
-  color?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  color_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  color_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  color_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  color_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  color_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  color_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  color_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  color_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  color_starts_with?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   createdAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -6501,6 +6482,25 @@ export type ProductColorVariantManyWhereInput = {
   id_not_starts_with?: InputMaybe<Scalars['ID']>;
   /** All values starting with the given string. */
   id_starts_with?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  name_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values that are not equal to given value. */
+  name_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values not starting with the given string. */
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  name_starts_with?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductWhereInput>;
   productSizeColorVariants_every?: InputMaybe<ProductSizeColorVariantWhereInput>;
   productSizeColorVariants_none?: InputMaybe<ProductSizeColorVariantWhereInput>;
@@ -6543,12 +6543,12 @@ export type ProductColorVariantManyWhereInput = {
 };
 
 export enum ProductColorVariantOrderByInput {
-  ColorAsc = 'color_ASC',
-  ColorDesc = 'color_DESC',
   CreatedAtAsc = 'createdAt_ASC',
   CreatedAtDesc = 'createdAt_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
@@ -6556,7 +6556,7 @@ export enum ProductColorVariantOrderByInput {
 }
 
 export type ProductColorVariantUpdateInput = {
-  color?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductUpdateOneInlineInput>;
   productSizeColorVariants?: InputMaybe<ProductSizeColorVariantUpdateManyInlineInput>;
 };
@@ -6579,7 +6579,7 @@ export type ProductColorVariantUpdateManyInlineInput = {
 };
 
 export type ProductColorVariantUpdateManyInput = {
-  color?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type ProductColorVariantUpdateManyWithNestedWhereInput = {
@@ -6635,25 +6635,6 @@ export type ProductColorVariantWhereInput = {
   OR?: InputMaybe<Array<ProductColorVariantWhereInput>>;
   /** Contains search across all appropriate fields. */
   _search?: InputMaybe<Scalars['String']>;
-  color?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  color_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  color_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  color_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  color_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  color_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  color_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  color_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  color_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  color_starts_with?: InputMaybe<Scalars['String']>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   createdAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -6689,6 +6670,25 @@ export type ProductColorVariantWhereInput = {
   id_not_starts_with?: InputMaybe<Scalars['ID']>;
   /** All values starting with the given string. */
   id_starts_with?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  name_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values that are not equal to given value. */
+  name_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values not starting with the given string. */
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  name_starts_with?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductWhereInput>;
   productSizeColorVariants_every?: InputMaybe<ProductSizeColorVariantWhereInput>;
   productSizeColorVariants_none?: InputMaybe<ProductSizeColorVariantWhereInput>;
@@ -7299,24 +7299,8 @@ export type ProductSizeColorVariantUpdateManyInlineInput = {
 };
 
 export type ProductSizeColorVariantUpdateManyInput = {
-  /** Optional updates to localizations */
-  localizations?: InputMaybe<ProductSizeColorVariantUpdateManyLocalizationsInput>;
-  /** name input for default locale (pt_BR) */
-  name?: InputMaybe<Scalars['String']>;
-};
-
-export type ProductSizeColorVariantUpdateManyLocalizationDataInput = {
-  name?: InputMaybe<Scalars['String']>;
-};
-
-export type ProductSizeColorVariantUpdateManyLocalizationInput = {
-  data: ProductSizeColorVariantUpdateManyLocalizationDataInput;
-  locale: Locale;
-};
-
-export type ProductSizeColorVariantUpdateManyLocalizationsInput = {
-  /** Localizations to update */
-  update?: InputMaybe<Array<ProductSizeColorVariantUpdateManyLocalizationInput>>;
+  /** No fields in updateMany data input */
+  _?: InputMaybe<Scalars['String']>;
 };
 
 export type ProductSizeColorVariantUpdateManyWithNestedWhereInput = {
@@ -7493,6 +7477,7 @@ export type ProductSizeVariant = Node & {
   history: Array<Version>;
   /** The unique identifier */
   id: Scalars['ID'];
+  name: Scalars['String'];
   product?: Maybe<Product>;
   productSizeColorVariants: Array<ProductSizeColorVariant>;
   /** The time the document was published. Null on documents in draft stage. */
@@ -7500,7 +7485,6 @@ export type ProductSizeVariant = Node & {
   /** User that last published this document */
   publishedBy?: Maybe<User>;
   scheduledIn: Array<ScheduledOperation>;
-  size: Scalars['String'];
   /** System stage field */
   stage: Stage;
   /** The time the document was updated */
@@ -7585,9 +7569,9 @@ export type ProductSizeVariantConnection = {
 
 export type ProductSizeVariantCreateInput = {
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  name: Scalars['String'];
   product?: InputMaybe<ProductCreateOneInlineInput>;
   productSizeColorVariants?: InputMaybe<ProductSizeColorVariantCreateManyInlineInput>;
-  size: Scalars['String'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
 
@@ -7659,6 +7643,25 @@ export type ProductSizeVariantManyWhereInput = {
   id_not_starts_with?: InputMaybe<Scalars['ID']>;
   /** All values starting with the given string. */
   id_starts_with?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  name_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values that are not equal to given value. */
+  name_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values not starting with the given string. */
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  name_starts_with?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductWhereInput>;
   productSizeColorVariants_every?: InputMaybe<ProductSizeColorVariantWhereInput>;
   productSizeColorVariants_none?: InputMaybe<ProductSizeColorVariantWhereInput>;
@@ -7682,25 +7685,6 @@ export type ProductSizeVariantManyWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
-  size?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  size_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  size_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  size_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  size_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  size_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  size_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  size_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  size_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  size_starts_with?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -7724,18 +7708,18 @@ export enum ProductSizeVariantOrderByInput {
   CreatedAtDesc = 'createdAt_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
+  NameAsc = 'name_ASC',
+  NameDesc = 'name_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
-  SizeAsc = 'size_ASC',
-  SizeDesc = 'size_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
   UpdatedAtDesc = 'updatedAt_DESC'
 }
 
 export type ProductSizeVariantUpdateInput = {
+  name?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductUpdateOneInlineInput>;
   productSizeColorVariants?: InputMaybe<ProductSizeColorVariantUpdateManyInlineInput>;
-  size?: InputMaybe<Scalars['String']>;
 };
 
 export type ProductSizeVariantUpdateManyInlineInput = {
@@ -7756,7 +7740,7 @@ export type ProductSizeVariantUpdateManyInlineInput = {
 };
 
 export type ProductSizeVariantUpdateManyInput = {
-  size?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
 };
 
 export type ProductSizeVariantUpdateManyWithNestedWhereInput = {
@@ -7847,6 +7831,25 @@ export type ProductSizeVariantWhereInput = {
   id_not_starts_with?: InputMaybe<Scalars['ID']>;
   /** All values starting with the given string. */
   id_starts_with?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  name_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  name_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  name_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values that are not equal to given value. */
+  name_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  name_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  name_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  name_not_in?: InputMaybe<Array<Scalars['String']>>;
+  /** All values not starting with the given string. */
+  name_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  name_starts_with?: InputMaybe<Scalars['String']>;
   product?: InputMaybe<ProductWhereInput>;
   productSizeColorVariants_every?: InputMaybe<ProductSizeColorVariantWhereInput>;
   productSizeColorVariants_none?: InputMaybe<ProductSizeColorVariantWhereInput>;
@@ -7870,25 +7873,6 @@ export type ProductSizeVariantWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
-  size?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  size_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  size_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  size_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  size_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  size_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  size_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  size_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  size_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  size_starts_with?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -11846,11 +11830,11 @@ export type CreateCategoryMutationVariables = Exact<{
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory?: { __typename?: 'Category', slug: string, id: string, name: string } | null };
 
 export type CreateColorVariantMutationVariables = Exact<{
-  color: Scalars['String'];
+  name: Scalars['String'];
 }>;
 
 
-export type CreateColorVariantMutation = { __typename?: 'Mutation', createProductColorVariant?: { __typename?: 'ProductColorVariant', id: string, color: string } | null };
+export type CreateColorVariantMutation = { __typename?: 'Mutation', createProductColorVariant?: { __typename?: 'ProductColorVariant', id: string, name: string } | null };
 
 export type CreateProductVariantMutationVariables = Exact<{
   name: Scalars['String'];
@@ -11859,7 +11843,7 @@ export type CreateProductVariantMutationVariables = Exact<{
 }>;
 
 
-export type CreateProductVariantMutation = { __typename?: 'Mutation', createProductSizeColorVariant?: { __typename?: 'ProductSizeColorVariant', id: string, name: string, productColorVariants: Array<{ __typename?: 'ProductColorVariant', color: string }>, productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', size: string }> } | null };
+export type CreateProductVariantMutation = { __typename?: 'Mutation', createProductSizeColorVariant?: { __typename?: 'ProductSizeColorVariant', id: string, name: string, productColorVariants: Array<{ __typename?: 'ProductColorVariant', name: string }>, productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', name: string }> } | null };
 
 export type CreateProductMutationVariables = Exact<{
   name: Scalars['String'];
@@ -11873,11 +11857,11 @@ export type CreateProductMutationVariables = Exact<{
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string, slug: string } | null };
 
 export type CreateSizeVariantMutationVariables = Exact<{
-  size: Scalars['String'];
+  name: Scalars['String'];
 }>;
 
 
-export type CreateSizeVariantMutation = { __typename?: 'Mutation', createProductSizeVariant?: { __typename?: 'ProductSizeVariant', id: string, size: string } | null };
+export type CreateSizeVariantMutation = { __typename?: 'Mutation', createProductSizeVariant?: { __typename?: 'ProductSizeVariant', id: string, name: string } | null };
 
 export type CreateStoreUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -11899,12 +11883,17 @@ export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __t
 export type GetColorVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetColorVariantQuery = { __typename?: 'Query', productColorVariants: Array<{ __typename?: 'ProductColorVariant', color: string, id: string }> };
+export type GetColorVariantQuery = { __typename?: 'Query', productColorVariants: Array<{ __typename?: 'ProductColorVariant', id: string, name: string }> };
+
+export type GetProductVariantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProductVariantsQuery = { __typename?: 'Query', productSizeColorVariants: Array<{ __typename?: 'ProductSizeColorVariant', id: string, name: string, productColorVariants: Array<{ __typename?: 'ProductColorVariant', name: string }>, productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', name: string }> }> };
 
 export type GetSizeVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSizeVariantQuery = { __typename?: 'Query', productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', id: string, size: string }> };
+export type GetSizeVariantQuery = { __typename?: 'Query', productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', id: string, name: string }> };
 
 export type GetStoreUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -11950,10 +11939,10 @@ export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCatego
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateColorVariantDocument = gql`
-    mutation CreateColorVariant($color: String!) {
-  createProductColorVariant(data: {color: $color}) {
+    mutation CreateColorVariant($name: String!) {
+  createProductColorVariant(data: {name: $name}) {
     id
-    color
+    name
   }
 }
     `;
@@ -11972,7 +11961,7 @@ export type CreateColorVariantMutationFn = Apollo.MutationFunction<CreateColorVa
  * @example
  * const [createColorVariantMutation, { data, loading, error }] = useCreateColorVariantMutation({
  *   variables: {
- *      color: // value for 'color'
+ *      name: // value for 'name'
  *   },
  * });
  */
@@ -11986,15 +11975,15 @@ export type CreateColorVariantMutationOptions = Apollo.BaseMutationOptions<Creat
 export const CreateProductVariantDocument = gql`
     mutation CreateProductVariant($name: String!, $color: String!, $size: String!) {
   createProductSizeColorVariant(
-    data: {name: $name, productColorVariants: {create: {color: $color}}, productSizeVariants: {create: {size: $size}}}
+    data: {name: $name, productColorVariants: {create: {name: $color}}, productSizeVariants: {create: {name: $size}}}
   ) {
     id
     name
     productColorVariants {
-      color
+      name
     }
     productSizeVariants {
-      size
+      name
     }
   }
 }
@@ -12068,10 +12057,10 @@ export type CreateProductMutationHookResult = ReturnType<typeof useCreateProduct
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const CreateSizeVariantDocument = gql`
-    mutation CreateSizeVariant($size: String!) {
-  createProductSizeVariant(data: {size: $size}) {
+    mutation CreateSizeVariant($name: String!) {
+  createProductSizeVariant(data: {name: $name}) {
     id
-    size
+    name
   }
 }
     `;
@@ -12090,7 +12079,7 @@ export type CreateSizeVariantMutationFn = Apollo.MutationFunction<CreateSizeVari
  * @example
  * const [createSizeVariantMutation, { data, loading, error }] = useCreateSizeVariantMutation({
  *   variables: {
- *      size: // value for 'size'
+ *      name: // value for 'name'
  *   },
  * });
  */
@@ -12179,8 +12168,8 @@ export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, Ge
 export const GetColorVariantDocument = gql`
     query GetColorVariant {
   productColorVariants {
-    color
     id
+    name
   }
 }
     `;
@@ -12211,11 +12200,52 @@ export function useGetColorVariantLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetColorVariantQueryHookResult = ReturnType<typeof useGetColorVariantQuery>;
 export type GetColorVariantLazyQueryHookResult = ReturnType<typeof useGetColorVariantLazyQuery>;
 export type GetColorVariantQueryResult = Apollo.QueryResult<GetColorVariantQuery, GetColorVariantQueryVariables>;
+export const GetProductVariantsDocument = gql`
+    query GetProductVariants {
+  productSizeColorVariants {
+    id
+    name
+    productColorVariants {
+      name
+    }
+    productSizeVariants {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProductVariantsQuery__
+ *
+ * To run a query within a React component, call `useGetProductVariantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductVariantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductVariantsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProductVariantsQuery(baseOptions?: Apollo.QueryHookOptions<GetProductVariantsQuery, GetProductVariantsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductVariantsQuery, GetProductVariantsQueryVariables>(GetProductVariantsDocument, options);
+      }
+export function useGetProductVariantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductVariantsQuery, GetProductVariantsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductVariantsQuery, GetProductVariantsQueryVariables>(GetProductVariantsDocument, options);
+        }
+export type GetProductVariantsQueryHookResult = ReturnType<typeof useGetProductVariantsQuery>;
+export type GetProductVariantsLazyQueryHookResult = ReturnType<typeof useGetProductVariantsLazyQuery>;
+export type GetProductVariantsQueryResult = Apollo.QueryResult<GetProductVariantsQuery, GetProductVariantsQueryVariables>;
 export const GetSizeVariantDocument = gql`
     query GetSizeVariant {
   productSizeVariants {
     id
-    size
+    name
   }
 }
     `;
