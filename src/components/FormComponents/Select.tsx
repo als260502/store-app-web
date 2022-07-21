@@ -1,4 +1,8 @@
-import { SelectHTMLAttributes } from "react";
+import {
+  SelectHTMLAttributes,
+  ForwardRefRenderFunction,
+  forwardRef,
+} from "react";
 import { FieldError } from "react-hook-form";
 
 import classNames from "classnames";
@@ -14,30 +18,22 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
 }
 
-export function Select({
-  options,
-  name,
-  label,
-  error = null,
-  ...rest
-}: SelectProps) {
+const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
+  { options, name, label, error = null, ...rest },
+  ref
+) => {
   return (
     <div>
       <div className="flex flex-col gap-2">
-        <label
-          className={classNames("text-sm", {
-            "text-gray-400": !error?.message,
-            "text-red-700": error?.message,
-          })}
-          htmlFor={name}
-        >
+        <label className="text-gray-400" htmlFor={name}>
           {label}
         </label>
 
         <div className="flex flex-row z-10 items-center gap-4 text-gray-400">
-          <select {...rest} className="input">
+          <select {...rest} name={name} ref={ref} className="input">
+            <option></option>
             {options?.map(value => (
-              <option key={value.id} value={value.name}>
+              <option key={value.id} value={`${value.id},${value.name}`}>
                 {value.name}
               </option>
             ))}
@@ -47,4 +43,6 @@ export function Select({
       {!!error && <p className="text-red-700">{error.message}</p>}
     </div>
   );
-}
+};
+
+export const Select = forwardRef(SelectBase);

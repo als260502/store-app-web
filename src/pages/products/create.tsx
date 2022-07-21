@@ -10,12 +10,11 @@ import { Search } from "../../components/Search";
 import { Sidebar } from "../../components/Sidebar";
 import { Header } from "../../components/Header";
 
-import { useCallback, useState } from "react";
-import { Product } from "../../graphql/generated";
+import { useCallback, useEffect } from "react";
 import { Button } from "../../components/Button";
 
-import toast, { Toaster } from "react-hot-toast";
-import { useProduct } from "../../context/ProductContext";
+import { Toaster } from "react-hot-toast";
+import { useProduct, Product } from "../../context/ProductContext";
 import { useRouter } from "next/router";
 
 const createProductFormSchema = yup.object().shape({
@@ -36,17 +35,35 @@ const Create: NextPage = () => {
     resolver: yupResolver(createProductFormSchema),
   });
 
-  const navigate = useRouter();
+  const navigation = useRouter();
+
+  useEffect(() => {
+    if (!product?.categories || !product?.variant) {
+      navigation.push("/products/add");
+    }
+  }, [navigation, product?.categories, product?.variant]);
 
   const handleResetForm = useCallback(() => {
     reset();
   }, [reset]);
 
-  const handleCreateProduct: SubmitHandler<Product> = useCallback(values => {
-    const result = addProduct(values);
-    navigate.push("/category/create");
-    console.log(product);
-  }, []);
+  const handleCreateProduct: SubmitHandler<Product> = useCallback(
+    async values => {
+      const newProduct = {
+        name: values.name,
+        slug: "",
+        description: values.description,
+        price: values.price,
+        quantity: values.quantity,
+        categories: String(product?.categories.id),
+        variants: String(product?.variant.id),
+      };
+
+      const result = await addProduct(newProduct);
+      return result;
+    },
+    [addProduct, product?.categories, product?.variant]
+  );
 
   return (
     <>
@@ -60,6 +77,20 @@ const Create: NextPage = () => {
               <div className="p-8">
                 <div>
                   <Header title="Novo produto" />
+                  <div className="flex flex-col  mt-4 px-8 gap-2 font-semibold">
+                    <span className="text-gray-500">
+                      Categoria:
+                      <strong className="text-gray-900 shadow-sm shadow-blue-200">
+                        {` ${product?.categories?.name}`}
+                      </strong>
+                    </span>
+                    <span className="text-gray-500">
+                      Variante:
+                      <strong className="text-gray-900 shadow-sm shadow-blue-200">
+                        {` ${product?.variant.name.replace(/ - /g, " ")}`}
+                      </strong>
+                    </span>
+                  </div>
                 </div>
                 <form
                   className="mt-8 w-[550px] flex flex-col gap-4"

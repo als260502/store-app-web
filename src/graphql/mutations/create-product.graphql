@@ -4,6 +4,8 @@ mutation CreateProduct(
   $description: String!
   $price: Float!
   $quantity: Int!
+  $categories: ID
+  $variants: ID
 ) {
   createProduct(
     data: {
@@ -12,9 +14,10 @@ mutation CreateProduct(
       description: $description
       price: $price
       quantity: $quantity
+      categories: { connect: { id: $categories } }
+      variants: { connect: { ProductSizeColorVariant: { id: $variants } } }
     }
   ) {
     id
-    slug
   }
 }

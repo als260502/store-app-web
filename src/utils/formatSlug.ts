@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 export const formatSlug = (text: string): string => {
   const formattedSlug = text
     .normalize("NFD")
@@ -5,7 +7,7 @@ export const formatSlug = (text: string): string => {
     .replace(/ /g, "-")
     .toLocaleLowerCase();
 
-  return formattedSlug;
+  return `${formattedSlug}-${uuid()}`;
 };
 
 export const formatVariantName = (text: string): string => {

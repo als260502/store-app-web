@@ -7960,6 +7960,8 @@ export type ProductUpdateManyInput = {
   description?: InputMaybe<Scalars['String']>;
   /** Optional updates to localizations */
   localizations?: InputMaybe<ProductUpdateManyLocalizationsInput>;
+  /** name input for default locale (pt_BR) */
+  name?: InputMaybe<Scalars['String']>;
   /** price input for default locale (pt_BR) */
   price?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
@@ -7967,6 +7969,7 @@ export type ProductUpdateManyInput = {
 
 export type ProductUpdateManyLocalizationDataInput = {
   description?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
   price?: InputMaybe<Scalars['Float']>;
 };
 
@@ -11851,10 +11854,12 @@ export type CreateProductMutationVariables = Exact<{
   description: Scalars['String'];
   price: Scalars['Float'];
   quantity: Scalars['Int'];
+  categories?: InputMaybe<Scalars['ID']>;
+  variants?: InputMaybe<Scalars['ID']>;
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string, slug: string } | null };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string } | null };
 
 export type CreateSizeVariantMutationVariables = Exact<{
   name: Scalars['String'];
@@ -12017,12 +12022,11 @@ export type CreateProductVariantMutationHookResult = ReturnType<typeof useCreate
 export type CreateProductVariantMutationResult = Apollo.MutationResult<CreateProductVariantMutation>;
 export type CreateProductVariantMutationOptions = Apollo.BaseMutationOptions<CreateProductVariantMutation, CreateProductVariantMutationVariables>;
 export const CreateProductDocument = gql`
-    mutation CreateProduct($name: String!, $slug: String!, $description: String!, $price: Float!, $quantity: Int!) {
+    mutation CreateProduct($name: String!, $slug: String!, $description: String!, $price: Float!, $quantity: Int!, $categories: ID, $variants: ID) {
   createProduct(
-    data: {name: $name, slug: $slug, description: $description, price: $price, quantity: $quantity}
+    data: {name: $name, slug: $slug, description: $description, price: $price, quantity: $quantity, categories: {connect: {id: $categories}}, variants: {connect: {ProductSizeColorVariant: {id: $variants}}}}
   ) {
     id
-    slug
   }
 }
     `;
@@ -12046,6 +12050,8 @@ export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutat
  *      description: // value for 'description'
  *      price: // value for 'price'
  *      quantity: // value for 'quantity'
+ *      categories: // value for 'categories'
+ *      variants: // value for 'variants'
  *   },
  * });
  */
