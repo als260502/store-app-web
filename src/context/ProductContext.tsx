@@ -22,17 +22,15 @@ export type CategoryVariant = {
   variant: string;
 };
 
-export type Product = {
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  quantity: number;
+type ProductCategoryVariant = {
   categories: {
     id: string;
     name: string;
   };
-  variant: ProductSizeColorVariant;
+  variant: {
+    id: string;
+    name: string;
+  };
 };
 
 export type CreateProductProps = {
@@ -46,21 +44,30 @@ export type CreateProductProps = {
 };
 
 type ProductContextData = {
-  product: Product | undefined;
+  product: CreateProductProps;
+  categoryVariant: ProductCategoryVariant;
+  loading: boolean;
   addProduct: (product: CreateProductProps) => Promise<CreateProductProps>;
-  addProductCategoryVariant: (values: CategoryVariant) => void;
+  addProductCategoryVariant: (values: CategoryVariant) => Promise<void>;
 };
 
 const ProductContext = createContext({} as ProductContextData);
 
 export const ProductProvider = ({ children }: ProductProviderProps) => {
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] = useState<CreateProductProps>(
+    {} as CreateProductProps
+  );
+  const [categoryVariant, setCategoryVariant] =
+    useState<ProductCategoryVariant>({} as ProductCategoryVariant);
 
-  const [createProduct] = useCreateProductMutation();
+  const [loading, setLoading] = useState(false);
+
+  const [createProduct, { loading: load }] = useCreateProductMutation();
 
   const createNewProduct = useCallback(
     async (data: CreateProductProps) => {
       try {
+        setLoading(load);
         const response = await createProduct({
           variables: data,
         });
@@ -71,6 +78,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         });
         console.log(response.data);
 
+        setLoading(loading);
         return response.data;
       } catch (error) {
         console.log(error);
@@ -80,11 +88,11 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         });
       }
     },
-    [createProduct]
+    [createProduct, load]
   );
 
   const addProduct = useCallback(
-    async (productData: Product): Promise<CreateProductProps> => {
+    async (productData: CreateProductProps): Promise<CreateProductProps> => {
       try {
         const formattedSlug = formatSlug(String(productData.name));
 
@@ -97,9 +105,11 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
           description: productData.description,
           price: formattedPrice,
           quantity: formattedQtd,
-          categories: productData.categories.id,
-          variants: productData.variant.id,
+          categories: productData.categories,
+          variants: productData.variants,
         };
+
+        setProduct(newProduct);
 
         await createNewProduct(newProduct);
 
@@ -113,7 +123,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
   );
 
   const addProductCategoryVariant = useCallback(
-    (values: CategoryVariant): void => {
+    async (values: CategoryVariant): Promise<void> => {
       const { category, variant } = values;
 
       const categories = category.split(",");
@@ -129,14 +139,20 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
           name: variants[1],
         },
       };
-      setProduct(newProductCategoryVariant);
+      setCategoryVariant(newProductCategoryVariant);
     },
     []
   );
 
   return (
     <ProductContext.Provider
-      value={{ product, addProduct, addProductCategoryVariant }}
+      value={{
+        product,
+        addProduct,
+        addProductCategoryVariant,
+        categoryVariant,
+        loading,
+      }}
     >
       {children}
     </ProductContext.Provider>

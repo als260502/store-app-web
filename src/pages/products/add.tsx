@@ -38,6 +38,7 @@ const Add = () => {
   const { addProductCategoryVariant } = useProduct();
   const [variant, setVariant] = useState<Props[]>();
   const [category, setCategory] = useState<Props[]>();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -62,8 +63,11 @@ const Add = () => {
     }
   }, [categoryData?.categories, variantData?.productSizeColorVariants]);
 
-  const handleAddProduct: SubmitHandler<AddFormData> = values => {
-    addProductCategoryVariant(values);
+  const handleAddProduct: SubmitHandler<AddFormData> = async values => {
+    setLoading(true);
+    await addProductCategoryVariant(values);
+
+    setLoading(true);
     navigation.push("/products/create");
   };
 
@@ -80,10 +84,13 @@ const Add = () => {
               <Sidebar />
 
               <main className="w-full h-full min-w-[600px]">
-                <div className="bg-gray-200 min-h-[60vh] ">
+                <div className="bg-gray-200 min-h-[70vh] ">
                   <div className="p-8">
                     <div>
-                      <Header title="Selecione Categoria, Cor e Tamanho" />
+                      <Header
+                        title="Selecione Categoria, Cor e Tamanho"
+                        loading={loading}
+                      />
                     </div>
                   </div>
                   <form
@@ -108,7 +115,11 @@ const Add = () => {
                       className="input"
                     />
 
-                    <Button type="submit" className="btn btn-primary btn-md">
+                    <Button
+                      disabled={loading}
+                      type="submit"
+                      className="btn btn-primary btn-md"
+                    >
                       Próximo
                     </Button>
                   </form>

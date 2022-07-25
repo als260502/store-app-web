@@ -11,7 +11,6 @@ import { Select } from "../../components/FormComponents/Select";
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import {
-  useCreateColorVariantMutation,
   useCreateProductVariantMutation,
   useGetColorVariantQuery,
   useGetSizeVariantQuery,
@@ -32,8 +31,8 @@ type FormData = {
 };
 
 const createVariantFormSchema = yup.object().shape({
-  color: yup.string().required("Nome da cor é obigatório"),
-  size: yup.string().required("Tamanho é obigatório"),
+  color: yup.string().required("Nome da cor é obrigatório"),
+  size: yup.string().required("Tamanho é obrigatório"),
 });
 
 const Create: NextPage = () => {
@@ -46,20 +45,23 @@ const Create: NextPage = () => {
     resolver: yupResolver(createVariantFormSchema),
   });
 
+  const { data: color } = useGetColorVariantQuery();
+  const { data: size } = useGetSizeVariantQuery();
+
   const [createProductVariant, { loading }] = useCreateProductVariantMutation();
 
   const handleProductVariant: SubmitHandler<FormData> = useCallback(
     async values => {
       try {
-        const newProductVariant = {
-          name: `${formatVariantName(values.color)}-${values.size}`,
-          color: values.color,
-          size: values.size,
-        };
+        const hasColor = color?.productColorVariants.every(c =>
+          c.name.includes("values.color")
+        );
 
-        await createProductVariant({
-          variables: newProductVariant,
-        });
+        console.log(color?.productColorVariants, hasColor);
+
+        //  await createProductVariant({
+        //   variables: newProductVariant,
+        // });
 
         toast.success("Nova variante cadastrada com sucesso!");
         reset();
@@ -78,29 +80,13 @@ const Create: NextPage = () => {
           <Sidebar />
 
           <main className="w-full h-full min-w-[600px]">
-            <div className="bg-gray-200 min-h-[60vh] ">
+            <div className="bg-gray-200 min-h-[70vh] ">
               <div className="p-8">
                 <div>
                   <Header title="Variantes - Cor/Tamanho " loading={loading} />
                 </div>
               </div>
               <div className="px-8 flex flex-col gap-4">
-                {/* <div className="flex flex-row gap-4">
-                  <Select
-                    label="Cor"
-                    name="colorVariant"
-                    options={color}
-                    className="input"
-                  />
-
-                  <Select
-                    label="Tamanho"
-                    name="sizeVariant"
-                    options={size}
-                    className="input"
-                  />
-                </div> */}
-
                 <form
                   onSubmit={handleSubmit(handleProductVariant)}
                   className="mt=4 flex flex-col gap-4"

@@ -14,7 +14,7 @@ import { useCallback, useEffect } from "react";
 import { Button } from "../../components/Button";
 
 import { Toaster } from "react-hot-toast";
-import { useProduct, Product } from "../../context/ProductContext";
+import { useProduct, CreateProductProps } from "../../context/ProductContext";
 import { useRouter } from "next/router";
 
 const createProductFormSchema = yup.object().shape({
@@ -25,29 +25,29 @@ const createProductFormSchema = yup.object().shape({
 });
 
 const Create: NextPage = () => {
-  const { addProduct, product } = useProduct();
+  const { addProduct, product, categoryVariant, loading } = useProduct();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Product>({
+  } = useForm<CreateProductProps>({
     resolver: yupResolver(createProductFormSchema),
   });
 
   const navigation = useRouter();
 
   useEffect(() => {
-    if (!product?.categories || !product?.variant) {
+    if (!categoryVariant.categories || !categoryVariant.variant) {
       navigation.push("/products/add");
     }
-  }, [navigation, product?.categories, product?.variant]);
+  }, [navigation, categoryVariant.categories, categoryVariant.variant]);
 
   const handleResetForm = useCallback(() => {
     reset();
   }, [reset]);
 
-  const handleCreateProduct: SubmitHandler<Product> = useCallback(
+  const handleCreateProduct: SubmitHandler<CreateProductProps> = useCallback(
     async values => {
       const newProduct = {
         name: values.name,
@@ -55,15 +55,19 @@ const Create: NextPage = () => {
         description: values.description,
         price: values.price,
         quantity: values.quantity,
-        categories: String(product?.categories.id),
-        variants: String(product?.variant.id),
+        categories: String(categoryVariant.categories.id),
+        variants: String(categoryVariant.variant.id),
       };
 
       const result = await addProduct(newProduct);
       return result;
     },
-    [addProduct, product?.categories, product?.variant]
+    [addProduct, categoryVariant.categories, categoryVariant.variant]
   );
+
+  const handleGoBack = () => {
+    navigation.back();
+  };
 
   return (
     <>
@@ -76,18 +80,21 @@ const Create: NextPage = () => {
             <div className="bg-gray-200 h-full">
               <div className="p-8">
                 <div>
-                  <Header title="Novo produto" />
+                  <Header title="Adicionar produto" loading={loading} />
                   <div className="flex flex-col  mt-4 px-8 gap-2 font-semibold">
                     <span className="text-gray-500">
                       Categoria:
                       <strong className="text-gray-900 shadow-sm shadow-blue-200">
-                        {` ${product?.categories?.name}`}
+                        {` ${categoryVariant.categories.name}`}
                       </strong>
                     </span>
                     <span className="text-gray-500">
                       Variante:
                       <strong className="text-gray-900 shadow-sm shadow-blue-200">
-                        {` ${product?.variant.name.replace(/ - /g, " ")}`}
+                        {` ${categoryVariant.variant.name.replace(
+                          / - /g,
+                          " "
+                        )}`}
                       </strong>
                     </span>
                   </div>
@@ -143,8 +150,9 @@ const Create: NextPage = () => {
                     <Button
                       className="btn btn-primary btn-md w-24 "
                       type="submit"
+                      disabled={loading}
                     >
-                      Próximo
+                      Adicionar
                     </Button>
 
                     <Button
@@ -153,6 +161,14 @@ const Create: NextPage = () => {
                       className="btn btn-outline btn-sm w-24"
                     >
                       Cancelar
+                    </Button>
+
+                    <Button
+                      type="button"
+                      onClick={handleGoBack}
+                      className="btn btn-outline btn-sm w-24"
+                    >
+                      Voltar
                     </Button>
                   </div>
                 </form>

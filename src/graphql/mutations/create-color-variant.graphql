@@ -1,6 +1,0 @@
-mutation CreateColorVariant($name: String!) {
-  createProductColorVariant(data: { name: $name }) {
-    id
-    name
-  }
-}
