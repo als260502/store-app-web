@@ -1,21 +1,26 @@
 import { NextPage } from "next";
+import { useCallback, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
+import { useProduct, CreateProductProps } from "../../context/ProductContext";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { useForm, SubmitHandler } from "react-hook-form";
+import { CircleNotch } from "phosphor-react";
 
 import { Input } from "../../components/FormComponents/Input";
 import { Search } from "../../components/Search";
 import { Sidebar } from "../../components/Sidebar";
 import { Header } from "../../components/Header";
-
-import { useCallback, useEffect } from "react";
 import { Button } from "../../components/Button";
 
 import { Toaster } from "react-hot-toast";
-import { useProduct, CreateProductProps } from "../../context/ProductContext";
 import { useRouter } from "next/router";
+import {
+  useGetCategoryByIdQuery,
+  useGetColorByIdQuery,
+  useGetSizeByIdQuery,
+} from "../../graphql/generated";
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
@@ -25,7 +30,7 @@ const createProductFormSchema = yup.object().shape({
 });
 
 const Create: NextPage = () => {
-  const { addProduct, product, categoryVariant, loading } = useProduct();
+  const { addProduct, product, loading } = useProduct();
   const {
     register,
     handleSubmit,
@@ -35,13 +40,25 @@ const Create: NextPage = () => {
     resolver: yupResolver(createProductFormSchema),
   });
 
-  const navigation = useRouter();
+  const { data: categoryData } = useGetCategoryByIdQuery({
+    variables: {
+      id: product.categories,
+    },
+  });
 
-  useEffect(() => {
-    if (!categoryVariant.categories || !categoryVariant.variant) {
-      navigation.push("/products/add");
-    }
-  }, [navigation, categoryVariant.categories, categoryVariant.variant]);
+  const { data: sizeData } = useGetSizeByIdQuery({
+    variables: {
+      id: product.size,
+    },
+  });
+
+  const { data: colorData } = useGetColorByIdQuery({
+    variables: {
+      id: product.color,
+    },
+  });
+
+  const navigation = useRouter();
 
   const handleResetForm = useCallback(() => {
     reset();
@@ -55,14 +72,24 @@ const Create: NextPage = () => {
         description: values.description,
         price: values.price,
         quantity: values.quantity,
-        categories: String(categoryVariant.categories.id),
-        variants: String(categoryVariant.variant.id),
+        categories: String(categoryData?.category?.id),
+        color: String(colorData?.productColorVariant?.id),
+        size: String(sizeData?.productSizeVariant?.id),
       };
 
-      const result = await addProduct(newProduct);
-      return result;
+      const response = await addProduct(newProduct);
+
+      reset();
+
+      return response;
     },
-    [addProduct, categoryVariant.categories, categoryVariant.variant]
+    [
+      addProduct,
+      categoryData?.category?.id,
+      colorData?.productColorVariant?.id,
+      reset,
+      sizeData?.productSizeVariant?.id,
+    ]
   );
 
   const handleGoBack = () => {
@@ -81,21 +108,26 @@ const Create: NextPage = () => {
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />
-                  <div className="flex flex-col  mt-4 px-8 gap-2 font-semibold">
-                    <span className="text-gray-500">
+                  <div className="flex flex-col justify-center  mt-4 px-8 gap-2 font-semibold">
+                    <span className="text-gray-500 flex flex-row items-center ">
                       Categoria:
-                      <strong className="text-gray-900 shadow-sm shadow-blue-200">
-                        {` ${categoryVariant.categories.name}`}
-                      </strong>
+                      {categoryData ? (
+                        <strong className="text-gray-900 shadow-sm shadow-blue-200 ml-2">
+                          {` ${categoryData?.category?.name}`}
+                        </strong>
+                      ) : (
+                        <CircleNotch size={20} className="animate-spin ml-2" />
+                      )}
                     </span>
                     <span className="text-gray-500">
                       Variante:
-                      <strong className="text-gray-900 shadow-sm shadow-blue-200">
-                        {` ${categoryVariant.variant.name.replace(
-                          / - /g,
-                          " "
-                        )}`}
-                      </strong>
+                      {colorData || sizeData ? (
+                        <strong className="text-gray-900 shadow-sm shadow-blue-200">
+                          {` ${colorData?.productColorVariant?.name} - ${sizeData?.productSizeVariant?.name}`}
+                        </strong>
+                      ) : (
+                        <CircleNotch size={20} className="animate-spin ml-2" />
+                      )}
                     </span>
                   </div>
                 </div>

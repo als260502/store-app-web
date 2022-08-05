@@ -6,26 +6,19 @@ import * as yup from "yup";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import toast, { Toaster } from "react-hot-toast";
-import { Select } from "../../components/FormComponents/Select";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import {
-  useCreateProductVariantMutation,
   useGetColorVariantQuery,
   useGetSizeVariantQuery,
 } from "../../graphql/generated";
 import { Input } from "../../components/FormComponents/Input";
 import { Button } from "../../components/Button";
-import { formatVariantName } from "../../utils/formatSlug";
 
-type Option = {
-  id: string;
-  name: string;
-};
+import { useProduct } from "../../context/ProductContext";
 
 type FormData = {
-  name: string;
   color: string;
   size: string;
 };
@@ -36,6 +29,7 @@ const createVariantFormSchema = yup.object().shape({
 });
 
 const Create: NextPage = () => {
+  const { addProductVariant, loading } = useProduct();
   const {
     register,
     handleSubmit,
@@ -48,29 +42,36 @@ const Create: NextPage = () => {
   const { data: color } = useGetColorVariantQuery();
   const { data: size } = useGetSizeVariantQuery();
 
-  const [createProductVariant, { loading }] = useCreateProductVariantMutation();
-
   const handleProductVariant: SubmitHandler<FormData> = useCallback(
     async values => {
       try {
-        const hasColor = color?.productColorVariants.every(c =>
-          c.name.includes("values.color")
+        const hasColor = color?.productColorVariants.some(c =>
+          c.name.includes(values.color)
         );
 
-        console.log(color?.productColorVariants, hasColor);
+        const hasSize = size?.productSizeVariants.some(s =>
+          s.name.includes(values.size)
+        );
 
-        //  await createProductVariant({
-        //   variables: newProductVariant,
-        // });
+        if (hasColor || hasSize)
+          throw new Error(
+            "Erro:\n Cor e ou Tamanho ja existem em nosso sistema"
+          );
+
+        await addProductVariant(values);
 
         toast.success("Nova variante cadastrada com sucesso!");
         reset();
       } catch (error) {
-        console.log(error);
-        toast.error(`Variante entre Cor|Tamanho ja existe no sistema`);
+        toast.error("Erro:\n Cor e ou Tamanho ja existem em nosso sistema");
       }
     },
-    [createProductVariant]
+    [
+      addProductVariant,
+      color?.productColorVariants,
+      reset,
+      size?.productSizeVariants,
+    ]
   );
 
   return (

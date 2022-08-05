@@ -1,0 +1,27 @@
+mutation CreateOrder(
+  $total: Float!
+  $userId: ID
+  $itemQuantity: Int!
+  $totalItem: Float!
+  $productId: ID!
+) {
+  createOrder(
+    data: {
+      total: $total
+      stripeCheckoutId: "FFF"
+      storeUser: { connect: { id: $userId } }
+      orderItems: {
+        create: {
+          quantity: $itemQuantity
+          total: $totalItem
+          product: { connect: { id: $productId } }
+        }
+      }
+    }
+  ) {
+    id
+    orderItems {
+      id
+    }
+  }
+}

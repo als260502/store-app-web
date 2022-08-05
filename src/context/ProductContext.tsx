@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   createContext,
   ReactNode,
@@ -7,9 +8,8 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 import {
-  CreateProductMutation,
-  ProductSizeColorVariant,
   useCreateProductMutation,
+  useCreateProductVariantMutation,
 } from "../graphql/generated";
 import { formatSlug } from "../utils/formatSlug";
 
@@ -18,54 +18,53 @@ interface ProductProviderProps {
 }
 
 export type CategoryVariant = {
-  category: string;
-  variant: string;
+  color: string;
+  size: string;
 };
 
-type ProductCategoryVariant = {
-  categories: {
-    id: string;
-    name: string;
-  };
-  variant: {
-    id: string;
-    name: string;
-  };
+type Variant = {
+  id: string | undefined;
+  name: string | undefined;
 };
 
-export type CreateProductProps = {
+export type ProductVariant = {
+  color: Variant;
+  size: Variant;
+};
+
+export type ProductProps = {
   name: string;
   slug: string;
   description: string;
   price: number;
   quantity: number;
   categories: string;
-  variants: string;
+  color: string;
+  size: string;
 };
 
-type ProductContextData = {
-  product: CreateProductProps;
-  categoryVariant: ProductCategoryVariant;
+interface ProductContextData {
+  product: ProductProps;
+  productVariant: ProductVariant;
   loading: boolean;
-  addProduct: (product: CreateProductProps) => Promise<CreateProductProps>;
-  addProductCategoryVariant: (values: CategoryVariant) => Promise<void>;
-};
+  addProduct: (product: ProductProps) => Promise<ProductProps>;
+  addProductVariant: (values: CategoryVariant) => Promise<void>;
+  populateProduct: (product: ProductProps) => Promise<void>;
+}
 
 const ProductContext = createContext({} as ProductContextData);
 
 export const ProductProvider = ({ children }: ProductProviderProps) => {
-  const [product, setProduct] = useState<CreateProductProps>(
-    {} as CreateProductProps
+  const [product, setProduct] = useState<ProductProps>({} as ProductProps);
+  const [productVariant, setProductVariant] = useState<ProductVariant>(
+    {} as ProductVariant
   );
-  const [categoryVariant, setCategoryVariant] =
-    useState<ProductCategoryVariant>({} as ProductCategoryVariant);
-
   const [loading, setLoading] = useState(false);
 
   const [createProduct, { loading: load }] = useCreateProductMutation();
 
   const createNewProduct = useCallback(
-    async (data: CreateProductProps) => {
+    async (data: ProductProps) => {
       try {
         setLoading(load);
         const response = await createProduct({
@@ -88,11 +87,11 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         });
       }
     },
-    [createProduct, load]
+    [createProduct, load, loading]
   );
 
   const addProduct = useCallback(
-    async (productData: CreateProductProps): Promise<CreateProductProps> => {
+    async (productData: ProductProps): Promise<ProductProps> => {
       try {
         const formattedSlug = formatSlug(String(productData.name));
 
@@ -106,7 +105,8 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
           price: formattedPrice,
           quantity: formattedQtd,
           categories: productData.categories,
-          variants: productData.variants,
+          size: productData.size,
+          color: productData.color,
         };
 
         setProduct(newProduct);
@@ -122,26 +122,42 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
     [createNewProduct]
   );
 
-  const addProductCategoryVariant = useCallback(
+  const [createProductVariant, { loading: loadVariant }] =
+    useCreateProductVariantMutation();
+
+  const addProductVariant = useCallback(
     async (values: CategoryVariant): Promise<void> => {
-      const { category, variant } = values;
+      const response = await createProductVariant({
+        variables: values,
+      });
 
-      const categories = category.split(",");
-      const variants = variant.split(",");
-
-      const newProductCategoryVariant = {
-        categories: {
-          id: categories[0],
-          name: categories[1],
+      const productVariant = {
+        color: {
+          id: response.data?.createProductColorVariant?.id,
+          name: response.data?.createProductColorVariant?.name,
         },
-        variant: {
-          id: variants[0],
-          name: variants[1],
+        size: {
+          id: response.data?.createProductSizeVariant?.id,
+          name: response.data?.createProductSizeVariant?.name,
         },
       };
-      setCategoryVariant(newProductCategoryVariant);
+
+      setProductVariant(productVariant);
+      setLoading(loadVariant);
     },
-    []
+    [createProductVariant, loadVariant]
+  );
+
+  const populateProduct = useCallback(
+    async (productData: ProductProps) => {
+      setLoading(true);
+
+      const newProduct = Object.assign(product, productData);
+      setProduct(newProduct);
+
+      setLoading(false);
+    },
+    [product]
   );
 
   return (
@@ -149,9 +165,10 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
       value={{
         product,
         addProduct,
-        addProductCategoryVariant,
-        categoryVariant,
+        addProductVariant,
+        productVariant,
         loading,
+        populateProduct,
       }}
     >
       {children}

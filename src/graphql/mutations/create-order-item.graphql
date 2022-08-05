@@ -1,0 +1,17 @@
+mutation CreateOrderItem(
+  $orderId: ID!
+  $productId: ID!
+  $quantity: Int!
+  $itemTotal: Float!
+) {
+  createOrderItem(
+    data: {
+      quantity: $quantity
+      total: $itemTotal
+      order: { connect: { id: $orderId } }
+      product: { connect: { id: $productId } }
+    }
+  ) {
+    id
+  }
+}

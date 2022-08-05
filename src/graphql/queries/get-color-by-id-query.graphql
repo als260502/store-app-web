@@ -1,0 +1,6 @@
+query GetColorById($id: ID!) {
+  productColorVariant(where: { id: $id }) {
+    id
+    name
+  }
+}

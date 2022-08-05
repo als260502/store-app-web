@@ -1,0 +1,9 @@
+query GetProductByName($name: String!) {
+  products(where: { name: $name }) {
+    id
+    name
+    price
+    slug
+    quantity
+  }
+}

@@ -1,0 +1,6 @@
+query GetSizeById($id: ID!) {
+  productSizeVariant(where: { id: $id }) {
+    id
+    name
+  }
+}

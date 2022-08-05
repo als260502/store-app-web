@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import * as yup from "yup";
@@ -11,12 +10,12 @@ import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import {
   useGetCategoriesQuery,
-  useGetProductVariantsQuery,
+  useGetColorVariantQuery,
+  useGetSizeVariantQuery,
 } from "../../graphql/generated";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useProduct } from "../../context/ProductContext";
 import { useRouter } from "next/router";
-import { LoadingSpinner } from "../../components/LoadingSpinner";
 import { CircleNotch } from "phosphor-react";
 
 type Props = {
@@ -26,19 +25,27 @@ type Props = {
 
 type AddFormData = {
   category: string;
-  variant: string;
+  color: string;
+  size: string;
 };
 
 const createProductFormSchema = yup.object().shape({
-  category: yup.string().required("selecione uma categoria"),
-  variant: yup.string().required("selecione uma variante"),
+  category: yup
+    .string()
+    .not(["Selecione"], "Selecione uma categoria")
+    .required("selecione uma categoria"),
+  color: yup
+    .string()
+    .not(["Selecione"], "Selecione um tamanho")
+    .required("selecione uma cor"),
+  size: yup
+    .string()
+    .not(["Selecione"], "Selecione uma cor")
+    .required("selecione um tamanho"),
 });
 
 const Add = () => {
-  const { addProductCategoryVariant } = useProduct();
-  const [variant, setVariant] = useState<Props[]>();
-  const [category, setCategory] = useState<Props[]>();
-  const [loading, setLoading] = useState(false);
+  const { product, populateProduct, loading } = useProduct();
 
   const {
     register,
@@ -50,30 +57,26 @@ const Add = () => {
 
   const navigation = useRouter();
 
-  const { data: variantData } = useGetProductVariantsQuery();
+  const { data: colorData } = useGetColorVariantQuery();
+  const { data: sizeData } = useGetSizeVariantQuery();
   const { data: categoryData } = useGetCategoriesQuery();
 
-  useEffect(() => {
-    if (variantData?.productSizeColorVariants) {
-      setVariant(variantData.productSizeColorVariants);
-    }
-
-    if (categoryData?.categories) {
-      setCategory(categoryData.categories);
-    }
-  }, [categoryData?.categories, variantData?.productSizeColorVariants]);
-
   const handleAddProduct: SubmitHandler<AddFormData> = async values => {
-    setLoading(true);
-    await addProductCategoryVariant(values);
+    const newProduct = {
+      ...product,
+      categories: values.category,
+      color: values.color,
+      size: values.size,
+    };
 
-    setLoading(true);
+    await populateProduct(newProduct);
+
     navigation.push("/products/create");
   };
 
   return (
     <>
-      {!variantData || !categoryData ? (
+      {!colorData || !sizeData ? (
         <div className="flex w-[100vw] h-[100vh] text-gray-400 bg-gray-800 items-center justify-center">
           <CircleNotch size={24} className="animate-spin" />
         </div>
@@ -102,16 +105,25 @@ const Add = () => {
                       error={errors.category}
                       label="Categoria"
                       name="category"
-                      options={category}
+                      options={categoryData?.categories}
                       className="input"
                     />
 
                     <Select
-                      {...register("variant")}
-                      error={errors.variant}
-                      label="Variante - Cor/Tamanho"
-                      name="variant"
-                      options={variant}
+                      {...register("size")}
+                      error={errors.size}
+                      label="Tamanho"
+                      name="size"
+                      options={sizeData?.productSizeVariants}
+                      className="input"
+                    />
+
+                    <Select
+                      {...register("color")}
+                      error={errors.color}
+                      label="Cor"
+                      name="color"
+                      options={colorData.productColorVariants}
                       className="input"
                     />
 

@@ -1,0 +1,19 @@
+query GetProducts {
+  products {
+    id
+    name
+    description
+    price
+    quantity
+    slug
+    size {
+      name
+    }
+    color {
+      name
+    }
+    categories {
+      name
+    }
+  }
+}

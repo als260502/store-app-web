@@ -85,7 +85,7 @@ export const Search = () => {
             </div>
           </div>
           <div className="relative">
-            <span className="rounded-full w-3 absolute top-0 right-1 text-center text-[8px] bg-blue-700 text-gray-50">
+            <span className="rounded-full w-3 block absolute top-0 right-1 z-10 text-center text-[8px] bg-blue-700 text-gray-50">
               3
             </span>
             <Bell size="24" />

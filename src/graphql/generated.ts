@@ -3890,8 +3890,11 @@ export type MutationPublishManyCurrenciesConnectionArgs = {
 
 
 export type MutationPublishManyOrderItemsArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   to?: Array<Stage>;
   where?: InputMaybe<OrderItemManyWhereInput>;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -3901,15 +3904,21 @@ export type MutationPublishManyOrderItemsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   from?: InputMaybe<Stage>;
   last?: InputMaybe<Scalars['Int']>;
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
   to?: Array<Stage>;
   where?: InputMaybe<OrderItemManyWhereInput>;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
 export type MutationPublishManyOrdersArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   to?: Array<Stage>;
   where?: InputMaybe<OrderManyWhereInput>;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -3919,9 +3928,12 @@ export type MutationPublishManyOrdersConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   from?: InputMaybe<Stage>;
   last?: InputMaybe<Scalars['Int']>;
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   skip?: InputMaybe<Scalars['Int']>;
   to?: Array<Stage>;
   where?: InputMaybe<OrderManyWhereInput>;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -4028,14 +4040,20 @@ export type MutationPublishManyStoreUsersConnectionArgs = {
 
 
 export type MutationPublishOrderArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   to?: Array<Stage>;
   where: OrderWhereUniqueInput;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
 export type MutationPublishOrderItemArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   to?: Array<Stage>;
   where: OrderItemWhereUniqueInput;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -4125,18 +4143,24 @@ export type MutationSchedulePublishCurrencyArgs = {
 
 
 export type MutationSchedulePublishOrderArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   releaseAt?: InputMaybe<Scalars['DateTime']>;
   releaseId?: InputMaybe<Scalars['String']>;
   to?: Array<Stage>;
   where: OrderWhereUniqueInput;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
 export type MutationSchedulePublishOrderItemArgs = {
+  locales?: InputMaybe<Array<Locale>>;
+  publishBase?: InputMaybe<Scalars['Boolean']>;
   releaseAt?: InputMaybe<Scalars['DateTime']>;
   releaseId?: InputMaybe<Scalars['String']>;
   to?: Array<Stage>;
   where: OrderItemWhereUniqueInput;
+  withDefaultLocale?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -4234,16 +4258,20 @@ export type MutationScheduleUnpublishCurrencyArgs = {
 
 export type MutationScheduleUnpublishOrderArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
   releaseAt?: InputMaybe<Scalars['DateTime']>;
   releaseId?: InputMaybe<Scalars['String']>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where: OrderWhereUniqueInput;
 };
 
 
 export type MutationScheduleUnpublishOrderItemArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
   releaseAt?: InputMaybe<Scalars['DateTime']>;
   releaseId?: InputMaybe<Scalars['String']>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where: OrderItemWhereUniqueInput;
 };
 
@@ -4432,6 +4460,8 @@ export type MutationUnpublishManyCurrenciesConnectionArgs = {
 
 export type MutationUnpublishManyOrderItemsArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<OrderItemManyWhereInput>;
 };
 
@@ -4442,14 +4472,18 @@ export type MutationUnpublishManyOrderItemsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   from?: Array<Stage>;
   last?: InputMaybe<Scalars['Int']>;
+  locales?: InputMaybe<Array<Locale>>;
   skip?: InputMaybe<Scalars['Int']>;
   stage?: InputMaybe<Stage>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<OrderItemManyWhereInput>;
 };
 
 
 export type MutationUnpublishManyOrdersArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<OrderManyWhereInput>;
 };
 
@@ -4460,8 +4494,10 @@ export type MutationUnpublishManyOrdersConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   from?: Array<Stage>;
   last?: InputMaybe<Scalars['Int']>;
+  locales?: InputMaybe<Array<Locale>>;
   skip?: InputMaybe<Scalars['Int']>;
   stage?: InputMaybe<Stage>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<OrderManyWhereInput>;
 };
 
@@ -4566,12 +4602,16 @@ export type MutationUnpublishManyStoreUsersConnectionArgs = {
 
 export type MutationUnpublishOrderArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where: OrderWhereUniqueInput;
 };
 
 
 export type MutationUnpublishOrderItemArgs = {
   from?: Array<Stage>;
+  locales?: InputMaybe<Array<Locale>>;
+  unpublishBase?: InputMaybe<Scalars['Boolean']>;
   where: OrderItemWhereUniqueInput;
 };
 
@@ -4979,11 +5019,14 @@ export type Order = Node & {
   createdBy?: Maybe<User>;
   /** Get the document in other stages */
   documentInStages: Array<Order>;
-  email: Scalars['String'];
   /** List of Order versions */
   history: Array<Version>;
   /** The unique identifier */
   id: Scalars['ID'];
+  /** System Locale field */
+  locale: Locale;
+  /** Get the other localizations for this document */
+  localizations: Array<Order>;
   orderItems: Array<OrderItem>;
   /** The time the document was published. Null on documents in draft stage. */
   publishedAt?: Maybe<Scalars['DateTime']>;
@@ -4994,11 +5037,16 @@ export type Order = Node & {
   stage: Stage;
   storeUser?: Maybe<StoreUser>;
   stripeCheckoutId: Scalars['String'];
-  total: Scalars['Int'];
+  total: Scalars['Float'];
   /** The time the document was updated */
   updatedAt: Scalars['DateTime'];
   /** User that last updated this document */
   updatedBy?: Maybe<User>;
+};
+
+
+export type OrderCreatedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5021,6 +5069,12 @@ export type OrderHistoryArgs = {
 };
 
 
+export type OrderLocalizationsArgs = {
+  includeCurrent?: Scalars['Boolean'];
+  locales?: Array<Locale>;
+};
+
+
 export type OrderOrderItemsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -5030,6 +5084,11 @@ export type OrderOrderItemsArgs = {
   orderBy?: InputMaybe<OrderItemOrderByInput>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<OrderItemWhereInput>;
+};
+
+
+export type OrderPublishedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5051,6 +5110,11 @@ export type OrderScheduledInArgs = {
 
 export type OrderStoreUserArgs = {
   locales?: InputMaybe<Array<Locale>>;
+};
+
+
+export type OrderUpdatedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5077,12 +5141,31 @@ export type OrderConnection = {
 
 export type OrderCreateInput = {
   createdAt?: InputMaybe<Scalars['DateTime']>;
-  email: Scalars['String'];
+  /** Inline mutations for managing document localizations excluding the default locale */
+  localizations?: InputMaybe<OrderCreateLocalizationsInput>;
   orderItems?: InputMaybe<OrderItemCreateManyInlineInput>;
   storeUser?: InputMaybe<StoreUserCreateOneInlineInput>;
   stripeCheckoutId: Scalars['String'];
-  total: Scalars['Int'];
+  /** total input for default locale (pt_BR) */
+  total: Scalars['Float'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type OrderCreateLocalizationDataInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  total: Scalars['Float'];
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type OrderCreateLocalizationInput = {
+  /** Localization input */
+  data: OrderCreateLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderCreateLocalizationsInput = {
+  /** Create localizations for the newly-created document */
+  create?: InputMaybe<Array<OrderCreateLocalizationInput>>;
 };
 
 export type OrderCreateManyInlineInput = {
@@ -5120,6 +5203,10 @@ export type OrderItem = Node & {
   history: Array<Version>;
   /** The unique identifier */
   id: Scalars['ID'];
+  /** System Locale field */
+  locale: Locale;
+  /** Get the other localizations for this document */
+  localizations: Array<OrderItem>;
   order?: Maybe<Order>;
   product?: Maybe<Product>;
   /** The time the document was published. Null on documents in draft stage. */
@@ -5130,11 +5217,16 @@ export type OrderItem = Node & {
   scheduledIn: Array<ScheduledOperation>;
   /** System stage field */
   stage: Stage;
-  total: Scalars['Int'];
+  total: Scalars['Float'];
   /** The time the document was updated */
   updatedAt: Scalars['DateTime'];
   /** User that last updated this document */
   updatedBy?: Maybe<User>;
+};
+
+
+export type OrderItemCreatedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5157,6 +5249,12 @@ export type OrderItemHistoryArgs = {
 };
 
 
+export type OrderItemLocalizationsArgs = {
+  includeCurrent?: Scalars['Boolean'];
+  locales?: Array<Locale>;
+};
+
+
 export type OrderItemOrderArgs = {
   locales?: InputMaybe<Array<Locale>>;
 };
@@ -5164,6 +5262,11 @@ export type OrderItemOrderArgs = {
 
 export type OrderItemProductArgs = {
   locales?: InputMaybe<Array<Locale>>;
+};
+
+
+export type OrderItemPublishedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5180,6 +5283,11 @@ export type OrderItemScheduledInArgs = {
   locales?: InputMaybe<Array<Locale>>;
   skip?: InputMaybe<Scalars['Int']>;
   where?: InputMaybe<ScheduledOperationWhereInput>;
+};
+
+
+export type OrderItemUpdatedAtArgs = {
+  variation?: SystemDateTimeFieldVariation;
 };
 
 
@@ -5206,11 +5314,31 @@ export type OrderItemConnection = {
 
 export type OrderItemCreateInput = {
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  /** Inline mutations for managing document localizations excluding the default locale */
+  localizations?: InputMaybe<OrderItemCreateLocalizationsInput>;
   order?: InputMaybe<OrderCreateOneInlineInput>;
   product?: InputMaybe<ProductCreateOneInlineInput>;
   quantity: Scalars['Int'];
-  total: Scalars['Int'];
+  /** total input for default locale (pt_BR) */
+  total: Scalars['Float'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type OrderItemCreateLocalizationDataInput = {
+  createdAt?: InputMaybe<Scalars['DateTime']>;
+  total: Scalars['Float'];
+  updatedAt?: InputMaybe<Scalars['DateTime']>;
+};
+
+export type OrderItemCreateLocalizationInput = {
+  /** Localization input */
+  data: OrderItemCreateLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderItemCreateLocalizationsInput = {
+  /** Create localizations for the newly-created document */
+  create?: InputMaybe<Array<OrderItemCreateLocalizationInput>>;
 };
 
 export type OrderItemCreateManyInlineInput = {
@@ -5317,21 +5445,6 @@ export type OrderItemManyWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
-  total?: InputMaybe<Scalars['Int']>;
-  /** All values greater than the given value. */
-  total_gt?: InputMaybe<Scalars['Int']>;
-  /** All values greater than or equal the given value. */
-  total_gte?: InputMaybe<Scalars['Int']>;
-  /** All values that are contained in given list. */
-  total_in?: InputMaybe<Array<Scalars['Int']>>;
-  /** All values less than the given value. */
-  total_lt?: InputMaybe<Scalars['Int']>;
-  /** All values less than or equal the given value. */
-  total_lte?: InputMaybe<Scalars['Int']>;
-  /** All values that are not equal to given value. */
-  total_not?: InputMaybe<Scalars['Int']>;
-  /** All values that are not contained in given list. */
-  total_not_in?: InputMaybe<Array<Scalars['Int']>>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -5366,10 +5479,32 @@ export enum OrderItemOrderByInput {
 }
 
 export type OrderItemUpdateInput = {
+  /** Manage document localizations */
+  localizations?: InputMaybe<OrderItemUpdateLocalizationsInput>;
   order?: InputMaybe<OrderUpdateOneInlineInput>;
   product?: InputMaybe<ProductUpdateOneInlineInput>;
   quantity?: InputMaybe<Scalars['Int']>;
-  total?: InputMaybe<Scalars['Int']>;
+  /** total input for default locale (pt_BR) */
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderItemUpdateLocalizationDataInput = {
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderItemUpdateLocalizationInput = {
+  data: OrderItemUpdateLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderItemUpdateLocalizationsInput = {
+  /** Localizations to create */
+  create?: InputMaybe<Array<OrderItemCreateLocalizationInput>>;
+  /** Localizations to delete */
+  delete?: InputMaybe<Array<Locale>>;
+  /** Localizations to update */
+  update?: InputMaybe<Array<OrderItemUpdateLocalizationInput>>;
+  upsert?: InputMaybe<Array<OrderItemUpsertLocalizationInput>>;
 };
 
 export type OrderItemUpdateManyInlineInput = {
@@ -5390,8 +5525,25 @@ export type OrderItemUpdateManyInlineInput = {
 };
 
 export type OrderItemUpdateManyInput = {
+  /** Optional updates to localizations */
+  localizations?: InputMaybe<OrderItemUpdateManyLocalizationsInput>;
   quantity?: InputMaybe<Scalars['Int']>;
-  total?: InputMaybe<Scalars['Int']>;
+  /** total input for default locale (pt_BR) */
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderItemUpdateManyLocalizationDataInput = {
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderItemUpdateManyLocalizationInput = {
+  data: OrderItemUpdateManyLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderItemUpdateManyLocalizationsInput = {
+  /** Localizations to update */
+  update?: InputMaybe<Array<OrderItemUpdateManyLocalizationInput>>;
 };
 
 export type OrderItemUpdateManyWithNestedWhereInput = {
@@ -5428,6 +5580,12 @@ export type OrderItemUpsertInput = {
   create: OrderItemCreateInput;
   /** Update document if it exists */
   update: OrderItemUpdateInput;
+};
+
+export type OrderItemUpsertLocalizationInput = {
+  create: OrderItemCreateLocalizationDataInput;
+  locale: Locale;
+  update: OrderItemUpdateLocalizationDataInput;
 };
 
 export type OrderItemUpsertWithNestedWhereUniqueInput = {
@@ -5518,21 +5676,21 @@ export type OrderItemWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
-  total?: InputMaybe<Scalars['Int']>;
+  total?: InputMaybe<Scalars['Float']>;
   /** All values greater than the given value. */
-  total_gt?: InputMaybe<Scalars['Int']>;
+  total_gt?: InputMaybe<Scalars['Float']>;
   /** All values greater than or equal the given value. */
-  total_gte?: InputMaybe<Scalars['Int']>;
+  total_gte?: InputMaybe<Scalars['Float']>;
   /** All values that are contained in given list. */
-  total_in?: InputMaybe<Array<Scalars['Int']>>;
+  total_in?: InputMaybe<Array<Scalars['Float']>>;
   /** All values less than the given value. */
-  total_lt?: InputMaybe<Scalars['Int']>;
+  total_lt?: InputMaybe<Scalars['Float']>;
   /** All values less than or equal the given value. */
-  total_lte?: InputMaybe<Scalars['Int']>;
+  total_lte?: InputMaybe<Scalars['Float']>;
   /** All values that are not equal to given value. */
-  total_not?: InputMaybe<Scalars['Int']>;
+  total_not?: InputMaybe<Scalars['Float']>;
   /** All values that are not contained in given list. */
-  total_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  total_not_in?: InputMaybe<Array<Scalars['Float']>>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -5582,25 +5740,6 @@ export type OrderManyWhereInput = {
   /** All values that are not contained in given list. */
   createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
   createdBy?: InputMaybe<UserWhereInput>;
-  email?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  email_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  email_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  email_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  email_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  email_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  email_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  email_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  email_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  email_starts_with?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
   /** All values containing the given string. */
   id_contains?: InputMaybe<Scalars['ID']>;
@@ -5662,21 +5801,6 @@ export type OrderManyWhereInput = {
   stripeCheckoutId_not_starts_with?: InputMaybe<Scalars['String']>;
   /** All values starting with the given string. */
   stripeCheckoutId_starts_with?: InputMaybe<Scalars['String']>;
-  total?: InputMaybe<Scalars['Int']>;
-  /** All values greater than the given value. */
-  total_gt?: InputMaybe<Scalars['Int']>;
-  /** All values greater than or equal the given value. */
-  total_gte?: InputMaybe<Scalars['Int']>;
-  /** All values that are contained in given list. */
-  total_in?: InputMaybe<Array<Scalars['Int']>>;
-  /** All values less than the given value. */
-  total_lt?: InputMaybe<Scalars['Int']>;
-  /** All values less than or equal the given value. */
-  total_lte?: InputMaybe<Scalars['Int']>;
-  /** All values that are not equal to given value. */
-  total_not?: InputMaybe<Scalars['Int']>;
-  /** All values that are not contained in given list. */
-  total_not_in?: InputMaybe<Array<Scalars['Int']>>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -5698,8 +5822,6 @@ export type OrderManyWhereInput = {
 export enum OrderOrderByInput {
   CreatedAtAsc = 'createdAt_ASC',
   CreatedAtDesc = 'createdAt_DESC',
-  EmailAsc = 'email_ASC',
-  EmailDesc = 'email_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
@@ -5713,11 +5835,32 @@ export enum OrderOrderByInput {
 }
 
 export type OrderUpdateInput = {
-  email?: InputMaybe<Scalars['String']>;
+  /** Manage document localizations */
+  localizations?: InputMaybe<OrderUpdateLocalizationsInput>;
   orderItems?: InputMaybe<OrderItemUpdateManyInlineInput>;
   storeUser?: InputMaybe<StoreUserUpdateOneInlineInput>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
-  total?: InputMaybe<Scalars['Int']>;
+  /** total input for default locale (pt_BR) */
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderUpdateLocalizationDataInput = {
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderUpdateLocalizationInput = {
+  data: OrderUpdateLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderUpdateLocalizationsInput = {
+  /** Localizations to create */
+  create?: InputMaybe<Array<OrderCreateLocalizationInput>>;
+  /** Localizations to delete */
+  delete?: InputMaybe<Array<Locale>>;
+  /** Localizations to update */
+  update?: InputMaybe<Array<OrderUpdateLocalizationInput>>;
+  upsert?: InputMaybe<Array<OrderUpsertLocalizationInput>>;
 };
 
 export type OrderUpdateManyInlineInput = {
@@ -5738,8 +5881,25 @@ export type OrderUpdateManyInlineInput = {
 };
 
 export type OrderUpdateManyInput = {
+  /** Optional updates to localizations */
+  localizations?: InputMaybe<OrderUpdateManyLocalizationsInput>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
-  total?: InputMaybe<Scalars['Int']>;
+  /** total input for default locale (pt_BR) */
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderUpdateManyLocalizationDataInput = {
+  total?: InputMaybe<Scalars['Float']>;
+};
+
+export type OrderUpdateManyLocalizationInput = {
+  data: OrderUpdateManyLocalizationDataInput;
+  locale: Locale;
+};
+
+export type OrderUpdateManyLocalizationsInput = {
+  /** Localizations to update */
+  update?: InputMaybe<Array<OrderUpdateManyLocalizationInput>>;
 };
 
 export type OrderUpdateManyWithNestedWhereInput = {
@@ -5778,6 +5938,12 @@ export type OrderUpsertInput = {
   update: OrderUpdateInput;
 };
 
+export type OrderUpsertLocalizationInput = {
+  create: OrderCreateLocalizationDataInput;
+  locale: Locale;
+  update: OrderUpdateLocalizationDataInput;
+};
+
 export type OrderUpsertWithNestedWhereUniqueInput = {
   /** Upsert data */
   data: OrderUpsertInput;
@@ -5811,25 +5977,6 @@ export type OrderWhereInput = {
   /** All values that are not contained in given list. */
   createdAt_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
   createdBy?: InputMaybe<UserWhereInput>;
-  email?: InputMaybe<Scalars['String']>;
-  /** All values containing the given string. */
-  email_contains?: InputMaybe<Scalars['String']>;
-  /** All values ending with the given string. */
-  email_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are contained in given list. */
-  email_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values that are not equal to given value. */
-  email_not?: InputMaybe<Scalars['String']>;
-  /** All values not containing the given string. */
-  email_not_contains?: InputMaybe<Scalars['String']>;
-  /** All values not ending with the given string */
-  email_not_ends_with?: InputMaybe<Scalars['String']>;
-  /** All values that are not contained in given list. */
-  email_not_in?: InputMaybe<Array<Scalars['String']>>;
-  /** All values not starting with the given string. */
-  email_not_starts_with?: InputMaybe<Scalars['String']>;
-  /** All values starting with the given string. */
-  email_starts_with?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
   /** All values containing the given string. */
   id_contains?: InputMaybe<Scalars['ID']>;
@@ -5891,21 +6038,21 @@ export type OrderWhereInput = {
   stripeCheckoutId_not_starts_with?: InputMaybe<Scalars['String']>;
   /** All values starting with the given string. */
   stripeCheckoutId_starts_with?: InputMaybe<Scalars['String']>;
-  total?: InputMaybe<Scalars['Int']>;
+  total?: InputMaybe<Scalars['Float']>;
   /** All values greater than the given value. */
-  total_gt?: InputMaybe<Scalars['Int']>;
+  total_gt?: InputMaybe<Scalars['Float']>;
   /** All values greater than or equal the given value. */
-  total_gte?: InputMaybe<Scalars['Int']>;
+  total_gte?: InputMaybe<Scalars['Float']>;
   /** All values that are contained in given list. */
-  total_in?: InputMaybe<Array<Scalars['Int']>>;
+  total_in?: InputMaybe<Array<Scalars['Float']>>;
   /** All values less than the given value. */
-  total_lt?: InputMaybe<Scalars['Int']>;
+  total_lt?: InputMaybe<Scalars['Float']>;
   /** All values less than or equal the given value. */
-  total_lte?: InputMaybe<Scalars['Int']>;
+  total_lte?: InputMaybe<Scalars['Float']>;
   /** All values that are not equal to given value. */
-  total_not?: InputMaybe<Scalars['Int']>;
+  total_not?: InputMaybe<Scalars['Float']>;
   /** All values that are not contained in given list. */
-  total_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  total_not_in?: InputMaybe<Array<Scalars['Float']>>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -5926,7 +6073,6 @@ export type OrderWhereInput = {
 
 /** References Order record uniquely */
 export type OrderWhereUniqueInput = {
-  email?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['ID']>;
 };
 
@@ -6130,12 +6276,6 @@ export type ProductUpdatedAtArgs = {
 export type ProductUpdatedByArgs = {
   locales?: InputMaybe<Array<Locale>>;
 };
-
-export enum ProductColor {
-  Black = 'BLACK',
-  Pink = 'PINK',
-  Purple = 'PURPLE'
-}
 
 export type ProductColorVariant = Node & {
   __typename?: 'ProductColorVariant';
@@ -6780,14 +6920,6 @@ export enum ProductOrderByInput {
   SlugDesc = 'slug_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
   UpdatedAtDesc = 'updatedAt_DESC'
-}
-
-export enum ProductSize {
-  Large = 'LARGE',
-  Medium = 'MEDIUM',
-  Small = 'SMALL',
-  Xl = 'XL',
-  Xs = 'XS'
 }
 
 export type ProductSizeVariant = Node & {
@@ -11014,6 +11146,27 @@ export type CreateCategoryMutationVariables = Exact<{
 
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory?: { __typename?: 'Category', slug: string, id: string, name: string } | null };
 
+export type CreateOrderItemMutationVariables = Exact<{
+  orderId: Scalars['ID'];
+  productId: Scalars['ID'];
+  quantity: Scalars['Int'];
+  itemTotal: Scalars['Float'];
+}>;
+
+
+export type CreateOrderItemMutation = { __typename?: 'Mutation', createOrderItem?: { __typename?: 'OrderItem', id: string } | null };
+
+export type CreateOrderMutationVariables = Exact<{
+  total: Scalars['Float'];
+  userId?: InputMaybe<Scalars['ID']>;
+  itemQuantity: Scalars['Int'];
+  totalItem: Scalars['Float'];
+  productId: Scalars['ID'];
+}>;
+
+
+export type CreateOrderMutation = { __typename?: 'Mutation', createOrder?: { __typename?: 'Order', id: string, orderItems: Array<{ __typename?: 'OrderItem', id: string }> } | null };
+
 export type CreateProductVariantMutationVariables = Exact<{
   color: Scalars['String'];
   size: Scalars['String'];
@@ -11053,15 +11206,43 @@ export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string }> };
 
+export type GetCategoryByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetCategoryByIdQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string } | null };
+
+export type GetColorByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetColorByIdQuery = { __typename?: 'Query', productColorVariant?: { __typename?: 'ProductColorVariant', id: string, name: string } | null };
+
 export type GetColorVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetColorVariantQuery = { __typename?: 'Query', productColorVariants: Array<{ __typename?: 'ProductColorVariant', id: string, name: string }> };
 
-export type GetProductVariantsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetProductByNameQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
 
 
-export type GetProductVariantsQuery = { __typename?: 'Query', productColorVariants: Array<{ __typename?: 'ProductColorVariant', id: string, name: string }>, productSizeVariants: Array<{ __typename?: 'ProductSizeVariant', id: string, name: string }> };
+export type GetProductByNameQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, name: string, price: number, slug: string, quantity: number }> };
+
+export type GetProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProductsQuery = { __typename?: 'Query', products: Array<{ __typename?: 'Product', id: string, name: string, description: string, price: number, quantity: number, slug: string, size: Array<{ __typename?: 'ProductSizeVariant', name: string }>, color: Array<{ __typename?: 'ProductColorVariant', name: string }>, categories: Array<{ __typename?: 'Category', name: string }> }> };
+
+export type GetSizeByIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetSizeByIdQuery = { __typename?: 'Query', productSizeVariant?: { __typename?: 'ProductSizeVariant', id: string, name: string } | null };
 
 export type GetSizeVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -11111,6 +11292,86 @@ export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
+export const CreateOrderItemDocument = gql`
+    mutation CreateOrderItem($orderId: ID!, $productId: ID!, $quantity: Int!, $itemTotal: Float!) {
+  createOrderItem(
+    data: {quantity: $quantity, total: $itemTotal, order: {connect: {id: $orderId}}, product: {connect: {id: $productId}}}
+  ) {
+    id
+  }
+}
+    `;
+export type CreateOrderItemMutationFn = Apollo.MutationFunction<CreateOrderItemMutation, CreateOrderItemMutationVariables>;
+
+/**
+ * __useCreateOrderItemMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderItemMutation, { data, loading, error }] = useCreateOrderItemMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *      productId: // value for 'productId'
+ *      quantity: // value for 'quantity'
+ *      itemTotal: // value for 'itemTotal'
+ *   },
+ * });
+ */
+export function useCreateOrderItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderItemMutation, CreateOrderItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderItemMutation, CreateOrderItemMutationVariables>(CreateOrderItemDocument, options);
+      }
+export type CreateOrderItemMutationHookResult = ReturnType<typeof useCreateOrderItemMutation>;
+export type CreateOrderItemMutationResult = Apollo.MutationResult<CreateOrderItemMutation>;
+export type CreateOrderItemMutationOptions = Apollo.BaseMutationOptions<CreateOrderItemMutation, CreateOrderItemMutationVariables>;
+export const CreateOrderDocument = gql`
+    mutation CreateOrder($total: Float!, $userId: ID, $itemQuantity: Int!, $totalItem: Float!, $productId: ID!) {
+  createOrder(
+    data: {total: $total, stripeCheckoutId: "FFF", storeUser: {connect: {id: $userId}}, orderItems: {create: {quantity: $itemQuantity, total: $totalItem, product: {connect: {id: $productId}}}}}
+  ) {
+    id
+    orderItems {
+      id
+    }
+  }
+}
+    `;
+export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation, CreateOrderMutationVariables>;
+
+/**
+ * __useCreateOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderMutation, { data, loading, error }] = useCreateOrderMutation({
+ *   variables: {
+ *      total: // value for 'total'
+ *      userId: // value for 'userId'
+ *      itemQuantity: // value for 'itemQuantity'
+ *      totalItem: // value for 'totalItem'
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderMutation, CreateOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderMutation, CreateOrderMutationVariables>(CreateOrderDocument, options);
+      }
+export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
+export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
+export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
 export const CreateProductVariantDocument = gql`
     mutation CreateProductVariant($color: String!, $size: String!) {
   createProductColorVariant(data: {name: $color}) {
@@ -11267,6 +11528,78 @@ export function useGetCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQuery>;
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const GetCategoryByIdDocument = gql`
+    query GetCategoryById($id: ID!) {
+  category(where: {id: $id}) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetCategoryByIdQuery__
+ *
+ * To run a query within a React component, call `useGetCategoryByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoryByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoryByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>(GetCategoryByIdDocument, options);
+      }
+export function useGetCategoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>(GetCategoryByIdDocument, options);
+        }
+export type GetCategoryByIdQueryHookResult = ReturnType<typeof useGetCategoryByIdQuery>;
+export type GetCategoryByIdLazyQueryHookResult = ReturnType<typeof useGetCategoryByIdLazyQuery>;
+export type GetCategoryByIdQueryResult = Apollo.QueryResult<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>;
+export const GetColorByIdDocument = gql`
+    query GetColorById($id: ID!) {
+  productColorVariant(where: {id: $id}) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetColorByIdQuery__
+ *
+ * To run a query within a React component, call `useGetColorByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetColorByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetColorByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetColorByIdQuery(baseOptions: Apollo.QueryHookOptions<GetColorByIdQuery, GetColorByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetColorByIdQuery, GetColorByIdQueryVariables>(GetColorByIdDocument, options);
+      }
+export function useGetColorByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetColorByIdQuery, GetColorByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetColorByIdQuery, GetColorByIdQueryVariables>(GetColorByIdDocument, options);
+        }
+export type GetColorByIdQueryHookResult = ReturnType<typeof useGetColorByIdQuery>;
+export type GetColorByIdLazyQueryHookResult = ReturnType<typeof useGetColorByIdLazyQuery>;
+export type GetColorByIdQueryResult = Apollo.QueryResult<GetColorByIdQuery, GetColorByIdQueryVariables>;
 export const GetColorVariantDocument = gql`
     query GetColorVariant {
   productColorVariants {
@@ -11302,13 +11635,96 @@ export function useGetColorVariantLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetColorVariantQueryHookResult = ReturnType<typeof useGetColorVariantQuery>;
 export type GetColorVariantLazyQueryHookResult = ReturnType<typeof useGetColorVariantLazyQuery>;
 export type GetColorVariantQueryResult = Apollo.QueryResult<GetColorVariantQuery, GetColorVariantQueryVariables>;
-export const GetProductVariantsDocument = gql`
-    query GetProductVariants {
-  productColorVariants {
+export const GetProductByNameDocument = gql`
+    query GetProductByName($name: String!) {
+  products(where: {name: $name}) {
     id
     name
+    price
+    slug
+    quantity
   }
-  productSizeVariants {
+}
+    `;
+
+/**
+ * __useGetProductByNameQuery__
+ *
+ * To run a query within a React component, call `useGetProductByNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductByNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductByNameQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetProductByNameQuery(baseOptions: Apollo.QueryHookOptions<GetProductByNameQuery, GetProductByNameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductByNameQuery, GetProductByNameQueryVariables>(GetProductByNameDocument, options);
+      }
+export function useGetProductByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductByNameQuery, GetProductByNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductByNameQuery, GetProductByNameQueryVariables>(GetProductByNameDocument, options);
+        }
+export type GetProductByNameQueryHookResult = ReturnType<typeof useGetProductByNameQuery>;
+export type GetProductByNameLazyQueryHookResult = ReturnType<typeof useGetProductByNameLazyQuery>;
+export type GetProductByNameQueryResult = Apollo.QueryResult<GetProductByNameQuery, GetProductByNameQueryVariables>;
+export const GetProductsDocument = gql`
+    query GetProducts {
+  products {
+    id
+    name
+    description
+    price
+    quantity
+    slug
+    size {
+      name
+    }
+    color {
+      name
+    }
+    categories {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProductsQuery__
+ *
+ * To run a query within a React component, call `useGetProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
+      }
+export function useGetProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, options);
+        }
+export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
+export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
+export type GetProductsQueryResult = Apollo.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
+export const GetSizeByIdDocument = gql`
+    query GetSizeById($id: ID!) {
+  productSizeVariant(where: {id: $id}) {
     id
     name
   }
@@ -11316,31 +11732,32 @@ export const GetProductVariantsDocument = gql`
     `;
 
 /**
- * __useGetProductVariantsQuery__
+ * __useGetSizeByIdQuery__
  *
- * To run a query within a React component, call `useGetProductVariantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductVariantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetSizeByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSizeByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetProductVariantsQuery({
+ * const { data, loading, error } = useGetSizeByIdQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetProductVariantsQuery(baseOptions?: Apollo.QueryHookOptions<GetProductVariantsQuery, GetProductVariantsQueryVariables>) {
+export function useGetSizeByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSizeByIdQuery, GetSizeByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProductVariantsQuery, GetProductVariantsQueryVariables>(GetProductVariantsDocument, options);
+        return Apollo.useQuery<GetSizeByIdQuery, GetSizeByIdQueryVariables>(GetSizeByIdDocument, options);
       }
-export function useGetProductVariantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductVariantsQuery, GetProductVariantsQueryVariables>) {
+export function useGetSizeByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSizeByIdQuery, GetSizeByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProductVariantsQuery, GetProductVariantsQueryVariables>(GetProductVariantsDocument, options);
+          return Apollo.useLazyQuery<GetSizeByIdQuery, GetSizeByIdQueryVariables>(GetSizeByIdDocument, options);
         }
-export type GetProductVariantsQueryHookResult = ReturnType<typeof useGetProductVariantsQuery>;
-export type GetProductVariantsLazyQueryHookResult = ReturnType<typeof useGetProductVariantsLazyQuery>;
-export type GetProductVariantsQueryResult = Apollo.QueryResult<GetProductVariantsQuery, GetProductVariantsQueryVariables>;
+export type GetSizeByIdQueryHookResult = ReturnType<typeof useGetSizeByIdQuery>;
+export type GetSizeByIdLazyQueryHookResult = ReturnType<typeof useGetSizeByIdLazyQuery>;
+export type GetSizeByIdQueryResult = Apollo.QueryResult<GetSizeByIdQuery, GetSizeByIdQueryVariables>;
 export const GetSizeVariantDocument = gql`
     query GetSizeVariant {
   productSizeVariants {

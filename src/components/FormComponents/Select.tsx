@@ -31,9 +31,9 @@ const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
 
         <div className="flex flex-row z-10 items-center gap-4 text-gray-400">
           <select {...rest} name={name} ref={ref} className="input">
-            <option></option>
+            <option>Selecione</option>
             {options?.map(value => (
-              <option key={value.id} value={`${value.id},${value.name}`}>
+              <option key={value.id} value={`${value.id}`}>
                 {value.name}
               </option>
             ))}
