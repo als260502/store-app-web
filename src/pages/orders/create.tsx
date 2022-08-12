@@ -1,16 +1,19 @@
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { Button } from "../../components/Button";
 import {
+  Category,
   Product,
-  StoreUser,
   useCreateOrderItemMutation,
   useCreateOrderMutation,
-  useGetProductsQuery,
+  useGetProductsGreaterThanZeroQuery,
   useGetStoreUsersQuery,
+  useRemoveOrderItemMutation,
+  useRemoveOrderMutation,
+  useUpdateProductQuantityMutation,
 } from "../../graphql/generated";
 import toast, { Toaster } from "react-hot-toast";
 import {
@@ -25,33 +28,64 @@ type OrderProps = {
   total: number;
 };
 
+type StoreUser = {
+  id: string;
+  name: string;
+  nickname: string;
+  email: string;
+};
+
+type Sugestion = {
+  id: string;
+  categories: Category[];
+  name: string;
+  color: string[];
+  size: string[];
+  price: number;
+  quantity: number;
+};
+
 const Create: NextPage = () => {
-  console.log("renderizei");
+  const [storeUser, setStoreUser] = useState<StoreUser[]>([]);
   const [userText, setUserText] = useState("");
   const [usersSugestions, setUsersSugestions] = useState<
     StoreUser[] | undefined
   >([]);
 
+  const [products, setProducts] = useState<Product[]>([]);
   const [productText, setProductText] = useState("");
-  const [sugestions, setSugestions] = useState<Product[] | undefined>([]);
+  const [sugestions, setSugestions] = useState<Sugestion[] | undefined>([]);
 
   const [order, setOrder] = useState<OrderProps>({} as OrderProps);
   const [orderItems, setOrderItems] = useState<Props[]>([]);
 
   const [total, setTotal] = useState(0);
 
-  const { data: product } = useGetProductsQuery();
+  const { data: productData, refetch: refetchProduct } =
+    useGetProductsGreaterThanZeroQuery();
 
-  const { data: user } = useGetStoreUsersQuery();
+  const { data: userData } = useGetStoreUsersQuery();
+
+  useEffect(() => {
+    setProducts(Object.assign(products, productData?.products));
+
+    setStoreUser(Object.assign(storeUser, userData?.storeUsers));
+  }, [productData?.products, products, storeUser, userData?.storeUsers]);
 
   const [loading, setLoading] = useState(false);
+
+  const resetOrder = useCallback(() => {
+    setProductText("");
+    refetchProduct();
+    setLoading(false);
+  }, [refetchProduct]);
 
   const onUserChangeHandler = useCallback(
     (text: string) => {
       if (text.length > 3) {
         const regex = new RegExp(`${text}`, "gi");
 
-        const userFiltered = user?.storeUsers?.filter(user => {
+        const userFiltered = storeUser?.filter(user => {
           return (
             regex.test(user.name) ||
             regex.test(String(user.nickname)) ||
@@ -65,7 +99,7 @@ const Create: NextPage = () => {
       }
       setUserText(text);
     },
-    [user?.storeUsers]
+    [storeUser]
   );
 
   const onProductChangeHandler = useCallback(
@@ -73,8 +107,10 @@ const Create: NextPage = () => {
       if (text.length > 3) {
         const regex = new RegExp(`${text}`, "gi");
 
-        const userFiltered = product?.products?.filter(product =>
-          regex.test(product.name)
+        const userFiltered = products?.filter(
+          product =>
+            (product.quantity > 0 && regex.test(product.name)) ||
+            (product.quantity > 0 && regex.test(product.slug))
         );
 
         const newProduct = userFiltered?.map(product => {
@@ -98,7 +134,7 @@ const Create: NextPage = () => {
       }
       setProductText(text);
     },
-    [product?.products]
+    [products]
   );
 
   const handleGetUserId = useCallback(
@@ -116,7 +152,7 @@ const Create: NextPage = () => {
 
   const handleGetProductId = useCallback(
     (product: Product) => {
-      setProductText(product.name);
+      setProductText(`${product.name} ${product.color} ${product.size}`);
       const newOrder = {
         product,
       };
@@ -126,8 +162,21 @@ const Create: NextPage = () => {
     [order]
   );
 
+  const handleCloseOrder = useCallback(() => {
+    setOrder({
+      ...order,
+      id: undefined,
+    });
+    setOrderItems([]);
+    setUserText("");
+    setProductText("");
+    setLoading(false);
+  }, [order]);
+
   const [createOrder] = useCreateOrderMutation();
   const [createOrderItem] = useCreateOrderItemMutation();
+  const [updateProduct] = useUpdateProductQuantityMutation();
+
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -141,41 +190,47 @@ const Create: NextPage = () => {
         return;
       }
 
-      if (order.product.quantity - quantity < 0) {
+      if (order?.product?.quantity - quantity < 0) {
         toast.error("Não ha em estoque quantidade de produtos suficientes", {
           duration: 4000,
         });
+        setLoading(false);
         return;
       }
 
       let orderId = "";
 
       const totalOrder = order?.product?.price * quantity;
-
       const newTotal = totalOrder + total;
 
       setTotal(newTotal);
 
-      const totalFormated = new Intl.NumberFormat("pt-BT", {
-        style: "currency",
-        currency: "BRL",
-      }).format(totalOrder);
+      const updatedQuantity = Number(order.product?.quantity) - quantity;
 
-      if (!order.id) {
-        const newOrder = {
-          total: newTotal,
-          userId: order?.user?.id,
-          itemQuantity: quantity,
-          totalItem: newTotal,
-          productId: order?.product.id,
-        };
-        setOrder(Object.assign(order, newOrder));
+      try {
+        if (!order.id) {
+          const newOrder = {
+            total: newTotal,
+            userId: order?.user?.id,
+            itemQuantity: quantity,
+            totalItem: newTotal,
+            productId: order?.product.id,
+            userEmail: String(order.user.email),
+          };
 
-        const response = await createOrder({
-          variables: newOrder,
-        });
+          console.log("adicionar ordem e pedido ", newOrder);
 
-        if (response?.data?.createOrder) {
+          setOrder(Object.assign(order, newOrder));
+
+          //console.log(newOrder);
+
+          const response = await createOrder({
+            variables: newOrder,
+          });
+
+          if (!response?.data?.createOrder) {
+            throw new Error("erro: resposta sem data");
+          }
           const id = response.data.createOrder.id;
 
           setOrder({
@@ -190,55 +245,144 @@ const Create: NextPage = () => {
             name: order.product.name,
             quantity,
             total: newTotal,
+            productId: order.product.id,
           };
-
           setOrderItems([...orderItems, item]);
 
           toast.success("Pedido aberto, item adicionado");
           setLoading(false);
 
-          console.log(orderItems);
+          await updateProduct({
+            variables: {
+              id: newOrder.productId,
+              quantity: updatedQuantity,
+            },
+          });
+
           return;
         } else {
-          toast.error("Erro ao criar pedido");
-          setLoading(false);
+          const newItem = {
+            orderId: String(order.id),
+            productId: order.product.id,
+            quantity: quantity,
+            itemTotal: totalOrder,
+          };
+
+          console.log("adicionar item", newItem);
+
+          const response = await createOrderItem({
+            variables: newItem,
+          });
+
+          const oderItemId = String(response.data?.createOrderItem?.id);
+          const productId = order.product.id;
+
+          const myItem = {
+            id: oderItemId,
+            name: `${order.product.name} ${order.product.color} ${order.product.size}`,
+            quantity,
+            total: totalOrder,
+            productId,
+          };
+
+          await updateProduct({
+            variables: {
+              id: order.product.id,
+              quantity: updatedQuantity,
+            },
+          });
+
+          setOrderItems([...orderItems, myItem]);
         }
+      } catch (error) {
+        toast.error("Erro ao adicionar pedido");
+        console.log("erro adicionar item ou criar criar pedido", error);
+      } finally {
+        setLoading(false);
+        refetchProduct();
+        setProductText("");
       }
+    },
+    [
+      createOrder,
+      createOrderItem,
+      order,
+      orderItems,
+      refetchProduct,
+      total,
+      updateProduct,
+    ]
+  );
+
+  const [removeItem] = useRemoveOrderItemMutation();
+  const [removeOrderAndItems] = useRemoveOrderMutation();
+
+  const hadleRemoveOrderItem = useCallback(
+    async (item: Props) => {
+      setLoading(!loading);
 
       try {
-        const newItem = {
-          orderId: String(order.id),
-          productId: order.product.id,
-          quantity: quantity,
-          itemTotal: totalOrder,
-        };
+        if (orderItems.length === 1) {
+          await removeOrderAndItems({
+            variables: {
+              id: String(order.id),
+            },
+          });
 
-        const response = await createOrderItem({
-          variables: newItem,
-        });
+          await updateProduct({
+            variables: {
+              id: item.productId,
+              quantity: order.product.quantity,
+            },
+          });
 
-        const myItem = {
-          id: String(response.data?.createOrderItem?.id),
-          name: order.product.name,
-          quantity,
-          total: totalOrder,
-        };
+          handleCloseOrder();
+        } else {
+          removeItem({
+            variables: {
+              id: item.id,
+            },
+          });
 
-        // const n = orderItems.push(myItem);
-        // console.log(n);
+          await updateProduct({
+            variables: {
+              id: item.productId,
+              quantity: order.product.quantity,
+            },
+          });
+        }
 
-        setOrderItems([...orderItems, myItem]);
+        const filteredItems = orderItems.filter(
+          orderItem => item.id !== orderItem.id
+        );
+
+        setOrderItems(filteredItems);
+        setProductText("");
+
+        toast.success("Removido Item e ou Pedido com sucesso!");
       } catch (error) {
-        toast.error("Erro ao adicionar item ao pedido");
-        console.log(error);
+        toast.error("Erro ao remover item");
       } finally {
         setLoading(false);
       }
-
-      console.log(orderItems);
     },
-    [createOrder, createOrderItem, order, orderItems, total]
+    [
+      handleCloseOrder,
+      loading,
+      order.id,
+      order.product?.quantity,
+      orderItems,
+      removeItem,
+      removeOrderAndItems,
+      updateProduct,
+    ]
   );
+
+  const setTotalOrder = new Intl.NumberFormat("pt-BT", {
+    style: "currency",
+    currency: "BRL",
+  }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
+
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
@@ -333,13 +477,43 @@ const Create: NextPage = () => {
                   >
                     Adicionar
                   </Button>
-                  {/* <Button className="btn btn-outline btn-md w-24">
-                    Finalizar
-                  </Button> */}
                 </div>
               </form>
               {orderItems.length !== 0 && (
-                <ProductItem itemProps={orderItems} />
+                <>
+                  <div className="py-8 px-2 bg-gray-100 rounded-xl">
+                    <div className="flex flex-row items-center">
+                      <div className="mr-4 w-6"></div>
+                      <div className="grid grid-cols-4 gap-2 text-sm w-full text-gray-600">
+                        <span className="col-span-2 block font-bold">
+                          Produto
+                        </span>
+                        <span className="text-center font-bold">
+                          Quantidade
+                        </span>
+                        <span className="text-right px-4 font-bold">Total</span>
+                      </div>
+                    </div>
+                    {orderItems.map(item => (
+                      <ProductItem
+                        key={item.id}
+                        itemProps={item}
+                        removeItem={() => hadleRemoveOrderItem(item)}
+                      />
+                    ))}
+
+                    <div className="w-full text-blue-400 flex justify-end px-4 mt-4">
+                      <strong>{setTotalOrder}</strong>
+                    </div>
+                  </div>
+                  <Button
+                    className="btn btn-outline btn-md w-24 mt-4"
+                    onClick={() => handleCloseOrder}
+                    disabled={loading}
+                  >
+                    Finalizar
+                  </Button>
+                </>
               )}
             </div>
           </div>

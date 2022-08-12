@@ -4,9 +4,11 @@ mutation CreateOrder(
   $itemQuantity: Int!
   $totalItem: Float!
   $productId: ID!
+  $userEmail: String
 ) {
   createOrder(
     data: {
+      userEmail: $userEmail
       total: $total
       stripeCheckoutId: "FFF"
       storeUser: { connect: { id: $userId } }

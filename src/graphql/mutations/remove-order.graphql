@@ -1,0 +1,12 @@
+mutation RemoveOrder($id: ID!) {
+  deleteManyOrderItemsConnection(where: { order: { id: $id } }) {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+  deleteOrder(where: { id: $id }) {
+    id
+  }
+}
