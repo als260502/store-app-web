@@ -20,6 +20,7 @@ import {
   ProductItem,
   Props,
 } from "../../components/OrderComponents/ProductItem";
+import { Search } from "../../components/Search";
 
 type OrderProps = {
   id?: string;
@@ -35,7 +36,7 @@ type StoreUser = {
   email: string;
 };
 
-type Sugestion = {
+type Suggestion = {
   id: string;
   categories: Category[];
   name: string;
@@ -48,13 +49,13 @@ type Sugestion = {
 const Create: NextPage = () => {
   const [storeUser, setStoreUser] = useState<StoreUser[]>([]);
   const [userText, setUserText] = useState("");
-  const [usersSugestions, setUsersSugestions] = useState<
+  const [usersSuggestions, setUsersSuggestions] = useState<
     StoreUser[] | undefined
   >([]);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productText, setProductText] = useState("");
-  const [sugestions, setSugestions] = useState<Sugestion[] | undefined>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[] | undefined>([]);
 
   const [order, setOrder] = useState<OrderProps>({} as OrderProps);
   const [orderItems, setOrderItems] = useState<Props[]>([]);
@@ -93,9 +94,9 @@ const Create: NextPage = () => {
           );
         });
 
-        setUsersSugestions(userFiltered);
+        setUsersSuggestions(userFiltered);
       } else {
-        setUsersSugestions([]);
+        setUsersSuggestions([]);
       }
       setUserText(text);
     },
@@ -128,9 +129,9 @@ const Create: NextPage = () => {
           };
         });
 
-        setSugestions(newProduct);
+        setSuggestions(newProduct);
       } else {
-        setSugestions([]);
+        setSuggestions([]);
       }
       setProductText(text);
     },
@@ -274,11 +275,11 @@ const Create: NextPage = () => {
             variables: newItem,
           });
 
-          const oderItemId = String(response.data?.createOrderItem?.id);
+          const orderItemId = String(response.data?.createOrderItem?.id);
           const productId = order.product.id;
 
           const myItem = {
-            id: oderItemId,
+            id: orderItemId,
             name: `${order.product.name} ${order.product.color} ${order.product.size}`,
             quantity,
             total: totalOrder,
@@ -317,7 +318,7 @@ const Create: NextPage = () => {
   const [removeItem] = useRemoveOrderItemMutation();
   const [removeOrderAndItems] = useRemoveOrderMutation();
 
-  const hadleRemoveOrderItem = useCallback(
+  const handleRemoveOrderItem = useCallback(
     async (item: Props) => {
       setLoading(!loading);
 
@@ -389,8 +390,8 @@ const Create: NextPage = () => {
         <Sidebar />
 
         <main className="h-full w-full w-min[600px]">
-          {/* <Search /> */}
-          <div className="bg-gray-200 min-h-[60vh]">
+          <Search />
+          <div className="bg-gray-200 min-h-[70vh]">
             <div className="p-8">
               <Header title={"Novo Pedido"} loading={loading} />
 
@@ -400,16 +401,16 @@ const Create: NextPage = () => {
               >
                 <div className="relative justify-center">
                   <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md z-20 flex flex-col">
-                    {usersSugestions &&
-                      usersSugestions.map(sugestion => (
+                    {usersSuggestions &&
+                      usersSuggestions.map(suggestion => (
                         <button
                           className="text-left"
-                          key={sugestion.id}
-                          onClick={() => handleGetUserId(sugestion)}
+                          key={suggestion.id}
+                          onClick={() => handleGetUserId(suggestion)}
                           type="button"
                         >
                           <li className=" rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors  px-4 border-b-gray-400 my-0.5">
-                            {`${sugestion.name} - ${sugestion.email}`}
+                            {`${suggestion.name} - ${suggestion.email}`}
                           </li>
                         </button>
                       ))}
@@ -424,7 +425,7 @@ const Create: NextPage = () => {
                     value={userText}
                     onBlur={() => {
                       setTimeout(() => {
-                        setUsersSugestions([]);
+                        setUsersSuggestions([]);
                       }, 100);
                     }}
                   />
@@ -432,16 +433,16 @@ const Create: NextPage = () => {
 
                 <div className="relative">
                   <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md flex flex-col">
-                    {sugestions &&
-                      sugestions.map(sugestion => (
+                    {suggestions &&
+                      suggestions.map(suggestion => (
                         <button
                           className="text-left block"
-                          key={sugestion.id}
-                          onClick={() => handleGetProductId(sugestion)}
+                          key={suggestion.id}
+                          onClick={() => handleGetProductId(suggestion)}
                           type="button"
                         >
                           <li className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5">
-                            {`${sugestion.name} ${sugestion.color} ${sugestion.size}`}
+                            {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
                           </li>
                         </button>
                       ))}
@@ -456,7 +457,7 @@ const Create: NextPage = () => {
                     value={productText}
                     onBlur={() => {
                       setTimeout(() => {
-                        setSugestions([]);
+                        setSuggestions([]);
                       }, 100);
                     }}
                   />
@@ -498,7 +499,7 @@ const Create: NextPage = () => {
                       <ProductItem
                         key={item.id}
                         itemProps={item}
-                        removeItem={() => hadleRemoveOrderItem(item)}
+                        removeItem={() => handleRemoveOrderItem(item)}
                       />
                     ))}
 

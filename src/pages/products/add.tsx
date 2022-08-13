@@ -17,6 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useProduct } from "../../context/ProductContext";
 import { useRouter } from "next/router";
 import { CircleNotch } from "phosphor-react";
+import { Search } from "../../components/Search";
 
 type Props = {
   id: string;
@@ -87,6 +88,7 @@ const Add = () => {
               <Sidebar />
 
               <main className="w-full h-full min-w-[600px]">
+                <Search />
                 <div className="bg-gray-200 min-h-[70vh] ">
                   <div className="p-8">
                     <div>

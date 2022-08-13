@@ -17,6 +17,7 @@ import { Input } from "../../components/FormComponents/Input";
 import { Button } from "../../components/Button";
 
 import { useProduct } from "../../context/ProductContext";
+import { Search } from "../../components/Search";
 
 type FormData = {
   color: string;
@@ -81,6 +82,7 @@ const Create: NextPage = () => {
           <Sidebar />
 
           <main className="w-full h-full min-w-[600px]">
+            <Search />
             <div className="bg-gray-200 min-h-[70vh] ">
               <div className="p-8">
                 <div>
