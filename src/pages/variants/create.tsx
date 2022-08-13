@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { NextPage } from "next";
 
 import { yupResolver } from "@hookform/resolvers/yup";

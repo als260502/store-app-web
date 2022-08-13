@@ -1,4 +1,5 @@
-import { Bell, MagnifyingGlass } from "phosphor-react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-var */
 import { useCallback, useEffect, useState } from "react";
 import {
   GetStoreUsersQuery,
@@ -45,13 +46,13 @@ export const Search = () => {
 
         console.log(newUser);
 
-        setSuggestions(newUser);
+        setSuggestions(Object.assign(suggestions, newUser));
       } else {
         setSuggestions([]);
       }
       setText(text);
     },
-    [users]
+    [users, suggestions]
   );
 
   return (

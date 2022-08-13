@@ -19,11 +19,6 @@ import { useRouter } from "next/router";
 import { CircleNotch } from "phosphor-react";
 import { Search } from "../../components/Search";
 
-type Props = {
-  id: string;
-  name: string;
-};
-
 type AddFormData = {
   category: string;
   color: string;

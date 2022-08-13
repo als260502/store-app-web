@@ -5,8 +5,6 @@ import {
 } from "react";
 import { FieldError } from "react-hook-form";
 
-import classNames from "classnames";
-
 interface Options {
   id: string;
   name: string;

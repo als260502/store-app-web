@@ -6,7 +6,6 @@ import {
   Palette,
   TShirt,
   UserCirclePlus,
-  Wall,
   Wallet,
 } from "phosphor-react";
 /* eslint-disable @next/next/no-img-element */

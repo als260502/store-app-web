@@ -1,8 +1,8 @@
 import { NextPage } from "next";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { useProduct, CreateProductProps } from "../../context/ProductContext";
+import { useProduct, ProductProps } from "../../context/ProductContext";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -36,7 +36,7 @@ const Create: NextPage = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CreateProductProps>({
+  } = useForm<ProductProps>({
     resolver: yupResolver(createProductFormSchema),
   });
 
@@ -64,7 +64,7 @@ const Create: NextPage = () => {
     reset();
   }, [reset]);
 
-  const handleCreateProduct: SubmitHandler<CreateProductProps> = useCallback(
+  const handleCreateProduct: SubmitHandler<ProductProps> = useCallback(
     async values => {
       const newProduct = {
         name: values.name,

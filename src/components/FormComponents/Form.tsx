@@ -28,16 +28,16 @@ export function Form({ defaultValues, children, onSubmit }: FormProps) {
   );
 }
 
-export function Input({ register, name, ...rest }) {
-  return <input {...register(name)} {...rest} />;
-}
+// export function Input({ register, name, ...rest }) {
+//   return <input {...register(name)} {...rest} />;
+// }
 
-export function Select({ register, options, name, ...rest }) {
-  return (
-    <select {...register(name)} {...rest}>
-      {options.map(value => (
-        <option value={value}>{value}</option>
-      ))}
-    </select>
-  );
-}
+// export function Select({ register, options, name, ...rest }) {
+//   return (
+//     <select {...register(name)} {...rest}>
+//       {options.map(value => (
+//         <option value={value}>{value}</option>
+//       ))}
+//     </select>
+//   );
+// }

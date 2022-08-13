@@ -75,12 +75,6 @@ const Create: NextPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const resetOrder = useCallback(() => {
-    setProductText("");
-    refetchProduct();
-    setLoading(false);
-  }, [refetchProduct]);
-
   const onUserChangeHandler = useCallback(
     (text: string) => {
       if (text.length > 3) {
@@ -152,7 +146,7 @@ const Create: NextPage = () => {
   );
 
   const handleGetProductId = useCallback(
-    (product: Product) => {
+    (product: Suggestion) => {
       setProductText(`${product.name} ${product.color} ${product.size}`);
       const newOrder = {
         product,
@@ -187,7 +181,7 @@ const Create: NextPage = () => {
       const quantity = parseInt(String(data.get("quantity")));
 
       if (quantity <= 0) {
-        toast.error("Quantidade precisa se no minimo 1", { duration: 4000 });
+        toast.error("Quantidade precisa se no mínimo 1", { duration: 4000 });
         return;
       }
 
