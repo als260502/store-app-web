@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   CaretDown,
@@ -9,18 +10,24 @@ import {
   Wallet,
 } from "phosphor-react";
 /* eslint-disable @next/next/no-img-element */
+import logo from "../../assets/logo-rounded.png";
 export const Sidebar = () => {
   return (
     <aside className="">
       <div className="h-full w-[150px] md:w-[200px] bg-gray-100 py-8 px-2 flex flex-col border-r-2 border-gray-900 border-opacity-25 ">
         <div className="flex flex-col items-center pb-8">
-          <img
+          <Image
             className="w-20 rounded-full"
-            src="https://github.com/als260502.png"
+            src={logo}
+            //src="https://github.com/als260502.png"
             alt="Avatar"
+            width={64}
+            height={64}
           />
           <div className="py-0.5 mt-2 flex flex-row gap-1 items-center">
-            <span className="text-sm font-bold text-gray-500">André Souza</span>
+            <span className="text-sm font-bold text-gray-500">
+              Tião Calçados
+            </span>
             <CaretDown size={14} color="#323238" />
           </div>
         </div>
