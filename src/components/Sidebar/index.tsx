@@ -57,7 +57,7 @@ export const Sidebar = () => {
             <a className="flex flex-row p-1 gap-1 items-center hover:scale-110 transition-transform duration-300">
               <Palette size={20} color="#323238" />
               <span className="py-1 font-medium text-sm text-gray-500">
-                Cor/Tamanho
+                Cor/Tam
               </span>
             </a>
           </Link>
