@@ -1,0 +1,6 @@
+mutation CreateProductSize($size: String!) {
+  createProductSizeVariant(data: { name: $size }) {
+    id
+    name
+  }
+}

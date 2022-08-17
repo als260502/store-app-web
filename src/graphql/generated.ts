@@ -11212,6 +11212,20 @@ export type CreateOrderMutationVariables = Exact<{
 
 export type CreateOrderMutation = { __typename?: 'Mutation', createOrder?: { __typename?: 'Order', id: string, orderItems: Array<{ __typename?: 'OrderItem', id: string }> } | null };
 
+export type CreateProductColorMutationVariables = Exact<{
+  color: Scalars['String'];
+}>;
+
+
+export type CreateProductColorMutation = { __typename?: 'Mutation', createProductColorVariant?: { __typename?: 'ProductColorVariant', id: string, name: string } | null };
+
+export type CreateProductSizeMutationVariables = Exact<{
+  size: Scalars['String'];
+}>;
+
+
+export type CreateProductSizeMutation = { __typename?: 'Mutation', createProductSizeVariant?: { __typename?: 'ProductSizeVariant', id: string, name: string } | null };
+
 export type CreateProductVariantMutationVariables = Exact<{
   color: Scalars['String'];
   size: Scalars['String'];
@@ -11291,6 +11305,13 @@ export type GetColorVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetColorVariantQuery = { __typename?: 'Query', productColorVariants: Array<{ __typename?: 'ProductColorVariant', id: string, name: string }> };
+
+export type GetOrdersByStoreUserIdQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type GetOrdersByStoreUserIdQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, createdAt: any }> };
 
 export type GetProductByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -11445,6 +11466,74 @@ export function useCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateOrderMutationHookResult = ReturnType<typeof useCreateOrderMutation>;
 export type CreateOrderMutationResult = Apollo.MutationResult<CreateOrderMutation>;
 export type CreateOrderMutationOptions = Apollo.BaseMutationOptions<CreateOrderMutation, CreateOrderMutationVariables>;
+export const CreateProductColorDocument = gql`
+    mutation CreateProductColor($color: String!) {
+  createProductColorVariant(data: {name: $color}) {
+    id
+    name
+  }
+}
+    `;
+export type CreateProductColorMutationFn = Apollo.MutationFunction<CreateProductColorMutation, CreateProductColorMutationVariables>;
+
+/**
+ * __useCreateProductColorMutation__
+ *
+ * To run a mutation, you first call `useCreateProductColorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductColorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductColorMutation, { data, loading, error }] = useCreateProductColorMutation({
+ *   variables: {
+ *      color: // value for 'color'
+ *   },
+ * });
+ */
+export function useCreateProductColorMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductColorMutation, CreateProductColorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductColorMutation, CreateProductColorMutationVariables>(CreateProductColorDocument, options);
+      }
+export type CreateProductColorMutationHookResult = ReturnType<typeof useCreateProductColorMutation>;
+export type CreateProductColorMutationResult = Apollo.MutationResult<CreateProductColorMutation>;
+export type CreateProductColorMutationOptions = Apollo.BaseMutationOptions<CreateProductColorMutation, CreateProductColorMutationVariables>;
+export const CreateProductSizeDocument = gql`
+    mutation CreateProductSize($size: String!) {
+  createProductSizeVariant(data: {name: $size}) {
+    id
+    name
+  }
+}
+    `;
+export type CreateProductSizeMutationFn = Apollo.MutationFunction<CreateProductSizeMutation, CreateProductSizeMutationVariables>;
+
+/**
+ * __useCreateProductSizeMutation__
+ *
+ * To run a mutation, you first call `useCreateProductSizeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductSizeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductSizeMutation, { data, loading, error }] = useCreateProductSizeMutation({
+ *   variables: {
+ *      size: // value for 'size'
+ *   },
+ * });
+ */
+export function useCreateProductSizeMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductSizeMutation, CreateProductSizeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductSizeMutation, CreateProductSizeMutationVariables>(CreateProductSizeDocument, options);
+      }
+export type CreateProductSizeMutationHookResult = ReturnType<typeof useCreateProductSizeMutation>;
+export type CreateProductSizeMutationResult = Apollo.MutationResult<CreateProductSizeMutation>;
+export type CreateProductSizeMutationOptions = Apollo.BaseMutationOptions<CreateProductSizeMutation, CreateProductSizeMutationVariables>;
 export const CreateProductVariantDocument = gql`
     mutation CreateProductVariant($color: String!, $size: String!) {
   createProductColorVariant(data: {name: $color}) {
@@ -11816,6 +11905,43 @@ export function useGetColorVariantLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetColorVariantQueryHookResult = ReturnType<typeof useGetColorVariantQuery>;
 export type GetColorVariantLazyQueryHookResult = ReturnType<typeof useGetColorVariantLazyQuery>;
 export type GetColorVariantQueryResult = Apollo.QueryResult<GetColorVariantQuery, GetColorVariantQueryVariables>;
+export const GetOrdersByStoreUserIdDocument = gql`
+    query GetOrdersByStoreUserId($id: ID!) {
+  orders(where: {storeUser: {id: $id}}, orderBy: createdAt_ASC) {
+    id
+    total
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetOrdersByStoreUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetOrdersByStoreUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrdersByStoreUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrdersByStoreUserIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetOrdersByStoreUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>(GetOrdersByStoreUserIdDocument, options);
+      }
+export function useGetOrdersByStoreUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>(GetOrdersByStoreUserIdDocument, options);
+        }
+export type GetOrdersByStoreUserIdQueryHookResult = ReturnType<typeof useGetOrdersByStoreUserIdQuery>;
+export type GetOrdersByStoreUserIdLazyQueryHookResult = ReturnType<typeof useGetOrdersByStoreUserIdLazyQuery>;
+export type GetOrdersByStoreUserIdQueryResult = Apollo.QueryResult<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>;
 export const GetProductByNameDocument = gql`
     query GetProductByName($name: String!) {
   products(where: {name: $name}) {

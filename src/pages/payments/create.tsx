@@ -1,15 +1,16 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 
+import { useOrder } from "../../hooks/useOrders";
+
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
 import { Button } from "../../components/Button";
 import {
-  Category,
   Product,
   useCreateOrderItemMutation,
   useCreateOrderMutation,
-  useGetProductsGreaterThanZeroQuery,
+  useGetOrdersByStoreUserIdQuery,
   useGetStoreUsersQuery,
   useRemoveOrderItemMutation,
   useRemoveOrderMutation,
@@ -21,6 +22,7 @@ import {
   Props,
 } from "../../components/OrderComponents/ProductItem";
 import { Search } from "../../components/Search";
+import { PaymentItemContainer } from "../../components/PaymentComponents/PaymentItemContainer";
 
 type OrderProps = {
   id?: string;
@@ -36,16 +38,6 @@ type StoreUser = {
   email: string;
 };
 
-type Suggestion = {
-  id: string;
-  categories: Category[];
-  name: string;
-  color: string[];
-  size: string[];
-  price: number;
-  quantity: number;
-};
-
 const Create: NextPage = () => {
   const [storeUser, setStoreUser] = useState<StoreUser[]>([]);
   const [userText, setUserText] = useState("");
@@ -53,30 +45,23 @@ const Create: NextPage = () => {
     StoreUser[] | undefined
   >([]);
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productText, setProductText] = useState("");
-  const [suggestions, setSuggestions] = useState<Suggestion[] | undefined>([]);
-
   const [order, setOrder] = useState<OrderProps>({} as OrderProps);
   const [orderItems, setOrderItems] = useState<Props[]>([]);
 
   const [total, setTotal] = useState(0);
+  const { data: userData } = useGetStoreUsersQuery();
 
-  const { data: productData, refetch: refetchProduct } =
-    useGetProductsGreaterThanZeroQuery();
+  const { data: ordersData } = useGetOrdersByStoreUserIdQuery({
+    variables: {
+      id: order.user?.id,
+    },
+  });
 
-  const { data: userData, refetch: refetchUser } = useGetStoreUsersQuery();
+  console.log(ordersData);
 
   useEffect(() => {
-    refetchProduct();
-    refetchUser();
-  }, [refetchProduct, refetchUser]);
-
-  useEffect(() => {
-    setProducts(Object.assign(products, productData?.products));
-
     setStoreUser(Object.assign(storeUser, userData?.storeUsers));
-  }, [productData?.products, products, storeUser, userData?.storeUsers]);
+  }, [storeUser, userData?.storeUsers]);
 
   const [loading, setLoading] = useState(false);
 
@@ -102,62 +87,19 @@ const Create: NextPage = () => {
     [storeUser]
   );
 
-  const onProductChangeHandler = useCallback(
-    (text: string) => {
-      if (text.length > 3) {
-        const regex = new RegExp(`${text}`, "gi");
-
-        const userFiltered = products?.filter(
-          product =>
-            (product.quantity > 0 && regex.test(product.name)) ||
-            (product.quantity > 0 && regex.test(product.slug))
-        );
-
-        const newProduct = userFiltered?.map(product => {
-          const newColor = product.color.map(c => c.name);
-          const newSize = product.size.map(s => s.name);
-
-          return {
-            id: product.id,
-            categories: product.categories,
-            name: product.name,
-            color: newColor,
-            size: newSize,
-            price: product.price,
-            quantity: product.quantity,
-          };
-        });
-
-        setSuggestions(newProduct);
-      } else {
-        setSuggestions([]);
-      }
-      setProductText(text);
-    },
-    [products]
-  );
-
   const handleGetUserId = useCallback(
-    (user: StoreUser) => {
+    async (user: StoreUser) => {
       setUserText(user.name);
 
-      const newOrder = {
-        user,
-      };
+      try {
+        const newOrder = {
+          user,
+        };
 
-      setOrder(Object.assign(order, newOrder));
-    },
-    [order]
-  );
-
-  const handleGetProductId = useCallback(
-    (product: Suggestion) => {
-      setProductText(`${product.name} ${product.color} ${product.size}`);
-      const newOrder = {
-        product,
-      };
-
-      setOrder(Object.assign(order, newOrder));
+        setOrder(Object.assign(order, newOrder));
+      } catch (error) {
+        console.error("handleGetUserId", error);
+      }
     },
     [order]
   );
@@ -169,7 +111,7 @@ const Create: NextPage = () => {
     });
     setOrderItems([]);
     setUserText("");
-    setProductText("");
+
     setLoading(false);
   }, [order]);
 
@@ -221,8 +163,6 @@ const Create: NextPage = () => {
           console.log("adicionar ordem e pedido ", newOrder);
 
           setOrder(Object.assign(order, newOrder));
-
-          //console.log(newOrder);
 
           const response = await createOrder({
             variables: newOrder,
@@ -299,19 +239,9 @@ const Create: NextPage = () => {
         console.log("erro adicionar item ou criar criar pedido", error);
       } finally {
         setLoading(false);
-        refetchProduct();
-        setProductText("");
       }
     },
-    [
-      createOrder,
-      createOrderItem,
-      order,
-      orderItems,
-      refetchProduct,
-      total,
-      updateProduct,
-    ]
+    [createOrder, createOrderItem, order, orderItems, total, updateProduct]
   );
 
   const [removeItem] = useRemoveOrderItemMutation();
@@ -357,7 +287,6 @@ const Create: NextPage = () => {
         );
 
         setOrderItems(filteredItems);
-        setProductText("");
 
         toast.success("Removido Item e ou Pedido com sucesso!");
       } catch (error) {
@@ -392,7 +321,7 @@ const Create: NextPage = () => {
           <Search />
           <div className="bg-gray-200 min-h-[60vh]">
             <div className="p-8">
-              <Header title={"Novo Pedido"} loading={loading} />
+              <Header title={"Pagamento"} loading={loading} />
 
               <form
                 onSubmit={handleSubmit}
@@ -430,42 +359,11 @@ const Create: NextPage = () => {
                   />
                 </div>
 
-                <div className="relative">
-                  <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md flex flex-col">
-                    {suggestions &&
-                      suggestions.map(suggestion => (
-                        <button
-                          className="text-left block"
-                          key={suggestion.id}
-                          onClick={() => handleGetProductId(suggestion)}
-                          type="button"
-                        >
-                          <li className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5">
-                            {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
-                          </li>
-                        </button>
-                      ))}
-                  </ul>
-                  <input
-                    className="input px-2 w-full"
-                    placeholder="Produto.."
-                    autoComplete="off"
-                    required
-                    name="product"
-                    onChange={e => onProductChangeHandler(e.target.value)}
-                    value={productText}
-                    onBlur={() => {
-                      setTimeout(() => {
-                        setSuggestions([]);
-                      }, 100);
-                    }}
-                  />
-                </div>
                 <input
                   className="input px-2"
-                  placeholder="Quantidade"
+                  placeholder="Valor do pagamento"
                   type="number"
-                  name="quantity"
+                  name="payment"
                   required
                 />
 
@@ -479,42 +377,7 @@ const Create: NextPage = () => {
                   </Button>
                 </div>
               </form>
-              {orderItems.length !== 0 && (
-                <>
-                  <div className="py-8 px-2 bg-gray-100 rounded-xl">
-                    <div className="flex flex-row items-center">
-                      <div className="mr-4 w-6"></div>
-                      <div className="grid grid-cols-4 gap-2 text-sm w-full text-gray-600">
-                        <span className="col-span-2 block font-bold">
-                          Produto
-                        </span>
-                        <span className="text-center font-bold">
-                          Quantidade
-                        </span>
-                        <span className="text-right px-4 font-bold">Total</span>
-                      </div>
-                    </div>
-                    {orderItems.map(item => (
-                      <ProductItem
-                        key={item.id}
-                        itemProps={item}
-                        removeItem={() => handleRemoveOrderItem(item)}
-                      />
-                    ))}
-
-                    <div className="w-full text-blue-400 flex justify-end px-4 mt-4">
-                      <strong>{setTotalOrder}</strong>
-                    </div>
-                  </div>
-                  <Button
-                    className="btn btn-outline btn-md w-24 mt-4"
-                    onClick={() => handleCloseOrder}
-                    disabled={loading}
-                  >
-                    Finalizar
-                  </Button>
-                </>
-              )}
+              <PaymentItemContainer />
             </div>
           </div>
         </main>

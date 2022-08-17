@@ -61,7 +61,7 @@ export const CreateComponent = () => {
 
   return (
     <>
-      <div className="bg-gray-200 h-full">
+      <div className="bg-gray-200 min-h-[60vh]">
         <div className="p-8">
           <Header title="Novo usuário" loading={loading} />
 

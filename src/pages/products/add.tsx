@@ -18,6 +18,7 @@ import { useProduct } from "../../context/ProductContext";
 import { useRouter } from "next/router";
 import { CircleNotch } from "phosphor-react";
 import { Search } from "../../components/Search";
+import { useEffect } from "react";
 
 type AddFormData = {
   category: string;
@@ -53,9 +54,16 @@ const Add = () => {
 
   const navigation = useRouter();
 
-  const { data: colorData } = useGetColorVariantQuery();
-  const { data: sizeData } = useGetSizeVariantQuery();
-  const { data: categoryData } = useGetCategoriesQuery();
+  const { data: colorData, refetch: refechColor } = useGetColorVariantQuery();
+  const { data: sizeData, refetch: refechSize } = useGetSizeVariantQuery();
+  const { data: categoryData, refetch: refechCategory } =
+    useGetCategoriesQuery();
+
+  useEffect(() => {
+    refechColor();
+    refechSize();
+    refechCategory();
+  }, [refechCategory, refechColor, refechSize]);
 
   const handleAddProduct: SubmitHandler<AddFormData> = async values => {
     const newProduct = {
@@ -84,7 +92,7 @@ const Add = () => {
 
               <main className="w-full h-full min-w-[600px]">
                 <Search />
-                <div className="bg-gray-200 min-h-[70vh] ">
+                <div className="bg-gray-200 min-h-[60vh] ">
                   <div className="p-8">
                     <div>
                       <Header

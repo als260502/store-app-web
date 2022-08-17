@@ -1,0 +1,7 @@
+query GetOrdersByStoreUserId($id: ID!) {
+  orders(where: { storeUser: { id: $id } }, orderBy: createdAt_ASC) {
+    id
+    total
+    createdAt
+  }
+}

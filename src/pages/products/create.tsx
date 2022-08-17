@@ -104,7 +104,7 @@ const Create: NextPage = () => {
 
           <main className="h-full w-full w-min[600px]">
             <Search />
-            <div className="bg-gray-200 h-full">
+            <div className="bg-gray-200 min-h-[60vh]">
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />

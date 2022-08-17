@@ -30,7 +30,7 @@ const createVariantFormSchema = yup.object().shape({
 });
 
 const Create: NextPage = () => {
-  const { addProductVariant, loading } = useProduct();
+  const { addProductColor, addProductSize, loading } = useProduct();
   const {
     register,
     handleSubmit,
@@ -40,8 +40,8 @@ const Create: NextPage = () => {
     resolver: yupResolver(createVariantFormSchema),
   });
 
-  const { data: color } = useGetColorVariantQuery();
-  const { data: size } = useGetSizeVariantQuery();
+  const { data: color, refetch: refetchColor } = useGetColorVariantQuery();
+  const { data: size, refetch: refetchSize } = useGetSizeVariantQuery();
 
   const handleProductVariant: SubmitHandler<FormData> = useCallback(
     async values => {
@@ -54,22 +54,28 @@ const Create: NextPage = () => {
           s.name.includes(values.size)
         );
 
-        if (hasColor || hasSize)
-          throw new Error(
-            "Erro:\n Cor e ou Tamanho ja existem em nosso sistema"
-          );
+        if (!hasColor) {
+          await addProductColor(values.color);
+        }
 
-        await addProductVariant(values);
+        if (!hasSize) {
+          await addProductSize(values.size);
+        }
 
         toast.success("Nova variante cadastrada com sucesso!");
+        refetchColor();
+        refetchSize();
         reset();
       } catch (error) {
         toast.error("Erro:\n Cor e ou Tamanho ja existem em nosso sistema");
       }
     },
     [
-      addProductVariant,
+      addProductColor,
+      addProductSize,
       color?.productColorVariants,
+      refetchColor,
+      refetchSize,
       reset,
       size?.productSizeVariants,
     ]
@@ -83,7 +89,7 @@ const Create: NextPage = () => {
 
           <main className="w-full h-full min-w-[600px]">
             <Search />
-            <div className="bg-gray-200 min-h-[70vh] ">
+            <div className="bg-gray-200 min-h-[60vh] ">
               <div className="p-8">
                 <div>
                   <Header title="Variantes - Cor/Tamanho " loading={loading} />
@@ -98,6 +104,7 @@ const Create: NextPage = () => {
                     {...register("color")}
                     error={errors.color}
                     name="color"
+                    label="Cor"
                     type="text"
                     placeholder="Azul Escuro"
                     className="input input-text"
@@ -107,6 +114,7 @@ const Create: NextPage = () => {
                     {...register("size")}
                     error={errors.size}
                     name="size"
+                    label="Tamanho"
                     type="text"
                     placeholder="38, ou GG, ou ExtraGGG"
                     className="input input-text"

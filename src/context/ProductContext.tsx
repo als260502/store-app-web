@@ -7,9 +7,12 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
+import Condition from "yup/lib/Condition";
 import {
   useCreateProductMutation,
   useCreateProductVariantMutation,
+  useCreateProductColorMutation,
+  useCreateProductSizeMutation,
 } from "../graphql/generated";
 import { formatSlug } from "../utils/formatSlug";
 
@@ -48,6 +51,8 @@ interface ProductContextData {
   productVariant: ProductVariant;
   loading: boolean;
   addProduct: (product: ProductProps) => Promise<ProductProps>;
+  addProductSize: (size: string) => Promise<void>;
+  addProductColor: (color: string) => Promise<void>;
   addProductVariant: (values: CategoryVariant) => Promise<void>;
   populateProduct: (product: ProductProps) => Promise<void>;
 }
@@ -125,6 +130,9 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
   const [createProductVariant, { loading: loadVariant }] =
     useCreateProductVariantMutation();
 
+  const [creareProductColor] = useCreateProductColorMutation();
+  const [creareProductSize] = useCreateProductSizeMutation();
+
   const addProductVariant = useCallback(
     async (values: CategoryVariant): Promise<void> => {
       const response = await createProductVariant({
@@ -148,6 +156,58 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
     [createProductVariant, loadVariant]
   );
 
+  const addProductColor = useCallback(
+    async (color: string) => {
+      try {
+        setLoading(loading => !loading);
+        const response = await creareProductColor({
+          variables: {
+            color,
+          },
+        });
+
+        const productColorVariant = {
+          color: {
+            id: response.data?.createProductColorVariant?.id,
+            name: response.data?.createProductColorVariant?.name,
+          },
+        };
+        setProductVariant(Object.assign(productVariant, productColorVariant));
+      } catch (error) {
+        console.error("adicionar cor", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [creareProductColor, productVariant]
+  );
+
+  const addProductSize = useCallback(
+    async (size: string) => {
+      try {
+        setLoading(loading => !loading);
+        const response = await creareProductSize({
+          variables: {
+            size,
+          },
+        });
+
+        const productSizeVariant = {
+          size: {
+            id: response.data?.createProductSizeVariant?.id,
+            name: response.data?.createProductSizeVariant?.name,
+          },
+        };
+        setProductVariant(Object.assign(productVariant, productSizeVariant));
+      } catch (error) {
+        console.error("adicionar cor", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [creareProductSize, productVariant]
+  );
+
   const populateProduct = useCallback(
     async (productData: ProductProps) => {
       setLoading(true);
@@ -167,6 +227,8 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         addProduct,
         addProductVariant,
         productVariant,
+        addProductSize,
+        addProductColor,
         loading,
         populateProduct,
       }}
