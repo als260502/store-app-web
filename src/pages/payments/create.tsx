@@ -1,7 +1,5 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
-
-import { useOrder } from "../../hooks/useOrders";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
@@ -17,12 +15,9 @@ import {
   useUpdateProductQuantityMutation,
 } from "../../graphql/generated";
 import toast, { Toaster } from "react-hot-toast";
-import {
-  ProductItem,
-  Props,
-} from "../../components/OrderComponents/ProductItem";
+import { Props } from "../../components/OrderComponents/ProductItem";
 import { Search } from "../../components/Search";
-import { PaymentItemContainer } from "../../components/PaymentComponents/PaymentItemContainer";
+import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
 
 type OrderProps = {
   id?: string;
@@ -45,23 +40,28 @@ const Create: NextPage = () => {
     StoreUser[] | undefined
   >([]);
 
+  const orderPaymentRef = useRef<HTMLInputElement>(0);
+
   const [order, setOrder] = useState<OrderProps>({} as OrderProps);
   const [orderItems, setOrderItems] = useState<Props[]>([]);
 
   const [total, setTotal] = useState(0);
-  const { data: userData } = useGetStoreUsersQuery();
+  const { data: userData, refetch: refetchUser } = useGetStoreUsersQuery();
 
-  const { data: ordersData } = useGetOrdersByStoreUserIdQuery({
-    variables: {
-      id: order.user?.id,
-    },
-  });
+  const { data: ordersData, refetch: refetchOrders } =
+    useGetOrdersByStoreUserIdQuery({
+      variables: {
+        id: order.user?.id,
+      },
+    });
 
-  console.log(ordersData);
+  // console.log(ordersData);
 
   useEffect(() => {
     setStoreUser(Object.assign(storeUser, userData?.storeUsers));
-  }, [storeUser, userData?.storeUsers]);
+    refetchUser();
+    refetchOrders();
+  }, [refetchOrders, refetchUser, storeUser, userData?.storeUsers]);
 
   const [loading, setLoading] = useState(false);
 
@@ -104,213 +104,12 @@ const Create: NextPage = () => {
     [order]
   );
 
-  const handleCloseOrder = useCallback(() => {
-    setOrder({
-      ...order,
-      id: undefined,
-    });
-    setOrderItems([]);
-    setUserText("");
-
-    setLoading(false);
-  }, [order]);
-
-  const [createOrder] = useCreateOrderMutation();
-  const [createOrderItem] = useCreateOrderItemMutation();
-  const [updateProduct] = useUpdateProductQuantityMutation();
-
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      setLoading(true);
-
-      const data = new FormData(event.currentTarget);
-      const quantity = parseInt(String(data.get("quantity")));
-
-      if (quantity <= 0) {
-        toast.error("Quantidade precisa se no mínimo 1", { duration: 4000 });
-        return;
-      }
-
-      if (order?.product?.quantity - quantity < 0) {
-        toast.error("Não ha em estoque quantidade de produtos suficientes", {
-          duration: 4000,
-        });
-        setLoading(false);
-        return;
-      }
-
-      let orderId = "";
-
-      const totalOrder = order?.product?.price * quantity;
-      const newTotal = totalOrder + total;
-
-      setTotal(newTotal);
-
-      const updatedQuantity = Number(order.product?.quantity) - quantity;
-
-      try {
-        if (!order.id) {
-          const newOrder = {
-            total: newTotal,
-            userId: order?.user?.id,
-            itemQuantity: quantity,
-            totalItem: newTotal,
-            productId: order?.product.id,
-            userEmail: String(order.user.email),
-          };
-
-          console.log("adicionar ordem e pedido ", newOrder);
-
-          setOrder(Object.assign(order, newOrder));
-
-          const response = await createOrder({
-            variables: newOrder,
-          });
-
-          if (!response?.data?.createOrder) {
-            throw new Error("erro: resposta sem data");
-          }
-          const id = response.data.createOrder.id;
-
-          setOrder({
-            ...order,
-            id,
-          });
-
-          orderId = response.data.createOrder.orderItems[0].id;
-
-          const item = {
-            id: orderId,
-            name: order.product.name,
-            quantity,
-            total: newTotal,
-            productId: order.product.id,
-          };
-          setOrderItems([...orderItems, item]);
-
-          toast.success("Pedido aberto, item adicionado");
-          setLoading(false);
-
-          await updateProduct({
-            variables: {
-              id: newOrder.productId,
-              quantity: updatedQuantity,
-            },
-          });
-
-          return;
-        } else {
-          const newItem = {
-            orderId: String(order.id),
-            productId: order.product.id,
-            quantity: quantity,
-            itemTotal: totalOrder,
-          };
-
-          console.log("adicionar item", newItem);
-
-          const response = await createOrderItem({
-            variables: newItem,
-          });
-
-          const orderItemId = String(response.data?.createOrderItem?.id);
-          const productId = order.product.id;
-
-          const myItem = {
-            id: orderItemId,
-            name: `${order.product.name} ${order.product.color} ${order.product.size}`,
-            quantity,
-            total: totalOrder,
-            productId,
-          };
-
-          await updateProduct({
-            variables: {
-              id: order.product.id,
-              quantity: updatedQuantity,
-            },
-          });
-
-          setOrderItems([...orderItems, myItem]);
-        }
-      } catch (error) {
-        toast.error("Erro ao adicionar pedido");
-        console.log("erro adicionar item ou criar criar pedido", error);
-      } finally {
-        setLoading(false);
-      }
     },
-    [createOrder, createOrderItem, order, orderItems, total, updateProduct]
+    []
   );
-
-  const [removeItem] = useRemoveOrderItemMutation();
-  const [removeOrderAndItems] = useRemoveOrderMutation();
-
-  const handleRemoveOrderItem = useCallback(
-    async (item: Props) => {
-      setLoading(!loading);
-
-      try {
-        if (orderItems.length === 1) {
-          await removeOrderAndItems({
-            variables: {
-              id: String(order.id),
-            },
-          });
-
-          await updateProduct({
-            variables: {
-              id: item.productId,
-              quantity: order.product.quantity,
-            },
-          });
-
-          handleCloseOrder();
-        } else {
-          removeItem({
-            variables: {
-              id: item.id,
-            },
-          });
-
-          await updateProduct({
-            variables: {
-              id: item.productId,
-              quantity: order.product.quantity,
-            },
-          });
-        }
-
-        const filteredItems = orderItems.filter(
-          orderItem => item.id !== orderItem.id
-        );
-
-        setOrderItems(filteredItems);
-
-        toast.success("Removido Item e ou Pedido com sucesso!");
-      } catch (error) {
-        toast.error("Erro ao remover item");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [
-      handleCloseOrder,
-      loading,
-      order.id,
-      order.product?.quantity,
-      orderItems,
-      removeItem,
-      removeOrderAndItems,
-      updateProduct,
-    ]
-  );
-
-  const setTotalOrder = new Intl.NumberFormat("pt-BT", {
-    style: "currency",
-    currency: "BRL",
-  }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
 
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
@@ -364,20 +163,24 @@ const Create: NextPage = () => {
                   placeholder="Valor do pagamento"
                   type="number"
                   name="payment"
-                  required
+                  step="0.01"
+                  min="0"
+                  ref={orderPaymentRef}
                 />
 
                 <div className="flex flex-row gap-4">
-                  <Button
+                  {/* <Button
                     disabled={loading}
                     type="submit"
                     className="btn btn-primary btn-md w-24"
                   >
-                    Adicionar
-                  </Button>
+                    Procurar
+                  </Button> */}
                 </div>
               </form>
-              <PaymentItemContainer />
+              {ordersData?.orders && (
+                <PaymentItem paymentItem={ordersData?.orders} />
+              )}
             </div>
           </div>
         </main>

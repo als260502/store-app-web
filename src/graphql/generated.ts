@@ -5028,6 +5028,7 @@ export type Order = Node & {
   /** Get the other localizations for this document */
   localizations: Array<Order>;
   orderItems: Array<OrderItem>;
+  orderValue: Scalars['Float'];
   /** The time the document was published. Null on documents in draft stage. */
   publishedAt?: Maybe<Scalars['DateTime']>;
   /** User that last published this document */
@@ -5145,6 +5146,8 @@ export type OrderCreateInput = {
   /** Inline mutations for managing document localizations excluding the default locale */
   localizations?: InputMaybe<OrderCreateLocalizationsInput>;
   orderItems?: InputMaybe<OrderItemCreateManyInlineInput>;
+  /** orderValue input for default locale (pt_BR) */
+  orderValue: Scalars['Float'];
   storeUser?: InputMaybe<StoreUserCreateOneInlineInput>;
   stripeCheckoutId: Scalars['String'];
   /** total input for default locale (pt_BR) */
@@ -5155,6 +5158,7 @@ export type OrderCreateInput = {
 
 export type OrderCreateLocalizationDataInput = {
   createdAt?: InputMaybe<Scalars['DateTime']>;
+  orderValue: Scalars['Float'];
   total: Scalars['Float'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
 };
@@ -5845,6 +5849,8 @@ export enum OrderOrderByInput {
   CreatedAtDesc = 'createdAt_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
+  OrderValueAsc = 'orderValue_ASC',
+  OrderValueDesc = 'orderValue_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
   StripeCheckoutIdAsc = 'stripeCheckoutId_ASC',
@@ -5861,6 +5867,8 @@ export type OrderUpdateInput = {
   /** Manage document localizations */
   localizations?: InputMaybe<OrderUpdateLocalizationsInput>;
   orderItems?: InputMaybe<OrderItemUpdateManyInlineInput>;
+  /** orderValue input for default locale (pt_BR) */
+  orderValue?: InputMaybe<Scalars['Float']>;
   storeUser?: InputMaybe<StoreUserUpdateOneInlineInput>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
   /** total input for default locale (pt_BR) */
@@ -5869,6 +5877,7 @@ export type OrderUpdateInput = {
 };
 
 export type OrderUpdateLocalizationDataInput = {
+  orderValue?: InputMaybe<Scalars['Float']>;
   total?: InputMaybe<Scalars['Float']>;
 };
 
@@ -5907,6 +5916,8 @@ export type OrderUpdateManyInlineInput = {
 export type OrderUpdateManyInput = {
   /** Optional updates to localizations */
   localizations?: InputMaybe<OrderUpdateManyLocalizationsInput>;
+  /** orderValue input for default locale (pt_BR) */
+  orderValue?: InputMaybe<Scalars['Float']>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
   /** total input for default locale (pt_BR) */
   total?: InputMaybe<Scalars['Float']>;
@@ -5914,6 +5925,7 @@ export type OrderUpdateManyInput = {
 };
 
 export type OrderUpdateManyLocalizationDataInput = {
+  orderValue?: InputMaybe<Scalars['Float']>;
   total?: InputMaybe<Scalars['Float']>;
 };
 
@@ -6024,6 +6036,21 @@ export type OrderWhereInput = {
   orderItems_every?: InputMaybe<OrderItemWhereInput>;
   orderItems_none?: InputMaybe<OrderItemWhereInput>;
   orderItems_some?: InputMaybe<OrderItemWhereInput>;
+  orderValue?: InputMaybe<Scalars['Float']>;
+  /** All values greater than the given value. */
+  orderValue_gt?: InputMaybe<Scalars['Float']>;
+  /** All values greater than or equal the given value. */
+  orderValue_gte?: InputMaybe<Scalars['Float']>;
+  /** All values that are contained in given list. */
+  orderValue_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  /** All values less than the given value. */
+  orderValue_lt?: InputMaybe<Scalars['Float']>;
+  /** All values less than or equal the given value. */
+  orderValue_lte?: InputMaybe<Scalars['Float']>;
+  /** All values that are not equal to given value. */
+  orderValue_not?: InputMaybe<Scalars['Float']>;
+  /** All values that are not contained in given list. */
+  orderValue_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -11248,6 +11275,17 @@ export type CreateProductMutationVariables = Exact<{
 
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'Product', id: string } | null };
 
+export type CreateSingleOrderMutationVariables = Exact<{
+  total: Scalars['Float'];
+  orderValue: Scalars['Float'];
+  stripeCheckout: Scalars['String'];
+  userEmail: Scalars['String'];
+  userId: Scalars['ID'];
+}>;
+
+
+export type CreateSingleOrderMutation = { __typename?: 'Mutation', createOrder?: { __typename?: 'Order', id: string } | null };
+
 export type CreateStoreUserMutationVariables = Exact<{
   name: Scalars['String'];
   surname: Scalars['String'];
@@ -11311,7 +11349,7 @@ export type GetOrdersByStoreUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersByStoreUserIdQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, createdAt: any }> };
+export type GetOrdersByStoreUserIdQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, total: number, createdAt: any, orderValue: number }> };
 
 export type GetProductByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -11426,7 +11464,7 @@ export type CreateOrderItemMutationOptions = Apollo.BaseMutationOptions<CreateOr
 export const CreateOrderDocument = gql`
     mutation CreateOrder($total: Float!, $userId: ID, $itemQuantity: Int!, $totalItem: Float!, $productId: ID!, $userEmail: String) {
   createOrder(
-    data: {userEmail: $userEmail, total: $total, stripeCheckoutId: "FFF", storeUser: {connect: {id: $userId}}, orderItems: {create: {quantity: $itemQuantity, total: $totalItem, product: {connect: {id: $productId}}}}}
+    data: {userEmail: $userEmail, total: $total, orderValue: $total, stripeCheckoutId: "FFF", storeUser: {connect: {id: $userId}}, orderItems: {create: {quantity: $itemQuantity, total: $totalItem, product: {connect: {id: $productId}}}}}
   ) {
     id
     orderItems {
@@ -11615,6 +11653,45 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const CreateSingleOrderDocument = gql`
+    mutation CreateSingleOrder($total: Float!, $orderValue: Float!, $stripeCheckout: String!, $userEmail: String!, $userId: ID!) {
+  createOrder(
+    data: {total: $total, stripeCheckoutId: $stripeCheckout, orderValue: $orderValue, userEmail: $userEmail, storeUser: {connect: {id: $userId}}}
+  ) {
+    id
+  }
+}
+    `;
+export type CreateSingleOrderMutationFn = Apollo.MutationFunction<CreateSingleOrderMutation, CreateSingleOrderMutationVariables>;
+
+/**
+ * __useCreateSingleOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateSingleOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSingleOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSingleOrderMutation, { data, loading, error }] = useCreateSingleOrderMutation({
+ *   variables: {
+ *      total: // value for 'total'
+ *      orderValue: // value for 'orderValue'
+ *      stripeCheckout: // value for 'stripeCheckout'
+ *      userEmail: // value for 'userEmail'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useCreateSingleOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateSingleOrderMutation, CreateSingleOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSingleOrderMutation, CreateSingleOrderMutationVariables>(CreateSingleOrderDocument, options);
+      }
+export type CreateSingleOrderMutationHookResult = ReturnType<typeof useCreateSingleOrderMutation>;
+export type CreateSingleOrderMutationResult = Apollo.MutationResult<CreateSingleOrderMutation>;
+export type CreateSingleOrderMutationOptions = Apollo.BaseMutationOptions<CreateSingleOrderMutation, CreateSingleOrderMutationVariables>;
 export const CreateStoreUserDocument = gql`
     mutation CreateStoreUser($name: String!, $surname: String!, $phones: String!, $description: String, $email: String, $nickname: String) {
   createStoreUser(
@@ -11911,6 +11988,7 @@ export const GetOrdersByStoreUserIdDocument = gql`
     id
     total
     createdAt
+    orderValue
   }
 }
     `;

@@ -1,5 +1,7 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
+
+import { v4 as uuid } from "uuid";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
@@ -9,6 +11,7 @@ import {
   Product,
   useCreateOrderItemMutation,
   useCreateOrderMutation,
+  useCreateSingleOrderMutation,
   useGetProductsGreaterThanZeroQuery,
   useGetStoreUsersQuery,
   useRemoveOrderItemMutation,
@@ -61,6 +64,10 @@ const Create: NextPage = () => {
   const [orderItems, setOrderItems] = useState<Props[]>([]);
 
   const [total, setTotal] = useState(0);
+
+  const [orderType, setOrderType] = useState(false);
+  const orderValueRef = useRef<HTMLInputElement>(0);
+  const orderTypeRef = useRef<HTMLInputElement>(null);
 
   const { data: productData, refetch: refetchProduct } =
     useGetProductsGreaterThanZeroQuery();
@@ -176,11 +183,37 @@ const Create: NextPage = () => {
   const [createOrder] = useCreateOrderMutation();
   const [createOrderItem] = useCreateOrderItemMutation();
   const [updateProduct] = useUpdateProductQuantityMutation();
+  const [createSingleOrder] = useCreateSingleOrderMutation();
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setLoading(true);
+
+      if (orderType) {
+        try {
+          const totalOrder = parseFloat(orderValueRef.current.value);
+
+          await createSingleOrder({
+            variables: {
+              total: totalOrder,
+              orderValue: totalOrder,
+              stripeCheckout: uuid(),
+              userEmail: order.user.email,
+              userId: order.user.id,
+            },
+          });
+
+          orderValueRef.current.value = "";
+          setUserText("");
+          toast.success("Pedido de Ordem avulsa criada com sucesso!");
+          return;
+        } catch (error) {
+          console.error("criando ordem avulsa", error);
+        } finally {
+          setLoading(false);
+        }
+      }
 
       const data = new FormData(event.currentTarget);
       const quantity = parseInt(String(data.get("quantity")));
@@ -306,8 +339,10 @@ const Create: NextPage = () => {
     [
       createOrder,
       createOrderItem,
+      createSingleOrder,
       order,
       orderItems,
+      orderType,
       refetchProduct,
       total,
       updateProduct,
@@ -383,6 +418,10 @@ const Create: NextPage = () => {
     currency: "BRL",
   }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
 
+  const handleChangeOrderType = useCallback(() => {
+    setOrderType(Boolean(orderTypeRef?.current?.checked));
+  }, []);
+
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
@@ -393,6 +432,16 @@ const Create: NextPage = () => {
           <div className="bg-gray-200 min-h-[60vh]">
             <div className="p-8">
               <Header title={"Novo Pedido"} loading={loading} />
+
+              <div className="mt-4 text-gray-500">
+                <input
+                  type="checkbox"
+                  className="scale-125"
+                  onChange={handleChangeOrderType}
+                  ref={orderTypeRef}
+                />
+                <strong className="px-2">Ordem avulsa (sem produto)</strong>
+              </div>
 
               <form
                 onSubmit={handleSubmit}
@@ -430,44 +479,63 @@ const Create: NextPage = () => {
                   />
                 </div>
 
-                <div className="relative">
-                  <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md flex flex-col">
-                    {suggestions &&
-                      suggestions.map(suggestion => (
-                        <button
-                          className="text-left block"
-                          key={suggestion.id}
-                          onClick={() => handleGetProductId(suggestion)}
-                          type="button"
-                        >
-                          <li className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5">
-                            {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
-                          </li>
-                        </button>
-                      ))}
-                  </ul>
-                  <input
-                    className="input px-2 w-full"
-                    placeholder="Produto.."
-                    autoComplete="off"
-                    required
-                    name="product"
-                    onChange={e => onProductChangeHandler(e.target.value)}
-                    value={productText}
-                    onBlur={() => {
-                      setTimeout(() => {
-                        setSuggestions([]);
-                      }, 100);
-                    }}
-                  />
-                </div>
-                <input
-                  className="input px-2"
-                  placeholder="Quantidade"
-                  type="number"
-                  name="quantity"
-                  required
-                />
+                {!orderType && (
+                  <>
+                    <div className="relative">
+                      <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md flex flex-col">
+                        {suggestions &&
+                          suggestions.map(suggestion => (
+                            <button
+                              className="text-left block"
+                              key={suggestion.id}
+                              onClick={() => handleGetProductId(suggestion)}
+                              type="button"
+                            >
+                              <li className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5">
+                                {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
+                              </li>
+                            </button>
+                          ))}
+                      </ul>
+                      <input
+                        className="input px-2 w-full"
+                        placeholder="Produto.."
+                        autoComplete="off"
+                        required
+                        name="product"
+                        onChange={e => onProductChangeHandler(e.target.value)}
+                        value={productText}
+                        onBlur={() => {
+                          setTimeout(() => {
+                            setSuggestions([]);
+                          }, 100);
+                        }}
+                      />
+                    </div>
+                    <input
+                      className="input px-2"
+                      placeholder="Quantidade"
+                      type="number"
+                      name="quantity"
+                      required
+                    />
+                  </>
+                )}
+
+                {orderType && (
+                  <>
+                    <input
+                      className="input px-2"
+                      placeholder="Valor da compra ex: 780,99"
+                      type="number"
+                      name="value"
+                      step="0.01"
+                      min="0"
+                      required
+                      ref={orderValueRef}
+                    />
+                  </>
+                )}
 
                 <div className="flex flex-row gap-4">
                   <Button

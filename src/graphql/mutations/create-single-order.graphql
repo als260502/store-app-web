@@ -1,0 +1,19 @@
+mutation CreateSingleOrder(
+  $total: Float!
+  $orderValue: Float!
+  $stripeCheckout: String!
+  $userEmail: String!
+  $userId: ID!
+) {
+  createOrder(
+    data: {
+      total: $total
+      stripeCheckoutId: $stripeCheckout
+      orderValue: $orderValue
+      userEmail: $userEmail
+      storeUser: { connect: { id: $userId } }
+    }
+  ) {
+    id
+  }
+}

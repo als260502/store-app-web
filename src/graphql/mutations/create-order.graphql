@@ -10,6 +10,7 @@ mutation CreateOrder(
     data: {
       userEmail: $userEmail
       total: $total
+      orderValue: $total
       stripeCheckoutId: "FFF"
       storeUser: { connect: { id: $userId } }
       orderItems: {
