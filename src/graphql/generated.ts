@@ -4750,6 +4750,7 @@ export type Node = {
   /** The id of the object. */
   id: Scalars["ID"];
   /** The Stage of an object */
+  stage: Stage;
 };
 
 export type Order = Node & {

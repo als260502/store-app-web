@@ -1,8 +1,9 @@
-import { memo, useRef } from "react";
+import { memo } from "react";
 import { Button } from "../Button";
 
 import { format } from "date-fns";
 import ptBr from "date-fns/locale/pt-BR";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   id: string;
@@ -12,15 +13,24 @@ type Props = {
 };
 
 export type PaymentItemProps = {
-  paymentItem: Props[];
+  paymentItem: Props[] | undefined;
+  paymentValue: string;
 };
 
-const PaymentItemBase = ({ paymentItem }: PaymentItemProps) => {
-  const orderIdRef = useRef<HTMLInputElement>(null);
+const PaymentItemBase = ({ paymentItem, paymentValue }: PaymentItemProps) => {
+  const handleUpdateOrderValue = e => {
+    const name = e.target.name;
 
-  function teste() {
-    console.log(orderIdRef?.current?.value);
-  }
+    console.log(paymentValue);
+
+    try {
+      if (!paymentValue)
+        throw new Error("Valor do pagamento nao pode estar vazio");
+    } catch (error) {
+      console.log("pagamento", error);
+      toast.error("Pagamento ao pode esta vazio");
+    }
+  };
 
   const totalFormated = (value: number) => {
     return new Intl.NumberFormat("pt-BT", {
@@ -49,26 +59,21 @@ const PaymentItemBase = ({ paymentItem }: PaymentItemProps) => {
           </div>
         </div>
 
-        <div className="space-y-2">
+        <ul className="space-y-2">
           {paymentItem &&
             paymentItem.map(item => (
-              <div key={item.id}>
+              <li key={item.id}>
                 <div className="px-2 grid grid-cols-4 gap-2 text-sm w-full items-center text-gray-600">
                   <span className="font-bold flex items-center">
                     <Button
                       className="btn btn-xs btn-outline w-16"
-                      onClick={teste}
+                      onClick={handleUpdateOrderValue}
+                      name={item.id}
                     >
                       Pagar
                     </Button>
-                    <input
-                      type="hidden"
-                      value={item.id}
-                      name="orderId"
-                      ref={orderIdRef}
-                    />
                   </span>
-                  <span className="text-center ">
+                  <span className="text-center font-bold text-gray-400">
                     {DateFormated(item.createdAt)}
                   </span>
                   <span className="text-right font-bold text-blue-600">
@@ -78,10 +83,11 @@ const PaymentItemBase = ({ paymentItem }: PaymentItemProps) => {
                     {totalFormated(item.total)}
                   </span>
                 </div>
-              </div>
+              </li>
             ))}
-        </div>
+        </ul>
       </div>
+      <Toaster position="top-right" />
     </>
   );
 };

@@ -1,30 +1,17 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
 
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";
-import { Button } from "../../components/Button";
 import {
-  Product,
-  useCreateOrderItemMutation,
-  useCreateOrderMutation,
-  useGetOrdersByStoreUserIdQuery,
+  GetOrdersByStoreUserIdQuery,
+  useGetOrdersByStoreUserIdLazyQuery,
   useGetStoreUsersQuery,
-  useRemoveOrderItemMutation,
-  useRemoveOrderMutation,
-  useUpdateProductQuantityMutation,
 } from "../../graphql/generated";
-import toast, { Toaster } from "react-hot-toast";
-import { Props } from "../../components/OrderComponents/ProductItem";
+import { Toaster } from "react-hot-toast";
+
 import { Search } from "../../components/Search";
 import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
-
-type OrderProps = {
-  id?: string;
-  user: StoreUser;
-  product: Product;
-  total: number;
-};
 
 type StoreUser = {
   id: string;
@@ -40,30 +27,17 @@ const Create: NextPage = () => {
     StoreUser[] | undefined
   >([]);
 
-  const orderPaymentRef = useRef<HTMLInputElement>(0);
+  const [paymentValue, setPaymentValue] = useState("");
 
-  const [order, setOrder] = useState<OrderProps>({} as OrderProps);
-  const [orderItems, setOrderItems] = useState<Props[]>([]);
-
-  const [total, setTotal] = useState(0);
+  const [ordersData, setOrdersData] = useState<GetOrdersByStoreUserIdQuery>();
   const { data: userData, refetch: refetchUser } = useGetStoreUsersQuery();
 
-  const { data: ordersData, refetch: refetchOrders } =
-    useGetOrdersByStoreUserIdQuery({
-      variables: {
-        id: order.user?.id,
-      },
-    });
-
-  // console.log(ordersData);
+  const [getOrders] = useGetOrdersByStoreUserIdLazyQuery();
 
   useEffect(() => {
     setStoreUser(Object.assign(storeUser, userData?.storeUsers));
     refetchUser();
-    refetchOrders();
-  }, [refetchOrders, refetchUser, storeUser, userData?.storeUsers]);
-
-  const [loading, setLoading] = useState(false);
+  }, [refetchUser, storeUser, userData?.storeUsers]);
 
   const onUserChangeHandler = useCallback(
     (text: string) => {
@@ -81,6 +55,7 @@ const Create: NextPage = () => {
         setUsersSuggestions(userFiltered);
       } else {
         setUsersSuggestions([]);
+        setOrdersData(undefined);
       }
       setUserText(text);
     },
@@ -92,23 +67,18 @@ const Create: NextPage = () => {
       setUserText(user.name);
 
       try {
-        const newOrder = {
-          user,
-        };
+        const { data } = await getOrders({
+          variables: {
+            id: user.id,
+          },
+        });
 
-        setOrder(Object.assign(order, newOrder));
+        setOrdersData(data);
       } catch (error) {
         console.error("handleGetUserId", error);
       }
     },
-    [order]
-  );
-
-  const handleSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-    },
-    []
+    [getOrders]
   );
 
   return (
@@ -120,12 +90,9 @@ const Create: NextPage = () => {
           <Search />
           <div className="bg-gray-200 min-h-[60vh]">
             <div className="p-8">
-              <Header title={"Pagamento"} loading={loading} />
+              <Header title={"Pagamento"} />
 
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-2 my-8 w-full"
-              >
+              <div className="flex flex-col gap-2 my-8 w-full">
                 <div className="relative justify-center">
                   <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md z-20 flex flex-col">
                     {usersSuggestions &&
@@ -165,21 +132,15 @@ const Create: NextPage = () => {
                   name="payment"
                   step="0.01"
                   min="0"
-                  ref={orderPaymentRef}
+                  onChange={e => setPaymentValue(e.target.value)}
+                  value={paymentValue}
                 />
-
-                <div className="flex flex-row gap-4">
-                  {/* <Button
-                    disabled={loading}
-                    type="submit"
-                    className="btn btn-primary btn-md w-24"
-                  >
-                    Procurar
-                  </Button> */}
-                </div>
-              </form>
-              {ordersData?.orders && (
-                <PaymentItem paymentItem={ordersData?.orders} />
+              </div>
+              {ordersData?.orders.length !== 0 && (
+                <PaymentItem
+                  paymentItem={ordersData?.orders}
+                  paymentValue={paymentValue}
+                />
               )}
             </div>
           </div>
