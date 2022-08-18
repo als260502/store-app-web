@@ -1,3 +1,4 @@
+overwrite: true
 schema: https://api-sa-east-1.graphcms.com/v2/cl4yad0g617tz01tdgylx39a3/master
 documents: "./src/graphql/**/*.graphql"
 generates:
@@ -8,6 +9,8 @@ generates:
       - typescript-react-apollo
     config:
       reactApolloVersion: 3
+      skipTypeNameForRoot: true
+      skipTypename: true
       withHooks: true
       withHOC: false
       withComponent: false

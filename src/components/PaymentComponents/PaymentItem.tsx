@@ -1,12 +1,18 @@
 import { memo, useRef } from "react";
-import { GetOrdersByStoreUserIdQuery, Order } from "../../graphql/generated";
 import { Button } from "../Button";
 
 import { format } from "date-fns";
 import ptBr from "date-fns/locale/pt-BR";
 
+type Props = {
+  id: string;
+  total: number;
+  createdAt: string;
+  orderValue: number;
+};
+
 export type PaymentItemProps = {
-  paymentItem: GetOrdersByStoreUserIdQuery;
+  paymentItem: Props[];
 };
 
 const PaymentItemBase = ({ paymentItem }: PaymentItemProps) => {
