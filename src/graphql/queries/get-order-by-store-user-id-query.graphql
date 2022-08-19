@@ -4,5 +4,8 @@ query GetOrdersByStoreUserId($id: ID!) {
     total
     createdAt
     orderValue
+    storeUser {
+      id
+    }
   }
 }

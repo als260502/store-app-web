@@ -170,6 +170,7 @@ const Create: NextPage = () => {
   );
 
   const handleCloseOrder = useCallback(() => {
+    console.log("close");
     setOrder({
       ...order,
       id: undefined,
@@ -457,7 +458,10 @@ const Create: NextPage = () => {
                           onClick={() => handleGetUserId(suggestion)}
                           type="button"
                         >
-                          <li className=" rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors  px-4 border-b-gray-400 my-0.5">
+                          <li
+                            onClick={() => handleGetUserId(suggestion)}
+                            className=" rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors  px-4 border-b-gray-400 my-0.5"
+                          >
                             {`${suggestion.name} - ${suggestion.email}`}
                           </li>
                         </button>
@@ -491,7 +495,10 @@ const Create: NextPage = () => {
                               onClick={() => handleGetProductId(suggestion)}
                               type="button"
                             >
-                              <li className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5">
+                              <li
+                                onClick={() => handleGetProductId(suggestion)}
+                                className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5"
+                              >
                                 {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
                               </li>
                             </button>
@@ -576,7 +583,7 @@ const Create: NextPage = () => {
                   </div>
                   <Button
                     className="btn btn-outline btn-md w-24 mt-4"
-                    onClick={() => handleCloseOrder}
+                    onClick={handleCloseOrder}
                     disabled={loading}
                   >
                     Finalizar

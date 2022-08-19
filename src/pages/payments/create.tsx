@@ -7,11 +7,15 @@ import {
   GetOrdersByStoreUserIdQuery,
   useGetOrdersByStoreUserIdLazyQuery,
   useGetStoreUsersQuery,
+  useUpdateOrderByIdMutation,
 } from "../../graphql/generated";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 import { Search } from "../../components/Search";
 import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
+import { Ladder } from "phosphor-react";
+import { catchError, CustomError } from "../../utils/errorHandle";
+import { Props } from "../../components/OrderComponents/ProductItem";
 
 type StoreUser = {
   id: string;
@@ -32,7 +36,7 @@ const Create: NextPage = () => {
   const [ordersData, setOrdersData] = useState<GetOrdersByStoreUserIdQuery>();
   const { data: userData, refetch: refetchUser } = useGetStoreUsersQuery();
 
-  const [getOrders] = useGetOrdersByStoreUserIdLazyQuery();
+  const [getOrders, { refetch }] = useGetOrdersByStoreUserIdLazyQuery();
 
   useEffect(() => {
     setStoreUser(Object.assign(storeUser, userData?.storeUsers));
@@ -65,7 +69,6 @@ const Create: NextPage = () => {
   const handleGetUserId = useCallback(
     async (user: StoreUser) => {
       setUserText(user.name);
-
       try {
         const { data } = await getOrders({
           variables: {
@@ -81,6 +84,51 @@ const Create: NextPage = () => {
     [getOrders]
   );
 
+  const [updateOrder, { loading }] = useUpdateOrderByIdMutation();
+  const handleUpdateOrderValue = useCallback(
+    async (id: string) => {
+      console.log(id);
+
+      const orderId = id;
+
+      console.log(orderId);
+
+      try {
+        if (!paymentValue)
+          throw new CustomError("Valor do pagamento nao pode estar vazio");
+
+        let itemValue = 0;
+        // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+        const itemFiltered = ordersData?.orders?.filter(item => {
+          if (item.id === orderId) {
+            itemValue = item.total;
+          }
+        });
+
+        const newValue = itemValue - parseFloat(paymentValue);
+
+        if (newValue < 0)
+          throw new CustomError("Erro: Pagamento maior do que o valor devido");
+
+        await updateOrder({
+          variables: {
+            orderId,
+            total: newValue,
+          },
+        });
+
+        const { data } = await refetch();
+
+        setOrdersData(data);
+      } catch (err) {
+        toast.error(String(catchError(err)?.message));
+      } finally {
+        setPaymentValue("");
+      }
+    },
+    [ordersData?.orders, paymentValue, refetch, updateOrder]
+  );
+
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
@@ -89,8 +137,8 @@ const Create: NextPage = () => {
         <main className="h-full w-full w-min[600px]">
           <Search />
           <div className="bg-gray-200 min-h-[60vh]">
-            <div className="p-8">
-              <Header title={"Pagamento"} />
+            <div className="p-8 ">
+              <Header title={"Pagamento"} loading={loading} />
 
               <div className="flex flex-col gap-2 my-8 w-full">
                 <div className="relative justify-center">
@@ -98,7 +146,7 @@ const Create: NextPage = () => {
                     {usersSuggestions &&
                       usersSuggestions.map(suggestion => (
                         <button
-                          className="text-left"
+                          className="text-left text-gray-800"
                           key={suggestion.id}
                           onClick={() => handleGetUserId(suggestion)}
                           type="button"
@@ -109,10 +157,11 @@ const Create: NextPage = () => {
                         </button>
                       ))}
                   </ul>
+
                   <input
-                    className="input px-2 w-full"
+                    className="input px-2 w-full text-gray-400"
                     autoComplete="off"
-                    placeholder="Nome..."
+                    placeholder="Nome do do pagador..."
                     name="name"
                     required
                     onChange={e => onUserChangeHandler(e.target.value)}
@@ -127,7 +176,7 @@ const Create: NextPage = () => {
 
                 <input
                   className="input px-2"
-                  placeholder="Valor do pagamento"
+                  placeholder="Valor do pagamento ex: 196,90"
                   type="number"
                   name="payment"
                   step="0.01"
@@ -136,10 +185,11 @@ const Create: NextPage = () => {
                   value={paymentValue}
                 />
               </div>
-              {ordersData?.orders.length !== 0 && (
+              {ordersData && (
                 <PaymentItem
                   paymentItem={ordersData?.orders}
-                  paymentValue={paymentValue}
+                  loading={loading}
+                  handleUpdateOrderValue={handleUpdateOrderValue}
                 />
               )}
             </div>

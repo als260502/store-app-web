@@ -1,0 +1,13 @@
+mutation UpdateOrderById($orderId: ID!, $total: Float, $orderValue: Float) {
+  updateOrder(
+    data: { total: $total, orderValue: $orderValue }
+    where: { id: $orderId }
+  ) {
+    orderValue
+    total
+    userEmail
+    storeUser {
+      id
+    }
+  }
+}

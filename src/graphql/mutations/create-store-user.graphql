@@ -1,9 +1,9 @@
 mutation CreateStoreUser(
   $name: String!
   $surname: String!
-  $phones: String!
+  $phones: [String!]
   $description: String
-  $email: String
+  $email: String!
   $nickname: String
 ) {
   createStoreUser(

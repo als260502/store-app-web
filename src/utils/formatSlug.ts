@@ -18,3 +18,15 @@ export const formatVariantName = (text: string): string => {
 
   return formattedName;
 };
+
+export const formatTelephone = (phone: string): string[] => {
+  const formattedPhone = phone
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/ /g, "")
+    .replace(/[(-)-]/g, "")
+    .trim()
+    .split(",");
+
+  return formattedPhone;
+};

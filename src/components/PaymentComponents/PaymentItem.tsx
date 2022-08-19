@@ -1,9 +1,11 @@
-import { memo } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Button } from "../Button";
 
 import { format } from "date-fns";
 import ptBr from "date-fns/locale/pt-BR";
 import toast, { Toaster } from "react-hot-toast";
+import { useUpdateOrderByIdMutation } from "../../graphql/generated";
+import { catchError, CustomError } from "../../utils/errorHandle";
 
 type Props = {
   id: string;
@@ -14,24 +16,16 @@ type Props = {
 
 export type PaymentItemProps = {
   paymentItem: Props[] | undefined;
-  paymentValue: string;
+
+  handleUpdateOrderValue: (id: string) => void;
+  loading: boolean;
 };
 
-const PaymentItemBase = ({ paymentItem, paymentValue }: PaymentItemProps) => {
-  const handleUpdateOrderValue = e => {
-    const name = e.target.name;
-
-    console.log(paymentValue);
-
-    try {
-      if (!paymentValue)
-        throw new Error("Valor do pagamento nao pode estar vazio");
-    } catch (error) {
-      console.log("pagamento", error);
-      toast.error("Pagamento ao pode esta vazio");
-    }
-  };
-
+const PaymentItemBase = ({
+  paymentItem,
+  handleUpdateOrderValue,
+  loading,
+}: PaymentItemProps) => {
   const totalFormated = (value: number) => {
     return new Intl.NumberFormat("pt-BT", {
       style: "currency",
@@ -61,14 +55,15 @@ const PaymentItemBase = ({ paymentItem, paymentValue }: PaymentItemProps) => {
 
         <ul className="space-y-2">
           {paymentItem &&
-            paymentItem.map(item => (
+            paymentItem?.map(item => (
               <li key={item.id}>
                 <div className="px-2 grid grid-cols-4 gap-2 text-sm w-full items-center text-gray-600">
                   <span className="font-bold flex items-center">
                     <Button
                       className="btn btn-xs btn-outline w-16"
-                      onClick={handleUpdateOrderValue}
+                      onClick={() => handleUpdateOrderValue(item.id)}
                       name={item.id}
+                      disabled={loading}
                     >
                       Pagar
                     </Button>

@@ -7,7 +7,6 @@ import {
   useState,
 } from "react";
 import toast from "react-hot-toast";
-import Condition from "yup/lib/Condition";
 import {
   useCreateProductMutation,
   useCreateProductVariantMutation,
@@ -75,12 +74,6 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         const response = await createProduct({
           variables: data,
         });
-
-        toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
-          duration: 6000,
-          icon: "👍",
-        });
-        console.log(response.data);
 
         setLoading(loading);
         return response.data;

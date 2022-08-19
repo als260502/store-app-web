@@ -9,6 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Button } from "../Button";
 import { Input } from "../FormComponents/Input";
 import { Header } from "../Header";
+import { formatTelephone } from "../../utils/formatSlug";
 
 interface CreateUserFormData {
   name: string;
@@ -43,9 +44,14 @@ export const CreateComponent = () => {
   const handleCreateUser: SubmitHandler<
     CreateUserFormData
   > = async formData => {
+    const data = {
+      ...formData,
+      phones: formatTelephone(formData.phones),
+    };
+
     try {
       await createStoreUser({
-        variables: formData,
+        variables: data,
       });
 
       toast.success("Cadastrado com sucesso");

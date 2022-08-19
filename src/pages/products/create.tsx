@@ -14,7 +14,7 @@ import { Sidebar } from "../../components/Sidebar";
 import { Header } from "../../components/Header";
 import { Button } from "../../components/Button";
 
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import {
   useGetCategoryByIdQuery,
@@ -78,6 +78,12 @@ const Create: NextPage = () => {
       };
 
       const response = await addProduct(newProduct);
+
+      if (response)
+        toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
+          duration: 6000,
+          icon: "👍",
+        });
 
       reset();
 
@@ -164,9 +170,11 @@ const Create: NextPage = () => {
                       error={errors.price}
                       name="price"
                       label="Valor unitário"
-                      type="text"
+                      type="number"
                       placeholder="0,00"
                       className="input input-price"
+                      step="0.01"
+                      min="0"
                     />
                   </div>
                   <Input
