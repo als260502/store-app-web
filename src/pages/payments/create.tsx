@@ -13,9 +13,11 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { Search } from "../../components/Search";
 import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
-import { Ladder } from "phosphor-react";
+import { CreditCard, Ladder, Wallet } from "phosphor-react";
 import { catchError, CustomError } from "../../utils/errorHandle";
 import { Props } from "../../components/OrderComponents/ProductItem";
+import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
+import { SidebarLink } from "../../components/Sidebar/SidebarLink";
 
 type StoreUser = {
   id: string;
@@ -87,11 +89,7 @@ const Create: NextPage = () => {
   const [updateOrder, { loading }] = useUpdateOrderByIdMutation();
   const handleUpdateOrderValue = useCallback(
     async (id: string) => {
-      console.log(id);
-
       const orderId = id;
-
-      console.log(orderId);
 
       try {
         if (!paymentValue)
@@ -132,7 +130,23 @@ const Create: NextPage = () => {
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
-        <Sidebar />
+        <Sidebar>
+          <SidebarHeader header="Produtos">
+            <SidebarLink
+              linkUrl="/orders/create"
+              linkName="Novo Pedido"
+              icon={<CreditCard size={18} />}
+            />
+            <SidebarLink
+              linkUrl="/payments/create"
+              linkName="Pagamento"
+              icon={<Wallet size={18} />}
+            />
+
+            <SidebarLink linkUrl="/categories/create" linkName="Produtos" />
+            <SidebarLink linkUrl="/users/create" linkName="Cadastros" />
+          </SidebarHeader>
+        </Sidebar>
 
         <main className="h-full w-full w-min[600px]">
           <Search />

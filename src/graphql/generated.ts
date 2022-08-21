@@ -11960,10 +11960,12 @@ export type GetColorVariantQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetColorVariantQuery = { productColorVariants: Array<{ id: string, name: string }> };
 
-export type GetCompanyQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetCompanyDataQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
 
 
-export type GetCompanyQuery = { companies: Array<{ id: string, name?: string | null, logo?: { url: string } | null }> };
+export type GetCompanyDataQuery = { company?: { cnpj?: string | null, name?: string | null, id: string, logo?: { url: string } | null } | null };
 
 export type GetOrdersByStoreUserIdQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -12646,44 +12648,46 @@ export function useGetColorVariantLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetColorVariantQueryHookResult = ReturnType<typeof useGetColorVariantQuery>;
 export type GetColorVariantLazyQueryHookResult = ReturnType<typeof useGetColorVariantLazyQuery>;
 export type GetColorVariantQueryResult = Apollo.QueryResult<GetColorVariantQuery, GetColorVariantQueryVariables>;
-export const GetCompanyDocument = gql`
-    query GetCompany {
-  companies {
-    id
+export const GetCompanyDataDocument = gql`
+    query GetCompanyData($id: ID!) {
+  company(where: {id: $id}) {
+    cnpj
     name
     logo {
       url
     }
+    id
   }
 }
     `;
 
 /**
- * __useGetCompanyQuery__
+ * __useGetCompanyDataQuery__
  *
- * To run a query within a React component, call `useGetCompanyQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCompanyDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompanyDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCompanyQuery({
+ * const { data, loading, error } = useGetCompanyDataQuery({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetCompanyQuery(baseOptions?: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+export function useGetCompanyDataQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyDataQuery, GetCompanyDataQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
+        return Apollo.useQuery<GetCompanyDataQuery, GetCompanyDataQueryVariables>(GetCompanyDataDocument, options);
       }
-export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
+export function useGetCompanyDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyDataQuery, GetCompanyDataQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
+          return Apollo.useLazyQuery<GetCompanyDataQuery, GetCompanyDataQueryVariables>(GetCompanyDataDocument, options);
         }
-export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
-export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
-export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
+export type GetCompanyDataQueryHookResult = ReturnType<typeof useGetCompanyDataQuery>;
+export type GetCompanyDataLazyQueryHookResult = ReturnType<typeof useGetCompanyDataLazyQuery>;
+export type GetCompanyDataQueryResult = Apollo.QueryResult<GetCompanyDataQuery, GetCompanyDataQueryVariables>;
 export const GetOrdersByStoreUserIdDocument = gql`
     query GetOrdersByStoreUserId($id: ID!) {
   orders(where: {storeUser: {id: $id}}, orderBy: createdAt_ASC) {

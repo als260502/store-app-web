@@ -16,6 +16,7 @@ import {
   useGetStoreUsersQuery,
   useRemoveOrderItemMutation,
   useRemoveOrderMutation,
+  useUpdateOrderByIdMutation,
   useUpdateProductQuantityMutation,
 } from "../../graphql/generated";
 import toast, { Toaster } from "react-hot-toast";
@@ -24,6 +25,9 @@ import {
   Props,
 } from "../../components/OrderComponents/ProductItem";
 import { Search } from "../../components/Search";
+import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
+import { SidebarLink } from "../../components/Sidebar/SidebarLink";
+import { CreditCard, Wallet } from "phosphor-react";
 
 type OrderProps = {
   id?: string;
@@ -55,6 +59,8 @@ const Create: NextPage = () => {
   const [usersSuggestions, setUsersSuggestions] = useState<
     StoreUser[] | undefined
   >([]);
+
+  const [hasOpenOrder, setHasOpenOrder] = useState(false);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [productText, setProductText] = useState("");
@@ -169,17 +175,21 @@ const Create: NextPage = () => {
     [order]
   );
 
-  const handleCloseOrder = useCallback(() => {
-    console.log("close");
-    setOrder({
-      ...order,
-      id: undefined,
-    });
-    setOrderItems([]);
-    setUserText("");
-    setProductText("");
-    setLoading(false);
-  }, [order]);
+  const handleCloseOrder = useCallback(async () => {
+    updateTotalOrder();
+    // const emptyOrder = {} as OrderProps;
+
+    // setOrder(Object.assign(order, emptyOrder));
+    // const items = orderItems.filter(item => item.id === "10");
+
+    // setOrderItems(prev => items);
+    // setHasOpenOrder(false);
+    // refetchProduct();
+    // setProductText("");
+    // setUserText("");
+    // setLoading(false);
+    window.location.reload();
+  }, [orderItems]);
 
   const [createOrder] = useCreateOrderMutation();
   const [createOrderItem] = useCreateOrderItemMutation();
@@ -242,7 +252,7 @@ const Create: NextPage = () => {
       const updatedQuantity = Number(order.product?.quantity) - quantity;
 
       try {
-        if (!order.id) {
+        if (!hasOpenOrder) {
           const newOrder = {
             total: newTotal,
             userId: order?.user?.id,
@@ -252,11 +262,8 @@ const Create: NextPage = () => {
             userEmail: String(order.user.email),
           };
 
-          console.log("adicionar ordem e pedido ", newOrder);
-
+          //console.log("adicionar ordem e pedido ", newOrder);
           setOrder(Object.assign(order, newOrder));
-
-          //console.log(newOrder);
 
           const response = await createOrder({
             variables: newOrder,
@@ -286,12 +293,14 @@ const Create: NextPage = () => {
           toast.success("Pedido aberto, item adicionado");
           setLoading(false);
 
-          await updateProduct({
-            variables: {
-              id: newOrder.productId,
-              quantity: updatedQuantity,
-            },
-          });
+          // await updateProduct({
+          //   variables: {
+          //     id: newOrder.productId,
+          //     quantity: updatedQuantity,
+          //   },
+          // });
+
+          setHasOpenOrder(true);
 
           return;
         } else {
@@ -301,8 +310,6 @@ const Create: NextPage = () => {
             quantity: quantity,
             itemTotal: totalOrder,
           };
-
-          console.log("adicionar item", newItem);
 
           const response = await createOrderItem({
             variables: newItem,
@@ -319,14 +326,15 @@ const Create: NextPage = () => {
             productId,
           };
 
-          await updateProduct({
-            variables: {
-              id: order.product.id,
-              quantity: updatedQuantity,
-            },
-          });
+          // await updateProduct({
+          //   variables: {
+          //     id: order.product.id,
+          //     quantity: updatedQuantity,
+          //   },
+          // });
 
           setOrderItems([...orderItems, myItem]);
+          await updateTotalOrder();
         }
       } catch (error) {
         toast.error("Erro ao adicionar pedido");
@@ -373,6 +381,7 @@ const Create: NextPage = () => {
           });
 
           handleCloseOrder();
+          return;
         } else {
           removeItem({
             variables: {
@@ -392,6 +401,7 @@ const Create: NextPage = () => {
           orderItem => item.id !== orderItem.id
         );
 
+        await updateTotalOrder();
         setOrderItems(filteredItems);
         setProductText("");
 
@@ -419,6 +429,27 @@ const Create: NextPage = () => {
     currency: "BRL",
   }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
 
+  const [updateOrderbyId] = useUpdateOrderByIdMutation();
+  const updateTotalOrder = useCallback(async () => {
+    try {
+      const setTotalOrder = orderItems.reduce(
+        (prev, acc) => prev + acc.total,
+        0
+      );
+
+      const response = await updateOrderbyId({
+        variables: {
+          orderId: String(order.id),
+          orderValue: setTotalOrder,
+          total: setTotalOrder,
+        },
+      });
+      console.log(setTotalOrder, response.data);
+    } catch (error) {
+      console.error("update total order", error);
+    }
+  }, [updateOrderbyId, orderItems]);
+
   const handleChangeOrderType = useCallback(() => {
     setOrderType(Boolean(orderTypeRef?.current?.checked));
   }, []);
@@ -426,7 +457,23 @@ const Create: NextPage = () => {
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
-        <Sidebar />
+        <Sidebar>
+          <SidebarHeader header="Produtos">
+            <SidebarLink
+              linkUrl="/orders/create"
+              linkName="Novo Pedido"
+              icon={<CreditCard size={18} />}
+            />
+            <SidebarLink
+              linkUrl="/payments/create"
+              linkName="Pagamento"
+              icon={<Wallet size={18} />}
+            />
+
+            <SidebarLink linkUrl="/categories/create" linkName="Produtos" />
+            <SidebarLink linkUrl="/users/create" linkName="Cadastros" />
+          </SidebarHeader>
+        </Sidebar>
 
         <main className="h-full w-full w-min[600px]">
           <Search />

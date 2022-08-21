@@ -18,6 +18,9 @@ import { Button } from "../../components/Button";
 
 import { useProduct } from "../../context/ProductContext";
 import { Search } from "../../components/Search";
+import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
+import { SidebarLink } from "../../components/Sidebar/SidebarLink";
+import { Browsers, Palette, TShirt } from "phosphor-react";
 
 type FormData = {
   color: string;
@@ -85,7 +88,29 @@ const Create: NextPage = () => {
     <>
       <div className="w-full h-full items-center mt-20 justify-center ">
         <div className="flex w-[900px] mx-auto flex-row p-4">
-          <Sidebar />
+          <Sidebar>
+            <SidebarHeader header="Produtos">
+              <SidebarLink
+                linkUrl="/categories/create"
+                linkName="Categoria"
+                icon={<Browsers size={18} />}
+              />
+              <SidebarLink
+                linkUrl="/variants/create"
+                linkName="Cor|Tamanho"
+                icon={<Palette size={18} />}
+              />
+
+              <SidebarLink
+                linkUrl="/products/add"
+                linkName="Novo produto"
+                icon={<TShirt size={18} />}
+              />
+
+              <SidebarLink linkName={"Cadastros"} linkUrl={"/users/create"} />
+              <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/create"} />
+            </SidebarHeader>
+          </Sidebar>
 
           <main className="w-full h-full min-w-[600px]">
             <Search />

@@ -1,9 +1,10 @@
-query GetCompany {
-  companies {
-    id
+query GetCompanyData($id: ID!) {
+  company(where: { id: $id }) {
+    cnpj
     name
     logo {
       url
     }
+    id
   }
 }
