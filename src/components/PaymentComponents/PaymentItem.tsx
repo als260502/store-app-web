@@ -1,11 +1,10 @@
-import { memo, useCallback, useEffect, useState } from "react";
+/* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+import { memo } from "react";
 import { Button } from "../Button";
 
 import { format } from "date-fns";
 import ptBr from "date-fns/locale/pt-BR";
-import toast, { Toaster } from "react-hot-toast";
-import { useUpdateOrderByIdMutation } from "../../graphql/generated";
-import { catchError, CustomError } from "../../utils/errorHandle";
+import { Toaster } from "react-hot-toast";
 
 type Props = {
   id: string;
@@ -16,7 +15,7 @@ type Props = {
 
 export type PaymentItemProps = {
   paymentItem: Props[] | undefined;
-
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   handleUpdateOrderValue: (id: string) => void;
   loading: boolean;
 };

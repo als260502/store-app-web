@@ -1,12 +1,9 @@
-/* eslint-disable no-unused-vars */
-
+/* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
 import { useCallback, useEffect, useState } from "react";
 import {
   GetStoreUsersQuery,
   useGetStoreUsersQuery,
 } from "../../graphql/generated";
-import { Button } from "../Button";
-import { Header } from "../Header";
 
 interface SearchProps {
   email: "string";

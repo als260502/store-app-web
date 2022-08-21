@@ -72,7 +72,7 @@ const Create: NextPage = () => {
   const [total, setTotal] = useState(0);
 
   const [orderType, setOrderType] = useState(false);
-  const orderValueRef = useRef<HTMLInputElement>(0);
+  const orderValueRef = useRef<HTMLInputElement>(null);
   const orderTypeRef = useRef<HTMLInputElement>(null);
 
   const { data: productData, refetch: refetchProduct } =
@@ -175,6 +175,26 @@ const Create: NextPage = () => {
     [order]
   );
 
+  const [updateOrderbyId] = useUpdateOrderByIdMutation();
+  const updateTotalOrder = useCallback(async () => {
+    try {
+      const setTotalOrder = orderItems.reduce(
+        (prev, acc) => prev + acc.total,
+        0
+      );
+
+      await updateOrderbyId({
+        variables: {
+          orderId: String(order.id),
+          orderValue: setTotalOrder,
+          total: setTotalOrder,
+        },
+      });
+    } catch (error) {
+      console.error("update total order", error);
+    }
+  }, [updateOrderbyId, orderItems, order?.id]);
+
   const handleCloseOrder = useCallback(async () => {
     updateTotalOrder();
     // const emptyOrder = {} as OrderProps;
@@ -189,7 +209,7 @@ const Create: NextPage = () => {
     // setUserText("");
     // setLoading(false);
     window.location.reload();
-  }, [orderItems]);
+  }, [updateTotalOrder]);
 
   const [createOrder] = useCreateOrderMutation();
   const [createOrderItem] = useCreateOrderItemMutation();
@@ -203,22 +223,24 @@ const Create: NextPage = () => {
 
       if (orderType) {
         try {
-          const totalOrder = parseFloat(orderValueRef.current.value);
+          if (orderValueRef.current) {
+            const totalOrder = parseFloat(orderValueRef?.current.value);
 
-          await createSingleOrder({
-            variables: {
-              total: totalOrder,
-              orderValue: totalOrder,
-              stripeCheckout: uuid(),
-              userEmail: order.user.email,
-              userId: order.user.id,
-            },
-          });
+            await createSingleOrder({
+              variables: {
+                total: totalOrder,
+                orderValue: totalOrder,
+                stripeCheckout: uuid(),
+                userEmail: order.user.email,
+                userId: order.user.id,
+              },
+            });
 
-          orderValueRef.current.value = "";
-          setUserText("");
-          toast.success("Pedido de Ordem avulsa criada com sucesso!");
-          return;
+            orderValueRef.current.value = "";
+            setUserText("");
+            toast.success("Pedido de Ordem avulsa criada com sucesso!");
+            return;
+          }
         } catch (error) {
           console.error("criando ordem avulsa", error);
         } finally {
@@ -293,12 +315,12 @@ const Create: NextPage = () => {
           toast.success("Pedido aberto, item adicionado");
           setLoading(false);
 
-          // await updateProduct({
-          //   variables: {
-          //     id: newOrder.productId,
-          //     quantity: updatedQuantity,
-          //   },
-          // });
+          await updateProduct({
+            variables: {
+              id: newOrder.productId,
+              quantity: updatedQuantity,
+            },
+          });
 
           setHasOpenOrder(true);
 
@@ -326,12 +348,12 @@ const Create: NextPage = () => {
             productId,
           };
 
-          // await updateProduct({
-          //   variables: {
-          //     id: order.product.id,
-          //     quantity: updatedQuantity,
-          //   },
-          // });
+          await updateProduct({
+            variables: {
+              id: order.product.id,
+              quantity: updatedQuantity,
+            },
+          });
 
           setOrderItems([...orderItems, myItem]);
           await updateTotalOrder();
@@ -346,6 +368,8 @@ const Create: NextPage = () => {
       }
     },
     [
+      hasOpenOrder,
+      updateTotalOrder,
       createOrder,
       createOrderItem,
       createSingleOrder,
@@ -413,6 +437,7 @@ const Create: NextPage = () => {
       }
     },
     [
+      updateTotalOrder,
       handleCloseOrder,
       loading,
       order.id,
@@ -428,27 +453,6 @@ const Create: NextPage = () => {
     style: "currency",
     currency: "BRL",
   }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
-
-  const [updateOrderbyId] = useUpdateOrderByIdMutation();
-  const updateTotalOrder = useCallback(async () => {
-    try {
-      const setTotalOrder = orderItems.reduce(
-        (prev, acc) => prev + acc.total,
-        0
-      );
-
-      const response = await updateOrderbyId({
-        variables: {
-          orderId: String(order.id),
-          orderValue: setTotalOrder,
-          total: setTotalOrder,
-        },
-      });
-      console.log(setTotalOrder, response.data);
-    } catch (error) {
-      console.error("update total order", error);
-    }
-  }, [updateOrderbyId, orderItems]);
 
   const handleChangeOrderType = useCallback(() => {
     setOrderType(Boolean(orderTypeRef?.current?.checked));

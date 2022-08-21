@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import Image from "next/image";
 import { CaretDown } from "phosphor-react";
 
 type Props = {
@@ -7,7 +6,6 @@ type Props = {
 };
 
 /* eslint-disable @next/next/no-img-element */
-import logo from "../../assets/logo-rounded.png";
 import { useCompany } from "../../context/CompanyContext";
 export const Sidebar = ({ children }: Props) => {
   const { company } = useCompany();

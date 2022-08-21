@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 
 import { Header } from "../../components/Header";
@@ -13,9 +13,8 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { Search } from "../../components/Search";
 import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
-import { CreditCard, Ladder, Wallet } from "phosphor-react";
+import { CreditCard, Wallet } from "phosphor-react";
 import { catchError, CustomError } from "../../utils/errorHandle";
-import { Props } from "../../components/OrderComponents/ProductItem";
 import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
 import { SidebarLink } from "../../components/Sidebar/SidebarLink";
 
