@@ -3,10 +3,10 @@ import { Search } from "../../components/Search";
 import { Sidebar } from "../../components/Sidebar";
 import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
 import { SidebarLink } from "../../components/Sidebar/SidebarLink";
-import { CreateComponent } from "../../components/User/create";
+import { CreateComponent } from "../../components/Provider/CreateComponent";
 import { Storefront, UserCirclePlus } from "phosphor-react";
 
-const Create: NextPage = () => {
+const Provider: NextPage = () => {
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
@@ -37,4 +37,4 @@ const Create: NextPage = () => {
   );
 };
 
-export default Create;
+export default Provider;
