@@ -165,7 +165,7 @@ const Create: NextPage = () => {
 
   const handleGetProductId = useCallback(
     (product: Suggestion) => {
-      setProductText(`${product.name} ${product.color} ${product.size}`);
+      setProductText(`${product.name}`);
       const newOrder = {
         product,
       };
