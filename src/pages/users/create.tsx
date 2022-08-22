@@ -23,7 +23,7 @@ const Create: NextPage = () => {
           </SidebarHeader>
         </Sidebar>
 
-        <main className="h-full w-full w-min[600px]">
+        <main className="min-h-[65vh] w-full w-min[600px]">
           <Search />
           <CreateComponent />
         </main>

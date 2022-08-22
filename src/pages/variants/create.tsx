@@ -114,7 +114,7 @@ const Create: NextPage = () => {
 
           <main className="w-full h-full min-w-[600px]">
             <Search />
-            <div className="bg-gray-200 min-h-[60vh] ">
+            <div className="bg-gray-200 min-h-[65vh] ">
               <div className="p-8">
                 <div>
                   <Header title="Variantes - Cor/Tamanho " loading={loading} />
