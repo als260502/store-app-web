@@ -41,12 +41,21 @@ export const CompanyProvider = ({ children }: CompanyProviderProps) => {
             },
           });
 
-          const companyData = {
-            id: String(response?.data?.company?.id),
-            name: String(response?.data?.company?.name),
-            logoUrl: String(response.data?.company?.logo?.url),
-          };
+          let companyData = {} as CompanyProps;
 
+          if (response.data?.company?.name) {
+            companyData = {
+              id: String(response?.data?.company?.id),
+              name: String(response?.data?.company?.name),
+              logoUrl: String(response.data?.company?.logo?.url),
+            };
+          } else {
+            companyData = {
+              id: "",
+              name: "Minha Loja",
+              logoUrl: "/img/logo.jpg",
+            };
+          }
           setCookie(undefined, "@company.name", companyData.name, {
             maxAge: 60 * 60 * 24 * 30, //30 dias
             path: "/",

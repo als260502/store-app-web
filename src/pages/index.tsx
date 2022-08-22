@@ -11,8 +11,8 @@ const Home: NextPage = () => {
     <div className="w-full h-[100vh] flex items-center justify-center text-gray-600">
       <div className="w-[400px] bg-gray-200 bg-opacity-75 h-[500px] rounded-md p-8">
         <div className="flex flex-col items-center w-full">
-          <div className="w-36 rounded-full overflow-hidden border border-blue-400 shadow-xl">
-            <img src={logo} alt="Logo" width={150} height={150} />
+          <div className="w-32 h-32 rounded-full flex justify-center items-stretch overflow-hidden border border-blue-400 shadow-xl">
+            <img src={logo} alt="Logo" />
           </div>
           <header className="text-2xl mt-4 font-bold">{company?.name}</header>
         </div>
