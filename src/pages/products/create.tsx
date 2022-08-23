@@ -27,7 +27,8 @@ import { SidebarLink } from "../../components/Sidebar/SidebarLink";
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
   description: yup.string().required("Descrição obrigatória"),
-  price: yup.string().required("Preço do produto e obrigatório"),
+  price: yup.string().required("Preço do produto é obrigatório"),
+  sellPrice: yup.string().required("Preço de venda do produto é obrigatório"),
   quantity: yup.string().required("Informe a quantidade em estoque"),
 });
 
@@ -73,6 +74,7 @@ const Create: NextPage = () => {
         slug: "",
         description: values.description,
         price: values.price,
+        sellPrice: values.sellPrice,
         quantity: values.quantity,
         categories: String(categoryData?.category?.id),
         color: String(colorData?.productColorVariant?.id),
@@ -170,7 +172,7 @@ const Create: NextPage = () => {
                     name="name"
                     label="Nome"
                     type="text"
-                    placeholder="Nike Air Max"
+                    placeholder="Nome do produto"
                     className="input input-text"
                   />
 
@@ -180,7 +182,7 @@ const Create: NextPage = () => {
                     name="description"
                     label="Descrição"
                     type="text"
-                    placeholder="Calçado leve e confortável"
+                    placeholder="Descrição do produto"
                     className="input input-text"
                   />
 
@@ -200,6 +202,15 @@ const Create: NextPage = () => {
                       min="0"
                     />
                   </div>
+                  <Input
+                    {...register("sellPrice")}
+                    error={errors.sellPrice}
+                    name="sellPrice"
+                    label="Preço de venda"
+                    type="number"
+                    placeholder="19,90"
+                    className="input input-text"
+                  />
                   <Input
                     {...register("quantity")}
                     error={errors.quantity}

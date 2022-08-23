@@ -39,6 +39,7 @@ export type ProductProps = {
   slug: string;
   description: string;
   price: number;
+  sellPrice: number;
   quantity: number;
   categories: string;
   color: string;
