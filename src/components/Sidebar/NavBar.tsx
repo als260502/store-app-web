@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState } from "react";
 
 export const NavBar = () => {
@@ -5,9 +6,11 @@ export const NavBar = () => {
 
   return (
     <div className="flex items-center justify-between bg-white border-b border-gray-400 py-8">
-      <a href="/">
-        <img src="https://designbygio.it/images/logo.png" alt="logo" />
-      </a>
+      <Link href="/">
+        <a>
+          <img src="https://designbygio.it/images/logo.png" alt="logo" />
+        </a>
+      </Link>
       <nav>
         <section className="MOBILE-MENU flex md:hidden">
           <div

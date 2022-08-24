@@ -13,6 +13,7 @@ import {
   useCreateProductColorMutation,
   useCreateProductSizeMutation,
 } from "../graphql/generated";
+import { CustomError } from "../utils/errorHandle";
 import { formatSlug } from "../utils/formatSlug";
 
 interface ProductProviderProps {
@@ -91,6 +92,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
 
   const addProduct = useCallback(
     async (productData: ProductProps): Promise<ProductProps> => {
+      setLoading(loading => !loading);
       try {
         const formattedSlug = formatSlug(String(productData.name));
 
@@ -112,12 +114,16 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
 
         setProduct(newProduct);
 
-        await createNewProduct(newProduct);
-
+        const response = await createNewProduct(newProduct);
+        if (!response?.createProduct?.id) {
+          throw new CustomError("Falha ao adicionar produto");
+        }
         return newProduct;
       } catch (error) {
         console.error(error);
         throw error;
+      } finally {
+        setLoading(false);
       }
     },
     [createNewProduct]
