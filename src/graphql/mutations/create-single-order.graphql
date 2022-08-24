@@ -4,11 +4,15 @@ mutation CreateSingleOrder(
   $stripeCheckout: String!
   $userEmail: String!
   $userId: ID!
+  $parcel: Int
+  $paymentType: String
 ) {
   createOrder(
     data: {
       total: $total
       stripeCheckoutId: $stripeCheckout
+      parcel: $parcel
+      paymentType: $paymentType
       orderValue: $orderValue
       userEmail: $userEmail
       storeUser: { connect: { id: $userId } }

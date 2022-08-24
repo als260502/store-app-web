@@ -186,17 +186,21 @@ const Create: NextPage = () => {
                     }}
                   />
                 </div>
-
-                <input
-                  className="input px-2"
-                  placeholder="Valor do pagamento ex: 196,90"
-                  type="number"
-                  name="payment"
-                  step="0.01"
-                  min="0"
-                  onChange={e => setPaymentValue(e.target.value)}
-                  value={paymentValue}
-                />
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-[1rem]  left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-400 text-xs font-bold">R$</span>
+                  </div>
+                  <input
+                    className="input input-price w-full"
+                    placeholder="Valor do pagamento ex: 196,90"
+                    type="number"
+                    name="payment"
+                    step="0.01"
+                    min="0"
+                    onChange={e => setPaymentValue(e.target.value)}
+                    value={paymentValue}
+                  />
+                </div>
               </div>
               {ordersData && (
                 <PaymentItem

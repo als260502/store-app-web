@@ -5,6 +5,8 @@ mutation CreateOrder(
   $totalItem: Float!
   $productId: ID!
   $userEmail: String
+  $parcel: Int
+  $paymentType: String
 ) {
   createOrder(
     data: {
@@ -12,6 +14,8 @@ mutation CreateOrder(
       total: $total
       orderValue: $total
       stripeCheckoutId: "FFF"
+      parcel: $parcel
+      paymentType: $paymentType
       storeUser: { connect: { id: $userId } }
       orderItems: {
         create: {

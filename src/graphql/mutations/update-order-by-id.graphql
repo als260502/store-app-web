@@ -1,11 +1,31 @@
-mutation UpdateOrderById($orderId: ID!, $total: Float, $orderValue: Float) {
+mutation UpdateOrderById(
+  $orderId: ID!
+  $total: Float
+  $orderValue: Float
+  $paymentType: String
+  $stripeCheckoutId: String
+  $parcel: Int
+  $userEmail: String
+) {
   updateOrder(
-    data: { total: $total, orderValue: $orderValue }
+    data: {
+      total: $total
+      orderValue: $orderValue
+      parcel: $parcel
+      paymentType: $paymentType
+      stripeCheckoutId: $stripeCheckoutId
+      userEmail: $userEmail
+    }
     where: { id: $orderId }
   ) {
     orderValue
     total
     userEmail
+    parcel
+    paymentType
+    id
+    createdAt
+    stripeCheckoutId
     storeUser {
       id
     }

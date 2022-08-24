@@ -5642,6 +5642,8 @@ export type Order = Node & {
   localizations: Array<Order>;
   orderItems: Array<OrderItem>;
   orderValue: Scalars['Float'];
+  parcel?: Maybe<Scalars['Int']>;
+  paymentType?: Maybe<Scalars['String']>;
   /** The time the document was published. Null on documents in draft stage. */
   publishedAt?: Maybe<Scalars['DateTime']>;
   /** User that last published this document */
@@ -5760,6 +5762,8 @@ export type OrderCreateInput = {
   orderItems?: InputMaybe<OrderItemCreateManyInlineInput>;
   /** orderValue input for default locale (pt_BR) */
   orderValue: Scalars['Float'];
+  parcel?: InputMaybe<Scalars['Int']>;
+  paymentType?: InputMaybe<Scalars['String']>;
   storeUser?: InputMaybe<StoreUserCreateOneInlineInput>;
   stripeCheckoutId: Scalars['String'];
   /** total input for default locale (pt_BR) */
@@ -6376,6 +6380,40 @@ export type OrderManyWhereInput = {
   orderItems_every?: InputMaybe<OrderItemWhereInput>;
   orderItems_none?: InputMaybe<OrderItemWhereInput>;
   orderItems_some?: InputMaybe<OrderItemWhereInput>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  parcel_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  parcel_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  parcel_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  /** All values less than the given value. */
+  parcel_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  parcel_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  parcel_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  parcel_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  paymentType?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  paymentType_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  paymentType_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  paymentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** All values that are not equal to given value. */
+  paymentType_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  paymentType_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  paymentType_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  paymentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** All values not starting with the given string. */
+  paymentType_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  paymentType_starts_with?: InputMaybe<Scalars['String']>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -6459,6 +6497,10 @@ export enum OrderOrderByInput {
   IdDesc = 'id_DESC',
   OrderValueAsc = 'orderValue_ASC',
   OrderValueDesc = 'orderValue_DESC',
+  ParcelAsc = 'parcel_ASC',
+  ParcelDesc = 'parcel_DESC',
+  PaymentTypeAsc = 'paymentType_ASC',
+  PaymentTypeDesc = 'paymentType_DESC',
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
   StripeCheckoutIdAsc = 'stripeCheckoutId_ASC',
@@ -6477,6 +6519,8 @@ export type OrderUpdateInput = {
   orderItems?: InputMaybe<OrderItemUpdateManyInlineInput>;
   /** orderValue input for default locale (pt_BR) */
   orderValue?: InputMaybe<Scalars['Float']>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  paymentType?: InputMaybe<Scalars['String']>;
   storeUser?: InputMaybe<StoreUserUpdateOneInlineInput>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
   /** total input for default locale (pt_BR) */
@@ -6526,6 +6570,8 @@ export type OrderUpdateManyInput = {
   localizations?: InputMaybe<OrderUpdateManyLocalizationsInput>;
   /** orderValue input for default locale (pt_BR) */
   orderValue?: InputMaybe<Scalars['Float']>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  paymentType?: InputMaybe<Scalars['String']>;
   stripeCheckoutId?: InputMaybe<Scalars['String']>;
   /** total input for default locale (pt_BR) */
   total?: InputMaybe<Scalars['Float']>;
@@ -6659,6 +6705,40 @@ export type OrderWhereInput = {
   orderValue_not?: InputMaybe<Scalars['Float']>;
   /** All values that are not contained in given list. */
   orderValue_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  parcel_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  parcel_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  parcel_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  /** All values less than the given value. */
+  parcel_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  parcel_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  parcel_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  parcel_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  paymentType?: InputMaybe<Scalars['String']>;
+  /** All values containing the given string. */
+  paymentType_contains?: InputMaybe<Scalars['String']>;
+  /** All values ending with the given string. */
+  paymentType_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are contained in given list. */
+  paymentType_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** All values that are not equal to given value. */
+  paymentType_not?: InputMaybe<Scalars['String']>;
+  /** All values not containing the given string. */
+  paymentType_not_contains?: InputMaybe<Scalars['String']>;
+  /** All values not ending with the given string */
+  paymentType_not_ends_with?: InputMaybe<Scalars['String']>;
+  /** All values that are not contained in given list. */
+  paymentType_not_in?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  /** All values not starting with the given string. */
+  paymentType_not_starts_with?: InputMaybe<Scalars['String']>;
+  /** All values starting with the given string. */
+  paymentType_starts_with?: InputMaybe<Scalars['String']>;
   publishedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   publishedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -6799,6 +6879,7 @@ export type Product = Node & {
   quantity: Scalars['Int'];
   reviews: Array<Review>;
   scheduledIn: Array<ScheduledOperation>;
+  sellPrice: Scalars['Float'];
   size: Array<ProductSizeVariant>;
   slug: Scalars['String'];
   /** System stage field */
@@ -7407,6 +7488,7 @@ export type ProductCreateInput = {
   price: Scalars['Float'];
   quantity: Scalars['Int'];
   reviews?: InputMaybe<ReviewCreateManyInlineInput>;
+  sellPrice: Scalars['Float'];
   size?: InputMaybe<ProductSizeVariantCreateManyInlineInput>;
   /** slug input for default locale (pt_BR) */
   slug: Scalars['String'];
@@ -7552,6 +7634,21 @@ export type ProductManyWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
+  sellPrice?: InputMaybe<Scalars['Float']>;
+  /** All values greater than the given value. */
+  sellPrice_gt?: InputMaybe<Scalars['Float']>;
+  /** All values greater than or equal the given value. */
+  sellPrice_gte?: InputMaybe<Scalars['Float']>;
+  /** All values that are contained in given list. */
+  sellPrice_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  /** All values less than the given value. */
+  sellPrice_lt?: InputMaybe<Scalars['Float']>;
+  /** All values less than or equal the given value. */
+  sellPrice_lte?: InputMaybe<Scalars['Float']>;
+  /** All values that are not equal to given value. */
+  sellPrice_not?: InputMaybe<Scalars['Float']>;
+  /** All values that are not contained in given list. */
+  sellPrice_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   size_every?: InputMaybe<ProductSizeVariantWhereInput>;
   size_none?: InputMaybe<ProductSizeVariantWhereInput>;
   size_some?: InputMaybe<ProductSizeVariantWhereInput>;
@@ -7588,6 +7685,8 @@ export enum ProductOrderByInput {
   PublishedAtDesc = 'publishedAt_DESC',
   QuantityAsc = 'quantity_ASC',
   QuantityDesc = 'quantity_DESC',
+  SellPriceAsc = 'sellPrice_ASC',
+  SellPriceDesc = 'sellPrice_DESC',
   SlugAsc = 'slug_ASC',
   SlugDesc = 'slug_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
@@ -8030,6 +8129,7 @@ export type ProductUpdateInput = {
   price?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
   reviews?: InputMaybe<ReviewUpdateManyInlineInput>;
+  sellPrice?: InputMaybe<Scalars['Float']>;
   size?: InputMaybe<ProductSizeVariantUpdateManyInlineInput>;
   /** slug input for default locale (pt_BR) */
   slug?: InputMaybe<Scalars['String']>;
@@ -8084,6 +8184,7 @@ export type ProductUpdateManyInput = {
   /** price input for default locale (pt_BR) */
   price?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
+  sellPrice?: InputMaybe<Scalars['Float']>;
 };
 
 export type ProductUpdateManyLocalizationDataInput = {
@@ -8301,6 +8402,21 @@ export type ProductWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
+  sellPrice?: InputMaybe<Scalars['Float']>;
+  /** All values greater than the given value. */
+  sellPrice_gt?: InputMaybe<Scalars['Float']>;
+  /** All values greater than or equal the given value. */
+  sellPrice_gte?: InputMaybe<Scalars['Float']>;
+  /** All values that are contained in given list. */
+  sellPrice_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
+  /** All values less than the given value. */
+  sellPrice_lt?: InputMaybe<Scalars['Float']>;
+  /** All values less than or equal the given value. */
+  sellPrice_lte?: InputMaybe<Scalars['Float']>;
+  /** All values that are not equal to given value. */
+  sellPrice_not?: InputMaybe<Scalars['Float']>;
+  /** All values that are not contained in given list. */
+  sellPrice_not_in?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   size_every?: InputMaybe<ProductSizeVariantWhereInput>;
   size_none?: InputMaybe<ProductSizeVariantWhereInput>;
   size_some?: InputMaybe<ProductSizeVariantWhereInput>;
@@ -11841,6 +11957,8 @@ export type CreateOrderMutationVariables = Exact<{
   totalItem: Scalars['Float'];
   productId: Scalars['ID'];
   userEmail?: InputMaybe<Scalars['String']>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  paymentType?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -11873,6 +11991,7 @@ export type CreateProductMutationVariables = Exact<{
   slug: Scalars['String'];
   description: Scalars['String'];
   price: Scalars['Float'];
+  sellPrice: Scalars['Float'];
   quantity: Scalars['Int'];
   categories?: InputMaybe<Scalars['ID']>;
   color?: InputMaybe<Scalars['ID']>;
@@ -11888,6 +12007,8 @@ export type CreateSingleOrderMutationVariables = Exact<{
   stripeCheckout: Scalars['String'];
   userEmail: Scalars['String'];
   userId: Scalars['ID'];
+  parcel?: InputMaybe<Scalars['Int']>;
+  paymentType?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -11923,10 +12044,14 @@ export type UpdateOrderByIdMutationVariables = Exact<{
   orderId: Scalars['ID'];
   total?: InputMaybe<Scalars['Float']>;
   orderValue?: InputMaybe<Scalars['Float']>;
+  paymentType?: InputMaybe<Scalars['String']>;
+  stripeCheckoutId?: InputMaybe<Scalars['String']>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  userEmail?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type UpdateOrderByIdMutation = { updateOrder?: { orderValue: number, total: number, userEmail?: string | null, storeUser?: { id: string } | null } | null };
+export type UpdateOrderByIdMutation = { updateOrder?: { orderValue: number, total: number, userEmail?: string | null, parcel?: number | null, paymentType?: string | null, id: string, createdAt: any, stripeCheckoutId: string, storeUser?: { id: string } | null } | null };
 
 export type UpdateProductQuantityMutationVariables = Exact<{
   quantity: Scalars['Int'];
@@ -11972,7 +12097,7 @@ export type GetOrdersByStoreUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersByStoreUserIdQuery = { orders: Array<{ id: string, total: number, createdAt: any, orderValue: number, storeUser?: { id: string } | null }> };
+export type GetOrdersByStoreUserIdQuery = { orders: Array<{ id: string, total: number, createdAt: any, orderValue: number, parcel?: number | null, paymentType?: string | null, storeUser?: { id: string } | null }> };
 
 export type GetProductByNameQueryVariables = Exact<{
   name: Scalars['String'];
@@ -11984,7 +12109,7 @@ export type GetProductByNameQuery = { products: Array<{ id: string, name: string
 export type GetProductsGreaterThanZeroQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProductsGreaterThanZeroQuery = { products: Array<{ id: string, name: string, description: string, price: number, quantity: number, slug: string, size: Array<{ name: string }>, color: Array<{ name: string }>, categories: Array<{ name: string }> }> };
+export type GetProductsGreaterThanZeroQuery = { products: Array<{ id: string, name: string, description: string, price: number, sellPrice: number, quantity: number, slug: string, size: Array<{ name: string }>, color: Array<{ name: string }>, categories: Array<{ name: string }> }> };
 
 export type GetProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12085,9 +12210,9 @@ export type CreateOrderItemMutationHookResult = ReturnType<typeof useCreateOrder
 export type CreateOrderItemMutationResult = Apollo.MutationResult<CreateOrderItemMutation>;
 export type CreateOrderItemMutationOptions = Apollo.BaseMutationOptions<CreateOrderItemMutation, CreateOrderItemMutationVariables>;
 export const CreateOrderDocument = gql`
-    mutation CreateOrder($total: Float!, $userId: ID, $itemQuantity: Int!, $totalItem: Float!, $productId: ID!, $userEmail: String) {
+    mutation CreateOrder($total: Float!, $userId: ID, $itemQuantity: Int!, $totalItem: Float!, $productId: ID!, $userEmail: String, $parcel: Int, $paymentType: String) {
   createOrder(
-    data: {userEmail: $userEmail, total: $total, orderValue: $total, stripeCheckoutId: "FFF", storeUser: {connect: {id: $userId}}, orderItems: {create: {quantity: $itemQuantity, total: $totalItem, product: {connect: {id: $productId}}}}}
+    data: {userEmail: $userEmail, total: $total, orderValue: $total, stripeCheckoutId: "FFF", parcel: $parcel, paymentType: $paymentType, storeUser: {connect: {id: $userId}}, orderItems: {create: {quantity: $itemQuantity, total: $totalItem, product: {connect: {id: $productId}}}}}
   ) {
     id
     orderItems {
@@ -12117,6 +12242,8 @@ export type CreateOrderMutationFn = Apollo.MutationFunction<CreateOrderMutation,
  *      totalItem: // value for 'totalItem'
  *      productId: // value for 'productId'
  *      userEmail: // value for 'userEmail'
+ *      parcel: // value for 'parcel'
+ *      paymentType: // value for 'paymentType'
  *   },
  * });
  */
@@ -12235,9 +12362,9 @@ export type CreateProductVariantMutationHookResult = ReturnType<typeof useCreate
 export type CreateProductVariantMutationResult = Apollo.MutationResult<CreateProductVariantMutation>;
 export type CreateProductVariantMutationOptions = Apollo.BaseMutationOptions<CreateProductVariantMutation, CreateProductVariantMutationVariables>;
 export const CreateProductDocument = gql`
-    mutation CreateProduct($name: String!, $slug: String!, $description: String!, $price: Float!, $quantity: Int!, $categories: ID, $color: ID, $size: ID) {
+    mutation CreateProduct($name: String!, $slug: String!, $description: String!, $price: Float!, $sellPrice: Float!, $quantity: Int!, $categories: ID, $color: ID, $size: ID) {
   createProduct(
-    data: {name: $name, slug: $slug, description: $description, price: $price, quantity: $quantity, categories: {connect: {id: $categories}}, color: {connect: {id: $color}}, size: {connect: {id: $size}}}
+    data: {name: $name, slug: $slug, description: $description, price: $price, sellPrice: $sellPrice, quantity: $quantity, categories: {connect: {id: $categories}}, color: {connect: {id: $color}}, size: {connect: {id: $size}}}
   ) {
     id
   }
@@ -12262,6 +12389,7 @@ export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutat
  *      slug: // value for 'slug'
  *      description: // value for 'description'
  *      price: // value for 'price'
+ *      sellPrice: // value for 'sellPrice'
  *      quantity: // value for 'quantity'
  *      categories: // value for 'categories'
  *      color: // value for 'color'
@@ -12277,9 +12405,9 @@ export type CreateProductMutationHookResult = ReturnType<typeof useCreateProduct
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const CreateSingleOrderDocument = gql`
-    mutation CreateSingleOrder($total: Float!, $orderValue: Float!, $stripeCheckout: String!, $userEmail: String!, $userId: ID!) {
+    mutation CreateSingleOrder($total: Float!, $orderValue: Float!, $stripeCheckout: String!, $userEmail: String!, $userId: ID!, $parcel: Int, $paymentType: String) {
   createOrder(
-    data: {total: $total, stripeCheckoutId: $stripeCheckout, orderValue: $orderValue, userEmail: $userEmail, storeUser: {connect: {id: $userId}}}
+    data: {total: $total, stripeCheckoutId: $stripeCheckout, parcel: $parcel, paymentType: $paymentType, orderValue: $orderValue, userEmail: $userEmail, storeUser: {connect: {id: $userId}}}
   ) {
     id
   }
@@ -12305,6 +12433,8 @@ export type CreateSingleOrderMutationFn = Apollo.MutationFunction<CreateSingleOr
  *      stripeCheckout: // value for 'stripeCheckout'
  *      userEmail: // value for 'userEmail'
  *      userId: // value for 'userId'
+ *      parcel: // value for 'parcel'
+ *      paymentType: // value for 'paymentType'
  *   },
  * });
  */
@@ -12429,14 +12559,19 @@ export type RemoveOrderMutationHookResult = ReturnType<typeof useRemoveOrderMuta
 export type RemoveOrderMutationResult = Apollo.MutationResult<RemoveOrderMutation>;
 export type RemoveOrderMutationOptions = Apollo.BaseMutationOptions<RemoveOrderMutation, RemoveOrderMutationVariables>;
 export const UpdateOrderByIdDocument = gql`
-    mutation UpdateOrderById($orderId: ID!, $total: Float, $orderValue: Float) {
+    mutation UpdateOrderById($orderId: ID!, $total: Float, $orderValue: Float, $paymentType: String, $stripeCheckoutId: String, $parcel: Int, $userEmail: String) {
   updateOrder(
-    data: {total: $total, orderValue: $orderValue}
+    data: {total: $total, orderValue: $orderValue, parcel: $parcel, paymentType: $paymentType, stripeCheckoutId: $stripeCheckoutId, userEmail: $userEmail}
     where: {id: $orderId}
   ) {
     orderValue
     total
     userEmail
+    parcel
+    paymentType
+    id
+    createdAt
+    stripeCheckoutId
     storeUser {
       id
     }
@@ -12461,6 +12596,10 @@ export type UpdateOrderByIdMutationFn = Apollo.MutationFunction<UpdateOrderByIdM
  *      orderId: // value for 'orderId'
  *      total: // value for 'total'
  *      orderValue: // value for 'orderValue'
+ *      paymentType: // value for 'paymentType'
+ *      stripeCheckoutId: // value for 'stripeCheckoutId'
+ *      parcel: // value for 'parcel'
+ *      userEmail: // value for 'userEmail'
  *   },
  * });
  */
@@ -12695,6 +12834,8 @@ export const GetOrdersByStoreUserIdDocument = gql`
     total
     createdAt
     orderValue
+    parcel
+    paymentType
     storeUser {
       id
     }
@@ -12775,6 +12916,7 @@ export const GetProductsGreaterThanZeroDocument = gql`
     name
     description
     price
+    sellPrice
     quantity
     slug
     size {

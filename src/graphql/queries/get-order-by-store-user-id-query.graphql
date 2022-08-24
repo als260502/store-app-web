@@ -4,6 +4,8 @@ query GetOrdersByStoreUserId($id: ID!) {
     total
     createdAt
     orderValue
+    parcel
+    paymentType
     storeUser {
       id
     }

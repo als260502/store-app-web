@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useRef, useState } from "react";
 import { NextPage } from "next";
 
 import { v4 as uuid } from "uuid";
@@ -9,11 +9,12 @@ import { Button } from "../../components/Button";
 import {
   Category,
   Product,
+  StoreUser,
   useCreateOrderItemMutation,
   useCreateOrderMutation,
   useCreateSingleOrderMutation,
-  useGetProductsGreaterThanZeroQuery,
-  useGetStoreUsersQuery,
+  useGetProductsGreaterThanZeroLazyQuery,
+  useGetStoreUsersLazyQuery,
   useRemoveOrderItemMutation,
   useRemoveOrderMutation,
   useUpdateOrderByIdMutation,
@@ -28,6 +29,8 @@ import { Search } from "../../components/Search";
 import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
 import { SidebarLink } from "../../components/Sidebar/SidebarLink";
 import { CreditCard, Wallet } from "phosphor-react";
+import { OrderItemFooter } from "../../components/OrderComponents/OrderItemFooter";
+import { catchError, CustomError } from "../../utils/errorHandle";
 
 type OrderProps = {
   id?: string;
@@ -36,12 +39,12 @@ type OrderProps = {
   total: number;
 };
 
-type StoreUser = {
-  id: string;
-  name: string;
-  nickname: string;
-  email: string;
-};
+// type StoreUser = {
+//   id: string;
+//   name: string;
+//   nickname: string;
+//   email: string;
+// };
 
 type Suggestion = {
   id: string;
@@ -54,15 +57,16 @@ type Suggestion = {
 };
 
 const Create: NextPage = () => {
-  const [storeUser, setStoreUser] = useState<StoreUser[]>([]);
   const [userText, setUserText] = useState("");
   const [usersSuggestions, setUsersSuggestions] = useState<
     StoreUser[] | undefined
   >([]);
 
+  const [orderPaymentType, setOrderPaymentType] = useState("Dinheiro");
+  const [parcel, setParcel] = useState("1");
+
   const [hasOpenOrder, setHasOpenOrder] = useState(false);
 
-  const [products, setProducts] = useState<Product[]>([]);
   const [productText, setProductText] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[] | undefined>([]);
 
@@ -75,36 +79,24 @@ const Create: NextPage = () => {
   const orderValueRef = useRef<HTMLInputElement>(null);
   const orderTypeRef = useRef<HTMLInputElement>(null);
 
-  const { data: productData, refetch: refetchProduct } =
-    useGetProductsGreaterThanZeroQuery();
-
-  const { data: userData, refetch: refetchUser } = useGetStoreUsersQuery();
-
-  useEffect(() => {
-    refetchProduct();
-    refetchUser();
-  }, [refetchProduct, refetchUser]);
-
-  useEffect(() => {
-    setProducts(Object.assign(products, productData?.products));
-
-    setStoreUser(Object.assign(storeUser, userData?.storeUsers));
-  }, [productData?.products, products, storeUser, userData?.storeUsers]);
+  const [, { refetch: getProducts }] = useGetProductsGreaterThanZeroLazyQuery();
+  const [, { refetch: getUsers }] = useGetStoreUsersLazyQuery();
 
   const [loading, setLoading] = useState(false);
 
   const onUserChangeHandler = useCallback(
-    (text: string) => {
+    async (text: string) => {
       if (text.length > 3) {
+        const response = await getUsers();
         const regex = new RegExp(`${text}`, "gi");
 
-        const userFiltered = storeUser?.filter(user => {
+        const userFiltered = response.data?.storeUsers?.filter(user => {
           return (
             regex.test(user.name) ||
-            regex.test(String(user.nickname)) ||
+            regex.test(String(user?.nickname)) ||
             regex.test(String(user?.email))
           );
-        });
+        }) as StoreUser[];
 
         setUsersSuggestions(userFiltered);
       } else {
@@ -112,42 +104,7 @@ const Create: NextPage = () => {
       }
       setUserText(text);
     },
-    [storeUser]
-  );
-
-  const onProductChangeHandler = useCallback(
-    (text: string) => {
-      if (text.length > 3) {
-        const regex = new RegExp(`${text}`, "gi");
-
-        const userFiltered = products?.filter(
-          product =>
-            (product.quantity > 0 && regex.test(product.name)) ||
-            (product.quantity > 0 && regex.test(product.slug))
-        );
-
-        const newProduct = userFiltered?.map(product => {
-          const newColor = product.color.map(c => c.name);
-          const newSize = product.size.map(s => s.name);
-
-          return {
-            id: product.id,
-            categories: product.categories,
-            name: product.name,
-            color: newColor,
-            size: newSize,
-            price: product.price,
-            quantity: product.quantity,
-          };
-        });
-
-        setSuggestions(newProduct);
-      } else {
-        setSuggestions([]);
-      }
-      setProductText(text);
-    },
-    [products]
+    [getUsers]
   );
 
   const handleGetUserId = useCallback(
@@ -161,6 +118,42 @@ const Create: NextPage = () => {
       setOrder(Object.assign(order, newOrder));
     },
     [order]
+  );
+
+  const onProductChangeHandler = useCallback(
+    async (text: string) => {
+      if (text.length > 3) {
+        const response = await getProducts();
+        const regex = new RegExp(`${text}`, "gi");
+
+        const productsFiltered = response.data?.products?.filter(
+          product =>
+            (product.quantity > 0 && regex.test(product.name)) ||
+            (product.quantity > 0 && regex.test(product.slug))
+        ) as Product[];
+
+        const newProduct = productsFiltered?.map(product => {
+          const newColor = product.color.map(c => c.name);
+          const newSize = product.size.map(s => s.name);
+
+          return {
+            id: product.id,
+            categories: product.categories,
+            name: product.name,
+            color: newColor,
+            size: newSize,
+            price: product.sellPrice,
+            quantity: product.quantity,
+          };
+        });
+
+        setSuggestions(newProduct);
+      } else {
+        setSuggestions([]);
+      }
+      setProductText(text);
+    },
+    [getProducts]
   );
 
   const handleGetProductId = useCallback(
@@ -196,20 +189,20 @@ const Create: NextPage = () => {
   }, [updateOrderbyId, orderItems, order?.id]);
 
   const handleCloseOrder = useCallback(async () => {
-    updateTotalOrder();
-    // const emptyOrder = {} as OrderProps;
+    // updateTotalOrder();
 
-    // setOrder(Object.assign(order, emptyOrder));
-    // const items = orderItems.filter(item => item.id === "10");
+    const item = uuid();
 
-    // setOrderItems(prev => items);
-    // setHasOpenOrder(false);
-    // refetchProduct();
-    // setProductText("");
-    // setUserText("");
-    // setLoading(false);
-    window.location.reload();
-  }, [updateTotalOrder]);
+    const items = orderItems.filter(orderItem => orderItem.id === item);
+    setTotal(0);
+    setOrderItems(items);
+    setHasOpenOrder(false);
+    setProductText("");
+    setUserText("");
+    setLoading(false);
+    setParcel("1");
+    setOrderPaymentType("");
+  }, [orderItems]);
 
   const [createOrder] = useCreateOrderMutation();
   const [createOrderItem] = useCreateOrderItemMutation();
@@ -226,6 +219,12 @@ const Create: NextPage = () => {
           if (orderValueRef.current) {
             const totalOrder = parseFloat(orderValueRef?.current.value);
 
+            if (!orderPaymentType || orderPaymentType === "Selecione") {
+              throw new CustomError("Selecione uma forma de pagamento");
+            }
+
+            console.log(orderPaymentType);
+
             await createSingleOrder({
               variables: {
                 total: totalOrder,
@@ -233,6 +232,8 @@ const Create: NextPage = () => {
                 stripeCheckout: uuid(),
                 userEmail: order.user.email,
                 userId: order.user.id,
+                parcel: parseInt(parcel),
+                paymentType: orderPaymentType,
               },
             });
 
@@ -243,8 +244,11 @@ const Create: NextPage = () => {
           }
         } catch (error) {
           console.error("criando ordem avulsa", error);
+          const err = catchError(error);
+          toast.error(String(err?.message));
         } finally {
           setLoading(false);
+          handleCloseOrder();
         }
       }
 
@@ -253,6 +257,7 @@ const Create: NextPage = () => {
 
       if (quantity <= 0) {
         toast.error("Quantidade precisa se no mínimo 1", { duration: 4000 });
+        setLoading(false);
         return;
       }
 
@@ -282,6 +287,8 @@ const Create: NextPage = () => {
             totalItem: newTotal,
             productId: order?.product.id,
             userEmail: String(order.user.email),
+            paymentType: orderPaymentType,
+            parcel: parseInt(parcel),
           };
 
           //console.log("adicionar ordem e pedido ", newOrder);
@@ -363,22 +370,22 @@ const Create: NextPage = () => {
         console.log("erro adicionar item ou criar criar pedido", error);
       } finally {
         setLoading(false);
-        refetchProduct();
         setProductText("");
       }
     },
     [
-      hasOpenOrder,
-      updateTotalOrder,
-      createOrder,
-      createOrderItem,
-      createSingleOrder,
-      order,
-      orderItems,
       orderType,
-      refetchProduct,
+      order,
       total,
+      createSingleOrder,
+      hasOpenOrder,
+      orderPaymentType,
+      parcel,
+      createOrder,
+      orderItems,
       updateProduct,
+      createOrderItem,
+      updateTotalOrder,
     ]
   );
 
@@ -455,8 +462,13 @@ const Create: NextPage = () => {
   }).format(orderItems.reduce((prev, acc) => prev + acc.total, 0));
 
   const handleChangeOrderType = useCallback(() => {
+    if (orderItems.length >= 1) {
+      toast.error("Remova os items do pedido em aberto ou finalize-o");
+
+      return;
+    }
     setOrderType(Boolean(orderTypeRef?.current?.checked));
-  }, []);
+  }, [orderItems.length]);
 
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
@@ -491,6 +503,7 @@ const Create: NextPage = () => {
                   className="scale-125"
                   onChange={handleChangeOrderType}
                   ref={orderTypeRef}
+                  checked={orderType}
                 />
                 <strong className="px-2">Ordem avulsa (sem produto)</strong>
               </div>
@@ -581,9 +594,14 @@ const Create: NextPage = () => {
                 )}
 
                 {orderType && (
-                  <>
+                  <div className="relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-[1rem]  left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="text-gray-400 text-xs font-bold">
+                        R$
+                      </span>
+                    </div>
                     <input
-                      className="input px-2"
+                      className="input input-price w-full"
                       placeholder="Valor da compra ex: 780,99"
                       type="number"
                       name="value"
@@ -592,8 +610,14 @@ const Create: NextPage = () => {
                       required
                       ref={orderValueRef}
                     />
-                  </>
+                  </div>
                 )}
+                <OrderItemFooter
+                  orderPaymentType={orderPaymentType}
+                  setOrderPaymentType={setOrderPaymentType}
+                  setParcel={setParcel}
+                  orderType={orderType}
+                />
 
                 <div className="flex flex-row gap-4">
                   <Button
@@ -627,9 +651,10 @@ const Create: NextPage = () => {
                         removeItem={() => handleRemoveOrderItem(item)}
                       />
                     ))}
-
-                    <div className="w-full text-blue-400 flex justify-end px-4 mt-4">
-                      <strong>{setTotalOrder}</strong>
+                    <div className="col-span-1 text-blue-400 flex text-end items-center px-4">
+                      <strong className="w-full text-end ">
+                        {setTotalOrder}
+                      </strong>
                     </div>
                   </div>
                   <Button

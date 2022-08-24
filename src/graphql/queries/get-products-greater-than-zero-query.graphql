@@ -4,6 +4,7 @@ query GetProductsGreaterThanZero {
     name
     description
     price
+    sellPrice
     quantity
     slug
     size {

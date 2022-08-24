@@ -95,6 +95,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
         const formattedSlug = formatSlug(String(productData.name));
 
         const formattedPrice = parseFloat(String(productData.price));
+        const formattedSellPrice = parseFloat(String(productData.sellPrice));
         const formattedQtd = parseInt(String(productData.quantity));
 
         const newProduct = {
@@ -102,6 +103,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
           slug: formattedSlug,
           description: productData.description,
           price: formattedPrice,
+          sellPrice: formattedSellPrice,
           quantity: formattedQtd,
           categories: productData.categories,
           size: productData.size,

@@ -81,17 +81,25 @@ const Create: NextPage = () => {
         size: String(sizeData?.productSizeVariant?.id),
       };
 
-      const response = await addProduct(newProduct);
+      try {
+        const response = await addProduct(newProduct);
 
-      if (response)
-        toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
+        if (response)
+          toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
+            duration: 6000,
+            icon: "👍",
+          });
+
+        reset();
+
+        return;
+      } catch (error) {
+        console.error("erro ao adicionar produto", error);
+        toast.error("Erro:\nErro ao adicionar produto!", {
           duration: 6000,
-          icon: "👍",
+          icon: "❌",
         });
-
-      reset();
-
-      return response;
+      }
     },
     [
       addProduct,
@@ -202,15 +210,22 @@ const Create: NextPage = () => {
                       min="0"
                     />
                   </div>
-                  <Input
-                    {...register("sellPrice")}
-                    error={errors.sellPrice}
-                    name="sellPrice"
-                    label="Preço de venda"
-                    type="number"
-                    placeholder="19,90"
-                    className="input input-text"
-                  />
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-[2.41rem] left-0 pl-3 flex items-center pointer-events-none">
+                      <span className="text-gray-500 sm:text-sm">R$</span>
+                    </div>
+                    <Input
+                      {...register("sellPrice")}
+                      error={errors.sellPrice}
+                      name="sellPrice"
+                      label="Preço de venda"
+                      type="number"
+                      placeholder="19,90"
+                      className="input input-price"
+                      step="0.01"
+                      min="0"
+                    />
+                  </div>
                   <Input
                     {...register("quantity")}
                     error={errors.quantity}
