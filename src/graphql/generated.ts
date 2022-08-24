@@ -12053,6 +12053,18 @@ export type UpdateOrderByIdMutationVariables = Exact<{
 
 export type UpdateOrderByIdMutation = { updateOrder?: { orderValue: number, total: number, userEmail?: string | null, parcel?: number | null, paymentType?: string | null, id: string, createdAt: any, stripeCheckoutId: string, storeUser?: { id: string } | null } | null };
 
+export type UpdateProductByIdMutationVariables = Exact<{
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  descriprion?: InputMaybe<Scalars['String']>;
+  price?: InputMaybe<Scalars['Float']>;
+  sellPrice?: InputMaybe<Scalars['Float']>;
+  quantity?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type UpdateProductByIdMutation = { updateProduct?: { id: string, name: string, price: number, quantity: number, sellPrice: number, slug: string, description: string } | null };
+
 export type UpdateProductQuantityMutationVariables = Exact<{
   quantity: Scalars['Int'];
   id: Scalars['ID'];
@@ -12060,6 +12072,11 @@ export type UpdateProductQuantityMutationVariables = Exact<{
 
 
 export type UpdateProductQuantityMutation = { updateProduct?: { id: string, quantity: number } | null };
+
+export type GetAllProductsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllProductsQuery = { products: Array<{ id: string, name: string, price: number, sellPrice: number, slug: string, quantity: number, description: string }> };
 
 export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12104,7 +12121,7 @@ export type GetProductByNameQueryVariables = Exact<{
 }>;
 
 
-export type GetProductByNameQuery = { products: Array<{ id: string, name: string, price: number, slug: string, quantity: number }> };
+export type GetProductByNameQuery = { products: Array<{ id: string, name: string, price: number, slug: string, quantity: number, sellPrice: number }> };
 
 export type GetProductsGreaterThanZeroQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12610,6 +12627,53 @@ export function useUpdateOrderByIdMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateOrderByIdMutationHookResult = ReturnType<typeof useUpdateOrderByIdMutation>;
 export type UpdateOrderByIdMutationResult = Apollo.MutationResult<UpdateOrderByIdMutation>;
 export type UpdateOrderByIdMutationOptions = Apollo.BaseMutationOptions<UpdateOrderByIdMutation, UpdateOrderByIdMutationVariables>;
+export const UpdateProductByIdDocument = gql`
+    mutation UpdateProductById($id: ID!, $name: String, $descriprion: String, $price: Float, $sellPrice: Float, $quantity: Int) {
+  updateProduct(
+    data: {description: $descriprion, name: $name, price: $price, quantity: $quantity, sellPrice: $sellPrice}
+    where: {id: $id}
+  ) {
+    id
+    name
+    price
+    quantity
+    sellPrice
+    slug
+    description
+  }
+}
+    `;
+export type UpdateProductByIdMutationFn = Apollo.MutationFunction<UpdateProductByIdMutation, UpdateProductByIdMutationVariables>;
+
+/**
+ * __useUpdateProductByIdMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductByIdMutation, { data, loading, error }] = useUpdateProductByIdMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      descriprion: // value for 'descriprion'
+ *      price: // value for 'price'
+ *      sellPrice: // value for 'sellPrice'
+ *      quantity: // value for 'quantity'
+ *   },
+ * });
+ */
+export function useUpdateProductByIdMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductByIdMutation, UpdateProductByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProductByIdMutation, UpdateProductByIdMutationVariables>(UpdateProductByIdDocument, options);
+      }
+export type UpdateProductByIdMutationHookResult = ReturnType<typeof useUpdateProductByIdMutation>;
+export type UpdateProductByIdMutationResult = Apollo.MutationResult<UpdateProductByIdMutation>;
+export type UpdateProductByIdMutationOptions = Apollo.BaseMutationOptions<UpdateProductByIdMutation, UpdateProductByIdMutationVariables>;
 export const UpdateProductQuantityDocument = gql`
     mutation UpdateProductQuantity($quantity: Int!, $id: ID!) {
   updateProduct(data: {quantity: $quantity}, where: {id: $id}) {
@@ -12645,6 +12709,46 @@ export function useUpdateProductQuantityMutation(baseOptions?: Apollo.MutationHo
 export type UpdateProductQuantityMutationHookResult = ReturnType<typeof useUpdateProductQuantityMutation>;
 export type UpdateProductQuantityMutationResult = Apollo.MutationResult<UpdateProductQuantityMutation>;
 export type UpdateProductQuantityMutationOptions = Apollo.BaseMutationOptions<UpdateProductQuantityMutation, UpdateProductQuantityMutationVariables>;
+export const GetAllProductsDocument = gql`
+    query GetAllProducts {
+  products {
+    id
+    name
+    price
+    sellPrice
+    slug
+    quantity
+    description
+  }
+}
+    `;
+
+/**
+ * __useGetAllProductsQuery__
+ *
+ * To run a query within a React component, call `useGetAllProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProductsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, options);
+      }
+export function useGetAllProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, options);
+        }
+export type GetAllProductsQueryHookResult = ReturnType<typeof useGetAllProductsQuery>;
+export type GetAllProductsLazyQueryHookResult = ReturnType<typeof useGetAllProductsLazyQuery>;
+export type GetAllProductsQueryResult = Apollo.QueryResult<GetAllProductsQuery, GetAllProductsQueryVariables>;
 export const GetCategoriesDocument = gql`
     query GetCategories {
   categories {
@@ -12878,6 +12982,7 @@ export const GetProductByNameDocument = gql`
     price
     slug
     quantity
+    sellPrice
   }
 }
     `;

@@ -1,0 +1,27 @@
+mutation UpdateProductById(
+  $id: ID!
+  $name: String
+  $descriprion: String
+  $price: Float
+  $sellPrice: Float
+  $quantity: Int
+) {
+  updateProduct(
+    data: {
+      description: $descriprion
+      name: $name
+      price: $price
+      quantity: $quantity
+      sellPrice: $sellPrice
+    }
+    where: { id: $id }
+  ) {
+    id
+    name
+    price
+    quantity
+    sellPrice
+    slug
+    description
+  }
+}

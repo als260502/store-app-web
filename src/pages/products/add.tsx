@@ -7,7 +7,6 @@ import { Button } from "../../components/Button";
 import { Select } from "../../components/FormComponents/Select";
 
 import { Header } from "../../components/Header";
-import { Sidebar } from "../../components/Sidebar";
 import {
   useGetCategoriesQuery,
   useGetColorVariantQuery,
@@ -16,11 +15,10 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useProduct } from "../../context/ProductContext";
 import { useRouter } from "next/router";
-import { Browsers, CircleNotch, Palette, TShirt } from "phosphor-react";
+import { CircleNotch } from "phosphor-react";
 import { Search } from "../../components/Search";
 import { useEffect } from "react";
-import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
-import { SidebarLink } from "../../components/Sidebar/SidebarLink";
+import { ProductSidebar } from "../../components/Sidebar/product";
 
 type AddFormData = {
   category: string;
@@ -90,34 +88,7 @@ const Add = () => {
         <>
           <div className="w-full h-full items-center mt-20 justify-center ">
             <div className="flex w-[900px] mx-auto flex-row p-4">
-              <Sidebar>
-                <SidebarHeader header="Produtos">
-                  <SidebarLink
-                    linkUrl="/categories/create"
-                    linkName="Categoria"
-                    icon={<Browsers size={18} />}
-                  />
-                  <SidebarLink
-                    linkUrl="/variants/create"
-                    linkName="Cor|Tamanho"
-                    icon={<Palette size={18} />}
-                  />
-                  <SidebarLink
-                    linkUrl="/products/add"
-                    linkName="Novo produto"
-                    icon={<TShirt size={18} />}
-                  />
-
-                  <SidebarLink
-                    linkName={"Cadastros"}
-                    linkUrl={"/users/create"}
-                  />
-                  <SidebarLink
-                    linkName={"Pedidos"}
-                    linkUrl={"/orders/create"}
-                  />
-                </SidebarHeader>
-              </Sidebar>
+              <ProductSidebar />
 
               <main className="w-full h-full min-w-[600px]">
                 <Search />
