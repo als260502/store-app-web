@@ -15,9 +15,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { useCallback, useState } from "react";
 import { ProductSidebar } from "../../../components/Sidebar/product";
 import {
-  useUpdateOrderByIdMutation,
+  useRemoveProductByIdMutation,
   useUpdateProductByIdMutation,
 } from "../../../graphql/generated";
+import { CustomError, catchError } from "../../../utils/errorHandle";
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
@@ -46,6 +47,7 @@ export type ProductProps = {
 
 const Edit: NextPage = () => {
   const [productId, setProductId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -57,14 +59,17 @@ const Edit: NextPage = () => {
     resolver: yupResolver(createProductFormSchema),
   });
 
-  const handleResetForm = () => {
+  const handleResetForm = useCallback(() => {
     reset();
-  };
+    setProductId("");
+    setLoading(false);
+  }, [reset]);
 
-  const [updateProduct, { loading }] = useUpdateProductByIdMutation();
+  const [updateProduct] = useUpdateProductByIdMutation();
 
   const handleEditProduct: SubmitHandler<ProductProps> = useCallback(
     async product => {
+      setLoading(true);
       const newProduct = {
         id: productId,
         name: product.name,
@@ -75,15 +80,21 @@ const Edit: NextPage = () => {
       };
 
       try {
+        if (!productId) {
+          throw new CustomError("Selecione um producto para excluir");
+        }
+
         await updateProduct({
           variables: newProduct,
         });
         toast.success("Produto atualizado com sucesso!");
       } catch (error) {
         toast.error("Erro ao atualizar prduto!");
+      } finally {
+        handleResetForm();
       }
     },
-    [productId, updateProduct]
+    [handleResetForm, productId, updateProduct]
   );
 
   const handleSetProduct = useCallback(
@@ -97,6 +108,23 @@ const Edit: NextPage = () => {
     },
     [setValue]
   );
+
+  const [removeProduct] = useRemoveProductByIdMutation();
+  const handleRemoveProduct = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (!productId) {
+        throw new CustomError("Selecione um producto para excluir");
+      }
+      await removeProduct({ variables: { id: productId } });
+    } catch (error) {
+      const err = catchError(error);
+
+      toast.error(String(err?.message));
+    } finally {
+      handleResetForm();
+    }
+  }, [handleResetForm, productId, removeProduct]);
 
   return (
     <>
@@ -182,19 +210,27 @@ const Edit: NextPage = () => {
                   />
                   <div className="flex flex-row gap-8 mt-4">
                     <Button
-                      className="btn btn-primary btn-md w-24 "
+                      className="btn btn-primary btn-md w-28 "
                       type="submit"
                       disabled={loading}
                     >
-                      Atualizar
+                      Editar produto
                     </Button>
 
                     <Button
                       type="button"
                       onClick={handleResetForm}
-                      className="btn btn-outline btn-sm w-24"
+                      className="btn btn-outline btn-sm w-28"
                     >
                       Cancelar
+                    </Button>
+
+                    <Button
+                      type="button"
+                      onClick={handleRemoveProduct}
+                      className="btn btn-outline btn-sm w-28"
+                    >
+                      Excluir produto
                     </Button>
                   </div>
                 </form>

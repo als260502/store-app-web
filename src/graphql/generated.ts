@@ -12040,6 +12040,13 @@ export type RemoveOrderMutationVariables = Exact<{
 
 export type RemoveOrderMutation = { deleteManyOrderItemsConnection: { edges: Array<{ node: { id: string } }> }, deleteOrder?: { id: string } | null };
 
+export type RemoveProductByIdMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveProductByIdMutation = { deleteProduct?: { id: string } | null };
+
 export type UpdateOrderByIdMutationVariables = Exact<{
   orderId: Scalars['ID'];
   total?: InputMaybe<Scalars['Float']>;
@@ -12575,6 +12582,39 @@ export function useRemoveOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type RemoveOrderMutationHookResult = ReturnType<typeof useRemoveOrderMutation>;
 export type RemoveOrderMutationResult = Apollo.MutationResult<RemoveOrderMutation>;
 export type RemoveOrderMutationOptions = Apollo.BaseMutationOptions<RemoveOrderMutation, RemoveOrderMutationVariables>;
+export const RemoveProductByIdDocument = gql`
+    mutation RemoveProductById($id: ID!) {
+  deleteProduct(where: {id: $id}) {
+    id
+  }
+}
+    `;
+export type RemoveProductByIdMutationFn = Apollo.MutationFunction<RemoveProductByIdMutation, RemoveProductByIdMutationVariables>;
+
+/**
+ * __useRemoveProductByIdMutation__
+ *
+ * To run a mutation, you first call `useRemoveProductByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProductByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProductByIdMutation, { data, loading, error }] = useRemoveProductByIdMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveProductByIdMutation(baseOptions?: Apollo.MutationHookOptions<RemoveProductByIdMutation, RemoveProductByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveProductByIdMutation, RemoveProductByIdMutationVariables>(RemoveProductByIdDocument, options);
+      }
+export type RemoveProductByIdMutationHookResult = ReturnType<typeof useRemoveProductByIdMutation>;
+export type RemoveProductByIdMutationResult = Apollo.MutationResult<RemoveProductByIdMutation>;
+export type RemoveProductByIdMutationOptions = Apollo.BaseMutationOptions<RemoveProductByIdMutation, RemoveProductByIdMutationVariables>;
 export const UpdateOrderByIdDocument = gql`
     mutation UpdateOrderById($orderId: ID!, $total: Float, $orderValue: Float, $paymentType: String, $stripeCheckoutId: String, $parcel: Int, $userEmail: String) {
   updateOrder(

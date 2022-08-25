@@ -23,7 +23,7 @@ export const SearchProduct = ({ setSearchData }: Props) => {
   const [text, setText] = useState("");
   const [suggestions, setSuggestions] = useState<SearchProps[]>([]);
 
-  const [getProducts, { loading }] = useGetAllProductsLazyQuery();
+  const [, { loading, refetch: getProducts }] = useGetAllProductsLazyQuery();
 
   const onChangeHandler = useCallback(
     async (text: string) => {

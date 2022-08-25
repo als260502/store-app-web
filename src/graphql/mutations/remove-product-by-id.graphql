@@ -1,0 +1,5 @@
+mutation RemoveProductById($id: ID!) {
+  deleteProduct(where: { id: $id }) {
+    id
+  }
+}
