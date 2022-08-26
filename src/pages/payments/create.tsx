@@ -17,6 +17,7 @@ import { CreditCard, Wallet } from "phosphor-react";
 import { catchError, CustomError } from "../../utils/errorHandle";
 import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
 import { SidebarLink } from "../../components/Sidebar/SidebarLink";
+import { OrderSidebar } from "../../components/Sidebar/order";
 
 type StoreUser = {
   id: string;
@@ -129,23 +130,7 @@ const Create: NextPage = () => {
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
-        <Sidebar>
-          <SidebarHeader header="Produtos">
-            <SidebarLink
-              linkUrl="/orders/create"
-              linkName="Novo Pedido"
-              icon={<CreditCard size={18} />}
-            />
-            <SidebarLink
-              linkUrl="/payments/create"
-              linkName="Pagamento"
-              icon={<Wallet size={18} />}
-            />
-
-            <SidebarLink linkUrl="/categories/create" linkName="Produtos" />
-            <SidebarLink linkUrl="/users/create" linkName="Cadastros" />
-          </SidebarHeader>
-        </Sidebar>
+        <OrderSidebar />
 
         <main className="h-full w-full w-min[600px]">
           <Search />

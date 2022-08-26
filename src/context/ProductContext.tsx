@@ -67,17 +67,16 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
   );
   const [loading, setLoading] = useState(false);
 
-  const [createProduct, { loading: load }] = useCreateProductMutation();
+  const [createProduct] = useCreateProductMutation();
 
   const createNewProduct = useCallback(
     async (data: ProductProps) => {
       try {
-        setLoading(load);
+        setLoading(true);
         const response = await createProduct({
           variables: data,
         });
 
-        setLoading(loading);
         return response.data;
       } catch (error) {
         console.log(error);
@@ -85,9 +84,11 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
           duration: 6000,
           icon: "😒",
         });
+      } finally {
+        setLoading(false);
       }
     },
-    [createProduct, load, loading]
+    [createProduct]
   );
 
   const addProduct = useCallback(

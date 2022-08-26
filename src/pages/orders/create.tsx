@@ -4,7 +4,6 @@ import { NextPage } from "next";
 import { v4 as uuid } from "uuid";
 
 import { Header } from "../../components/Header";
-import { Sidebar } from "../../components/Sidebar";
 import { Button } from "../../components/Button";
 import {
   Category,
@@ -26,11 +25,9 @@ import {
   Props,
 } from "../../components/OrderComponents/ProductItem";
 import { Search } from "../../components/Search";
-import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
-import { SidebarLink } from "../../components/Sidebar/SidebarLink";
-import { CreditCard, Wallet } from "phosphor-react";
 import { OrderItemFooter } from "../../components/OrderComponents/OrderItemFooter";
 import { catchError, CustomError } from "../../utils/errorHandle";
+import { OrderSidebar } from "../../components/Sidebar/order";
 
 type OrderProps = {
   id?: string;
@@ -38,13 +35,6 @@ type OrderProps = {
   product: Product;
   total: number;
 };
-
-// type StoreUser = {
-//   id: string;
-//   name: string;
-//   nickname: string;
-//   email: string;
-// };
 
 type Suggestion = {
   id: string;
@@ -474,24 +464,7 @@ const Create: NextPage = () => {
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
-        <Sidebar>
-          <SidebarHeader header="Produtos">
-            <SidebarLink
-              linkUrl="/orders/create"
-              linkName="Novo Pedido"
-              icon={<CreditCard size={18} />}
-            />
-            <SidebarLink
-              linkUrl="/payments/create"
-              linkName="Pagamento"
-              icon={<Wallet size={18} />}
-            />
-
-            <SidebarLink linkUrl="/categories/create" linkName="Produtos" />
-            <SidebarLink linkUrl="/users/create" linkName="Cadastros" />
-          </SidebarHeader>
-        </Sidebar>
-
+        <OrderSidebar />
         <main className="h-full w-full w-min[600px]">
           <Search />
           <div className="bg-gray-200 min-h-[65vh]">

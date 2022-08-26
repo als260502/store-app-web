@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   SelectHTMLAttributes,
   ForwardRefRenderFunction,
@@ -31,7 +32,7 @@ const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
           <select {...rest} name={name} ref={ref} className="input">
             <option>Selecione</option>
             {options?.map(value => (
-              <option key={value.id} value={`${value.id}`}>
+              <option key={value.id} value={value.id}>
                 {value.name}
               </option>
             ))}

@@ -6,20 +6,20 @@ import { useProduct, ProductProps } from "../../context/ProductContext";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { CircleNotch } from "phosphor-react";
-
 import { Input } from "../../components/FormComponents/Input";
 import { Header } from "../../components/Header";
 import { Button } from "../../components/Button";
 
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import {
-  useGetCategoryByIdQuery,
-  useGetColorByIdQuery,
-  useGetSizeByIdQuery,
+  useGetCategoriesQuery,
+  useGetColorVariantQuery,
+  useGetSizeVariantQuery,
 } from "../../graphql/generated";
 import { ProductSidebar } from "../../components/Sidebar/product";
+import { Select } from "../../components/FormComponents/Select";
+import { Search } from "../../components/Search";
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
@@ -27,10 +27,12 @@ const createProductFormSchema = yup.object().shape({
   price: yup.string().required("Preço do produto é obrigatório"),
   sellPrice: yup.string().required("Preço de venda do produto é obrigatório"),
   quantity: yup.string().required("Informe a quantidade em estoque"),
+  categories: yup.string().not(["Selecione"], "selecione uma categoria"),
+  size: yup.string().not(["Selecione"], "selecione um tamanho"),
+  color: yup.string().not(["Selecione"], "selecione uma cor"),
 });
-
 const Create: NextPage = () => {
-  const { addProduct, product, loading } = useProduct();
+  const { addProduct, loading } = useProduct();
   const {
     register,
     handleSubmit,
@@ -40,27 +42,25 @@ const Create: NextPage = () => {
     resolver: yupResolver(createProductFormSchema),
   });
 
-  const { data: categoryData } = useGetCategoryByIdQuery({
-    variables: {
-      id: product.categories,
-    },
-  });
+  const { data: categoryData } = useGetCategoriesQuery();
 
-  const { data: sizeData } = useGetSizeByIdQuery({
-    variables: {
-      id: product.size,
-    },
-  });
+  const { data: sizeData } = useGetSizeVariantQuery();
 
-  const { data: colorData } = useGetColorByIdQuery({
-    variables: {
-      id: product.color,
-    },
-  });
+  const { data: colorData } = useGetColorVariantQuery();
 
   const navigation = useRouter();
 
   const handleResetForm = useCallback(() => {
+    reset({
+      name: "",
+      description: "",
+      quantity: parseInt(""),
+      price: parseInt(""),
+      sellPrice: parseInt(""),
+    });
+  }, [reset]);
+
+  const handleReset = useCallback(() => {
     reset();
   }, [reset]);
 
@@ -73,38 +73,22 @@ const Create: NextPage = () => {
         price: values.price,
         sellPrice: values.sellPrice,
         quantity: values.quantity,
-        categories: String(categoryData?.category?.id),
-        color: String(colorData?.productColorVariant?.id),
-        size: String(sizeData?.productSizeVariant?.id),
+        categories: values.categories,
+        color: values.color,
+        size: values.size,
       };
 
       try {
-        const response = await addProduct(newProduct);
+        await addProduct(newProduct);
 
-        if (response)
-          toast.success("Sucesso:\nProduto cadastrado com sucesso!", {
-            duration: 6000,
-            icon: "👍",
-          });
-
-        reset();
+        handleResetForm();
 
         return;
       } catch (error) {
         console.error("erro ao adicionar produto", error);
-        toast.error("Erro:\nErro ao adicionar produto!", {
-          duration: 6000,
-          icon: "❌",
-        });
       }
     },
-    [
-      addProduct,
-      categoryData?.category?.id,
-      colorData?.productColorVariant?.id,
-      reset,
-      sizeData?.productSizeVariant?.id,
-    ]
+    [addProduct, handleResetForm]
   );
 
   const handleGoBack = () => {
@@ -118,33 +102,11 @@ const Create: NextPage = () => {
           <ProductSidebar />
 
           <main className="h-full w-full w-min[600px]">
-            {/* <Search /> */}
+            <Search />
             <div className="bg-gray-200 min-h-[65vh]">
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />
-                  <div className="flex flex-col justify-center  mt-4 px-8 gap-2 font-semibold">
-                    <span className="text-gray-500 flex flex-row items-center ">
-                      Categoria:
-                      {categoryData ? (
-                        <strong className="text-gray-900 shadow-sm shadow-blue-200 ml-2">
-                          {` ${categoryData?.category?.name}`}
-                        </strong>
-                      ) : (
-                        <CircleNotch size={20} className="animate-spin ml-2" />
-                      )}
-                    </span>
-                    <span className="text-gray-500">
-                      Variante:
-                      {colorData || sizeData ? (
-                        <strong className="text-gray-900 shadow-sm shadow-blue-200">
-                          {` ${colorData?.productColorVariant?.name} - ${sizeData?.productSizeVariant?.name}`}
-                        </strong>
-                      ) : (
-                        <CircleNotch size={20} className="animate-spin ml-2" />
-                      )}
-                    </span>
-                  </div>
                 </div>
                 <form
                   className="mt-8 w-[550px] flex flex-col gap-4"
@@ -211,6 +173,34 @@ const Create: NextPage = () => {
                     placeholder="10"
                     className="input input-text"
                   />
+                  <div>
+                    <div className="grid grid-cols-3">
+                      <Select
+                        {...register("categories")}
+                        error={errors.categories}
+                        name="categories"
+                        label="Categoria"
+                        className="input col-span-1"
+                        options={categoryData?.categories}
+                      />
+                      <Select
+                        {...register("size")}
+                        error={errors.size}
+                        name="size"
+                        label="Tamanho"
+                        className="input col-span-1"
+                        options={sizeData?.productSizeVariants}
+                      />
+                      <Select
+                        {...register("color")}
+                        error={errors.color}
+                        name="color"
+                        label="Cor"
+                        className="input col-span-1"
+                        options={colorData?.productColorVariants}
+                      />
+                    </div>
+                  </div>
                   <div className="flex flex-row gap-8 mt-4">
                     <Button
                       className="btn btn-primary btn-md w-24 "
@@ -222,7 +212,7 @@ const Create: NextPage = () => {
 
                     <Button
                       type="button"
-                      onClick={handleResetForm}
+                      onClick={handleReset}
                       className="btn btn-outline btn-sm w-24"
                     >
                       Cancelar

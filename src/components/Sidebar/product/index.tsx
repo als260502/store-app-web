@@ -8,6 +8,11 @@ export const ProductSidebar = () => {
     <Sidebar>
       <SidebarHeader header="Produtos">
         <SidebarLink
+          linkUrl="/products/create"
+          linkName="Novo produto"
+          icon={<TShirt size={18} />}
+        />
+        <SidebarLink
           linkUrl="/categories/create"
           linkName="Categoria"
           icon={<Browsers size={18} />}
@@ -17,11 +22,7 @@ export const ProductSidebar = () => {
           linkName="Cor|Tamanho"
           icon={<Palette size={18} />}
         />
-        <SidebarLink
-          linkUrl="/products/add"
-          linkName="Novo produto"
-          icon={<TShirt size={18} />}
-        />
+
         <SidebarLink
           linkUrl="/products/edit"
           linkName="Editar produto"
@@ -30,6 +31,7 @@ export const ProductSidebar = () => {
 
         <SidebarLink linkName={"Cadastros"} linkUrl={"/users/create"} />
         <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/create"} />
+        <SidebarLink linkUrl="/reports/inventory" linkName="Relatórios" />
       </SidebarHeader>
     </Sidebar>
   );
