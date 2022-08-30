@@ -8,16 +8,16 @@ type User = {
   surname: string;
 };
 type OrderProps = {
-  createdAt: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  createdAt: any;
   id: string;
-  parcel: number;
+  parcel?: number | null | undefined;
   orderValue: number;
-  paymentType: string;
+  paymentType?: string | null | undefined;
   total: number;
-  userEmail: string;
-  storeUser: User;
+  userEmail?: string | null | undefined;
+  storeUser?: User | null | undefined;
 };
-
 type Props = {
   formatMonetaryValues: (value: number) => string;
   currentRegisters?: OrderProps[];

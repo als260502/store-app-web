@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { Header } from "../../../components/Header";
-import { Search } from "../../../components/Search";
+import { SearchReportInventory } from "../../../components/Search/SearchReportInventory";
 import { useGetAllProductsLazyQuery } from "../../../graphql/generated";
 import { ReportSidebar } from "../../../components/Sidebar/report";
 import { InventoryItems } from "../../../components/InventoryComponents/InventoryItems";
@@ -18,7 +18,8 @@ type ProductProps = {
 };
 
 const Inventory: NextPage = () => {
-  const [, { refetch: getProducts, loading }] = useGetAllProductsLazyQuery();
+  const [getAllProducts, { refetch: getProducts, loading }] =
+    useGetAllProductsLazyQuery();
   const [products, setProducts] = useState<ProductProps[] | undefined>();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +32,8 @@ const Inventory: NextPage = () => {
     };
     getAllProducts();
   }, [getProducts]);
+
+  const [isSearching, setIsSearching] = useState(false);
 
   const indexOfLastRegister = currentPage * registersPerPage;
   const indexOfFirstRegister = indexOfLastRegister - registersPerPage;
@@ -56,13 +59,34 @@ const Inventory: NextPage = () => {
     return quantity < 2 ? true : false;
   };
 
+  const handleSearch = useCallback(
+    async (text: string) => {
+      if (text.length > 2) {
+        setIsSearching(isSearching => !isSearching);
+        const regex = new RegExp(`${text}`, "gi");
+
+        const newProducts = products?.filter(
+          product =>
+            regex.test(String(product.name)) || regex.test(String(product.slug))
+        );
+
+        setProducts(newProducts);
+      } else {
+        const response = await getAllProducts();
+        setProducts(response.data?.products);
+        setIsSearching(isSearching => !isSearching);
+      }
+    },
+    [getAllProducts, products]
+  );
+
   return (
     <div className="w-full h-full items-center mt-20 justify-center ">
       <div className="flex w-[900px] mx-auto flex-row p-4">
         <ReportSidebar />
 
         <main className="h-full min-h-[65vh] w-full w-min[600px] bg-gray-200">
-          <Search />
+          <SearchReportInventory handleSearch={handleSearch} />
 
           <div className="px-8 my-4">
             <Header title="Itens em estoque" />
@@ -74,13 +98,15 @@ const Inventory: NextPage = () => {
               quantityRedFlag={quantityRedFlag}
             />
 
-            <Paginate
-              registersPerPage={registersPerPage}
-              totalRegisters={products?.length}
-              paginate={paginate}
-              currentPage={currentPage}
-              linkUrl="/reports/inventory"
-            />
+            {!isSearching && (
+              <Paginate
+                registersPerPage={registersPerPage}
+                totalRegisters={products?.length}
+                paginate={paginate}
+                currentPage={currentPage}
+                linkUrl="/reports/inventory"
+              />
+            )}
           </div>
         </main>
       </div>

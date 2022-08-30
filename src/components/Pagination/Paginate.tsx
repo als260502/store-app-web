@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import classNames from "classnames";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 type Props = {
   registersPerPage: number;
@@ -23,8 +22,6 @@ export const Paginate = ({
   for (let i = 1; i <= Math.ceil(totalRegisters / registersPerPage); i++) {
     pageNumbers.push(i);
   }
-
-  console.log(currentPage);
 
   return (
     <div className="flex items-center justify-center w-full mt-2 p-4">
