@@ -50,7 +50,7 @@ export const OrderItems = ({
                   key={order.id}
                   className="col-span-1 flex flex-col border-b-[1px] border-gray-300 text-sm"
                 >
-                  <strong className="text-sm">{order.storeUser.name}</strong>
+                  <strong className="text-sm">{order?.storeUser?.name}</strong>
                   <strong className="text-xs">{order.userEmail}</strong>
                 </span>
                 <span

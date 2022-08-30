@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 
 import { Header } from "../../components/Header";
-import { Sidebar } from "../../components/Sidebar";
 import {
   GetOrdersByStoreUserIdQuery,
   useGetOrdersByStoreUserIdLazyQuery,
@@ -13,10 +12,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 import { Search } from "../../components/Search";
 import { PaymentItem } from "../../components/PaymentComponents/PaymentItem";
-import { CreditCard, Wallet } from "phosphor-react";
 import { catchError, CustomError } from "../../utils/errorHandle";
-import { SidebarHeader } from "../../components/Sidebar/LinkHeader";
-import { SidebarLink } from "../../components/Sidebar/SidebarLink";
 import { OrderSidebar } from "../../components/Sidebar/order";
 
 type StoreUser = {

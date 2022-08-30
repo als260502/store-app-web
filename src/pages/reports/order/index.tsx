@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { Header } from "../../../components/Header";
-import { Search } from "../../../components/Search";
 import { useGetOrdersLazyQuery } from "../../../graphql/generated";
 import { ReportSidebar } from "../../../components/Sidebar/report";
 import { Paginate } from "../../../components/Pagination/Paginate";
@@ -105,13 +104,15 @@ const Order: NextPage = () => {
               loading={loading}
             />
 
-            <Paginate
-              registersPerPage={registersPerPage}
-              totalRegisters={orders?.length}
-              paginate={paginate}
-              linkUrl="/reports/order"
-              currentPage={currentPage}
-            />
+            {!isSearching && (
+              <Paginate
+                registersPerPage={registersPerPage}
+                totalRegisters={orders?.length}
+                paginate={paginate}
+                linkUrl="/reports/order"
+                currentPage={currentPage}
+              />
+            )}
           </div>
         </main>
       </div>
