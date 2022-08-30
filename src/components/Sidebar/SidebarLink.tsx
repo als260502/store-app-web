@@ -17,7 +17,6 @@ export const SidebarLink = ({ linkName, linkUrl, icon, ...rest }: Props) => {
   const link = linkUrl;
 
   const isLinkActive = link === path;
-
   return (
     <div {...rest}>
       <Link href={linkUrl}>

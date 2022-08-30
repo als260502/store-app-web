@@ -1,4 +1,4 @@
-import { AlignBottom } from "phosphor-react";
+import { AlignBottom, Money } from "phosphor-react";
 import { Sidebar } from "..";
 import { SidebarHeader } from "../LinkHeader";
 import { SidebarLink } from "../SidebarLink";
@@ -11,6 +11,11 @@ export const ReportSidebar = () => {
           linkUrl="/reports/inventory"
           linkName="Estoque"
           icon={<AlignBottom size={18} />}
+        />
+        <SidebarLink
+          linkUrl="/reports/order"
+          linkName="Pedidos"
+          icon={<Money size={18} />}
         />
 
         <SidebarLink linkName={"Cadastros"} linkUrl={"/users/create"} />

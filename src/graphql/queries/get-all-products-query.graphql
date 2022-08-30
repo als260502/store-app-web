@@ -1,5 +1,5 @@
 query GetAllProducts {
-  products {
+  products(orderBy: name_ASC) {
     id
     name
     price

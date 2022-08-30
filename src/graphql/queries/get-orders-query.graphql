@@ -1,0 +1,15 @@
+query GetOrders {
+  orders {
+    createdAt
+    id
+    parcel
+    orderValue
+    paymentType
+    total
+    userEmail
+    storeUser {
+      name
+      surname
+    }
+  }
+}

@@ -26,7 +26,7 @@ const Home: NextPage = () => {
                 </Button>
               </a>
             </Link>
-            <Link href="/categories/create">
+            <Link href="/products/create">
               <a>
                 <Button className="btn btn-primary btn-xs w-20">
                   Produtos

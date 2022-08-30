@@ -12123,6 +12123,11 @@ export type GetOrdersByStoreUserIdQueryVariables = Exact<{
 
 export type GetOrdersByStoreUserIdQuery = { orders: Array<{ id: string, total: number, createdAt: any, orderValue: number, parcel?: number | null, paymentType?: string | null, storeUser?: { id: string } | null }> };
 
+export type GetOrdersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrdersQuery = { orders: Array<{ createdAt: any, id: string, parcel?: number | null, orderValue: number, paymentType?: string | null, total: number, userEmail?: string | null, storeUser?: { name: string, surname: string } | null }> };
+
 export type GetProductByNameQueryVariables = Exact<{
   name: Scalars['String'];
 }>;
@@ -12751,7 +12756,7 @@ export type UpdateProductQuantityMutationResult = Apollo.MutationResult<UpdatePr
 export type UpdateProductQuantityMutationOptions = Apollo.BaseMutationOptions<UpdateProductQuantityMutation, UpdateProductQuantityMutationVariables>;
 export const GetAllProductsDocument = gql`
     query GetAllProducts {
-  products {
+  products(orderBy: name_ASC) {
     id
     name
     price
@@ -13014,6 +13019,50 @@ export function useGetOrdersByStoreUserIdLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetOrdersByStoreUserIdQueryHookResult = ReturnType<typeof useGetOrdersByStoreUserIdQuery>;
 export type GetOrdersByStoreUserIdLazyQueryHookResult = ReturnType<typeof useGetOrdersByStoreUserIdLazyQuery>;
 export type GetOrdersByStoreUserIdQueryResult = Apollo.QueryResult<GetOrdersByStoreUserIdQuery, GetOrdersByStoreUserIdQueryVariables>;
+export const GetOrdersDocument = gql`
+    query GetOrders {
+  orders {
+    createdAt
+    id
+    parcel
+    orderValue
+    paymentType
+    total
+    userEmail
+    storeUser {
+      name
+      surname
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetOrdersQuery__
+ *
+ * To run a query within a React component, call `useGetOrdersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrdersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrdersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetOrdersQuery(baseOptions?: Apollo.QueryHookOptions<GetOrdersQuery, GetOrdersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrdersQuery, GetOrdersQueryVariables>(GetOrdersDocument, options);
+      }
+export function useGetOrdersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrdersQuery, GetOrdersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrdersQuery, GetOrdersQueryVariables>(GetOrdersDocument, options);
+        }
+export type GetOrdersQueryHookResult = ReturnType<typeof useGetOrdersQuery>;
+export type GetOrdersLazyQueryHookResult = ReturnType<typeof useGetOrdersLazyQuery>;
+export type GetOrdersQueryResult = Apollo.QueryResult<GetOrdersQuery, GetOrdersQueryVariables>;
 export const GetProductByNameDocument = gql`
     query GetProductByName($name: String!) {
   products(where: {name: $name}) {

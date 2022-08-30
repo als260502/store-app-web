@@ -9,12 +9,12 @@ export const UserSidebar = () => {
       <SidebarHeader header="Cadastro">
         <SidebarLink
           linkUrl="/users/create"
-          linkName="Novo usuário"
+          linkName="usuário"
           icon={<UserCirclePlus size={18} />}
         />
         <SidebarLink
           linkUrl="/users/provider"
-          linkName="Novo Fornecedor"
+          linkName="Fornecedor"
           icon={<Storefront size={18} />}
         />
 
