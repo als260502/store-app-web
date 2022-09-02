@@ -70,13 +70,13 @@ const Create: NextPage = () => {
   };
   return (
     <>
-      <div className="w-full h-full items-center mt-20 justify-center ">
-        <div className="flex w-[900px] mx-auto flex-row p-4">
+      <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+        <div className="flex md:w-[900px] mx-auto flex-row px-1 md:p-4">
           <ProductSidebar />
 
-          <main className="w-full h-full min-w-[600px]">
+          <main className="w-full">
             <Search />
-            <div className="bg-gray-200 min-h-[65vh] ">
+            <div className="bg-gray-200  h-[100vh] md:h-[40rem] ">
               <div className="p-8">
                 <div>
                   <Header title="Categoria" loading={loading} />

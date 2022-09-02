@@ -11,15 +11,15 @@ type Props = {
 
 export const SearchReportOrder = ({ handleSearch }: Props) => {
   return (
-    <div className="h-16 bg-gray-300">
+    <div className="h-16 bg-gray-300  px-4">
       <div className="w-full h-full flex flex-row items-center justify-between">
-        <div className="h-8 w-full flex flex-row border-r-2 border-gray-400 items-center justify-between px-2 ">
-          <div className="flex flex-row gap-2">
-            <MagnifyingGlass size={20} color="#323238" />
-            <div className="fixed mx-8">
+        <div className="h-8 w-full flex flex-row  items-center justify-between px-2 ">
+          <div className="w-full flex flex-row gap-2 md:text-xl px-8 md:px-0">
+            <MagnifyingGlass color="#323238" />
+            <div className="w-full border-b-[1px] border-b-gray-400">
               <input
-                className="w-[600px] px-1 bg-transparent focus:outline-none border-b-[1px] border-b-gray-400"
-                placeholder="buscar..."
+                className="px-1 bg-transparent focus:outline-none "
+                placeholder="Buscar..."
                 onChange={e => handleSearch(e.target.value)}
               />
             </div>

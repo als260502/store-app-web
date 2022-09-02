@@ -67,7 +67,7 @@ export const CreateComponent = () => {
 
   return (
     <>
-      <div className="bg-gray-200 min-h-[60vh]">
+      <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
         <div className="p-8">
           <Header title="Novo usuário" loading={loading} />
 
@@ -75,7 +75,7 @@ export const CreateComponent = () => {
             className="mt-8 flex flex-col gap-4"
             onSubmit={handleSubmit(handleCreateUser)}
           >
-            <div className=" w-[450px] flex gap-4 flex-col sm:gap-4 md:gap-4 lg:flex-row ">
+            <div className="md:w-[450px] flex gap-4 flex-col sm:gap-4 md:gap-4 lg:flex-row ">
               <Input
                 {...register("name")}
                 error={errors.name}
@@ -95,7 +95,7 @@ export const CreateComponent = () => {
               />
             </div>
 
-            <div className=" w-[450px]">
+            <div className="md:w-[450px]">
               <Input
                 {...register("phones")}
                 error={errors.phones}
@@ -106,7 +106,7 @@ export const CreateComponent = () => {
               />
             </div>
 
-            <div className="w-[450px]">
+            <div className="md:w-[450px]">
               <Input
                 {...register("email")}
                 error={errors.email}
@@ -117,7 +117,7 @@ export const CreateComponent = () => {
                 placeholder="Digite o email"
               />
             </div>
-            <div className=" w-[450px]">
+            <div className="md:w-[450px]">
               <Input
                 {...register("nickname")}
                 error={errors.nickname}
@@ -128,7 +128,7 @@ export const CreateComponent = () => {
               />
             </div>
 
-            <div className="w-[450px]">
+            <div className="md:w-[450px]">
               <Input
                 {...register("description")}
                 error={errors.description}

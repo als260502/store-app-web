@@ -1,0 +1,27 @@
+query GetCompleteOrderById($orderId: ID!) {
+  order(where: { id: $orderId }) {
+    id
+    total
+    orderValue
+    paymentType
+    parcel
+    userEmail
+    createdAt
+    storeUser {
+      name
+      surname
+    }
+    orderItems {
+      id
+      quantity
+      total
+      product {
+        description
+        id
+        name
+        sellPrice
+        slug
+      }
+    }
+  }
+}

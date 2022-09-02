@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import React from "react";
 import classNames from "classnames";
 import { Spinner } from "phosphor-react";
 
@@ -25,25 +26,22 @@ export const InventoryItems = ({
   loading,
 }: Props) => {
   return (
-    <div className="text-gray-400 mt-4">
-      <div className="grid grid-cols-4 px-2">
-        <span className="col-span-2">Nome</span>
+    <div className="text-gray-400 mt-4 text-xs md:text-base">
+      <div className="grid grid-cols-3 md:grid-cols-4 md:px-2">
+        <span className="col-span-1 md:col-span-2">Nome</span>
         <span className="col-span-1">Preço</span>
         <span className="col-span-1">Em estoque</span>
       </div>
-      <div className="px-2 py-4 mt-2 border w-[600px] h-[350px] bg-gray-100">
+      <div className="md:px-2 py-4 mt-2 border min-h-[350px] bg-gray-100">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center">
             <Spinner size={24} className="animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-4 px-4 gap-1">
+          <div className="grid grid-cols-3  md:grid-cols-4 px-2 md:px-4 gap-1">
             {currentRegisters?.map(product => (
-              <>
-                <span
-                  key={product.id}
-                  className="col-span-2 border-b-[1px] border-gray-300"
-                >
+              <React.Fragment key={product.id}>
+                <span className="col-span-1 md:col-span-2 border-b-[1px] border-gray-300">
                   {product.name}
                 </span>
                 <span
@@ -65,7 +63,7 @@ export const InventoryItems = ({
                 >
                   {product.quantity}
                 </span>
-              </>
+              </React.Fragment>
             ))}
           </div>
         )}

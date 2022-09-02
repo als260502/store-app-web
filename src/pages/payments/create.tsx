@@ -124,19 +124,19 @@ const Create: NextPage = () => {
   );
 
   return (
-    <div className="w-full h-full items-center mt-20 justify-center ">
-      <div className="flex w-[900px] mx-auto flex-row p-4">
+    <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+      <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
         <OrderSidebar />
 
-        <main className="h-full w-full w-min[600px]">
+        <main className="w-full">
           <Search />
-          <div className="bg-gray-200 min-h-[65vh]">
+          <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
             <div className="p-8 ">
               <Header title={"Pagamento"} loading={loading} />
 
               <div className="flex flex-col gap-2 my-8 w-full">
                 <div className="relative justify-center">
-                  <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md z-20 flex flex-col">
+                  <ul className="absolute top-0 mt-9 w-full rounded-md z-20 flex flex-col">
                     {usersSuggestions &&
                       usersSuggestions.map(suggestion => (
                         <button
@@ -145,7 +145,7 @@ const Create: NextPage = () => {
                           onClick={() => handleGetUserId(suggestion)}
                           type="button"
                         >
-                          <li className=" rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors  px-4 border-b-gray-400 my-0.5">
+                          <li className="bg-gray-300 rounded-lg font-bold z-10 mt-[2px] cursor-pointer hover:bg-gray-500 transition-colors  px-2 border border-gray-400 border-t-0">
                             {`${suggestion.name} - ${suggestion.email}`}
                           </li>
                         </button>

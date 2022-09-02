@@ -159,6 +159,7 @@ const Create: NextPage = () => {
   );
 
   const [updateOrderbyId] = useUpdateOrderByIdMutation();
+
   const updateTotalOrder = useCallback(async () => {
     try {
       const setTotalOrder = orderItems.reduce(
@@ -179,11 +180,27 @@ const Create: NextPage = () => {
   }, [updateOrderbyId, orderItems, order?.id]);
 
   const handleCloseOrder = useCallback(async () => {
-    // updateTotalOrder();
+    await updateTotalOrder();
 
     const item = uuid();
 
     const items = orderItems.filter(orderItem => orderItem.id === item);
+
+    setTotal(0);
+    setOrderItems(items);
+    setHasOpenOrder(false);
+    setProductText("");
+    setUserText("");
+    setLoading(false);
+    setParcel("1");
+    setOrderPaymentType("");
+  }, [orderItems, updateTotalOrder]);
+
+  const handleCloseOrderType = useCallback(async () => {
+    const item = uuid();
+
+    const items = orderItems.filter(orderItem => orderItem.id === item);
+
     setTotal(0);
     setOrderItems(items);
     setHasOpenOrder(false);
@@ -213,8 +230,6 @@ const Create: NextPage = () => {
               throw new CustomError("Selecione uma forma de pagamento");
             }
 
-            console.log(orderPaymentType);
-
             await createSingleOrder({
               variables: {
                 total: totalOrder,
@@ -238,7 +253,7 @@ const Create: NextPage = () => {
           toast.error(String(err?.message));
         } finally {
           setLoading(false);
-          handleCloseOrder();
+          handleCloseOrderType();
         }
       }
 
@@ -281,7 +296,6 @@ const Create: NextPage = () => {
             parcel: parseInt(parcel),
           };
 
-          //console.log("adicionar ordem e pedido ", newOrder);
           setOrder(Object.assign(order, newOrder));
 
           const response = await createOrder({
@@ -423,6 +437,9 @@ const Create: NextPage = () => {
           orderItem => item.id !== orderItem.id
         );
 
+        setTotal(total - item.total);
+
+        console.log(total - item.total);
         await updateTotalOrder();
         setOrderItems(filteredItems);
         setProductText("");
@@ -435,15 +452,16 @@ const Create: NextPage = () => {
       }
     },
     [
-      updateTotalOrder,
-      handleCloseOrder,
       loading,
+      orderItems,
+      total,
+      updateTotalOrder,
+      removeOrderAndItems,
       order.id,
       order.product?.quantity,
-      orderItems,
-      removeItem,
-      removeOrderAndItems,
       updateProduct,
+      handleCloseOrder,
+      removeItem,
     ]
   );
 
@@ -462,12 +480,12 @@ const Create: NextPage = () => {
   }, [orderItems.length]);
 
   return (
-    <div className="w-full h-full items-center mt-20 justify-center ">
-      <div className="flex w-[900px] mx-auto flex-row p-4">
+    <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+      <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
         <OrderSidebar />
-        <main className="h-full w-full w-min[600px]">
+        <main className="w-full ">
           <Search />
-          <div className="bg-gray-200 min-h-[65vh]">
+          <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
             <div className="p-8">
               <Header title={"Novo Pedido"} loading={loading} />
 
@@ -487,7 +505,7 @@ const Create: NextPage = () => {
                 className="flex flex-col gap-2 my-8 w-full"
               >
                 <div className="relative justify-center">
-                  <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md z-20 flex flex-col">
+                  <ul className="absolute top-0 mt-9 w-full rounded-md z-20 flex flex-col">
                     {usersSuggestions &&
                       usersSuggestions.map(suggestion => (
                         <button
@@ -498,7 +516,7 @@ const Create: NextPage = () => {
                         >
                           <li
                             onClick={() => handleGetUserId(suggestion)}
-                            className=" rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors  px-4 border-b-gray-400 my-0.5"
+                            className="bg-gray-300 rounded-lg font-bold z-10 mt-[2px] cursor-pointer hover:bg-gray-500 transition-colors  px-2 border border-gray-400 border-t-0"
                           >
                             {`${suggestion.name} - ${suggestion.email}`}
                           </li>
@@ -524,7 +542,7 @@ const Create: NextPage = () => {
                 {!orderType && (
                   <>
                     <div className="relative">
-                      <ul className="absolute top-0 mt-9 w-full bg-gray-300 rounded-md flex flex-col">
+                      <ul className="absolute top-0 mt-9 w-full rounded-md flex flex-col">
                         {suggestions &&
                           suggestions.map(suggestion => (
                             <button
@@ -535,7 +553,7 @@ const Create: NextPage = () => {
                             >
                               <li
                                 onClick={() => handleGetProductId(suggestion)}
-                                className="rounded-md relative font-bold cursor-pointer hover:bg-gray-500 transition-colors px-4 border-b-gray-400 my-0.5"
+                                className="bg-gray-300 rounded-lg font-bold z-10 mt-[2px] cursor-pointer hover:bg-gray-500 transition-colors  px-2 border border-gray-400 border-t-0"
                               >
                                 {`${suggestion.name} ${suggestion.color} ${suggestion.size}`}
                               </li>
@@ -605,17 +623,19 @@ const Create: NextPage = () => {
               </form>
               {orderItems.length !== 0 && (
                 <>
-                  <div className="py-8 px-2 bg-gray-100 rounded-xl">
+                  <div className="py-8 px-2 bg-gray-100 rounded-xl text-xs md:text-base">
                     <div className="flex flex-row items-center">
                       <div className="mr-4 w-6"></div>
-                      <div className="grid grid-cols-4 gap-2 text-sm w-full text-gray-600">
-                        <span className="col-span-2 block font-bold">
+                      <div className="grid grid-cols-3 md:grid-cols-4 md:gap-2 w-full text-gray-600">
+                        <span className="col-span-1 md:col-span-2 block font-bold">
                           Produto
                         </span>
                         <span className="text-center font-bold">
                           Quantidade
                         </span>
-                        <span className="text-right px-4 font-bold">Total</span>
+                        <span className="text-right md:px-4 font-bold">
+                          Total
+                        </span>
                       </div>
                     </div>
                     {orderItems.map(item => (
@@ -625,8 +645,8 @@ const Create: NextPage = () => {
                         removeItem={() => handleRemoveOrderItem(item)}
                       />
                     ))}
-                    <div className="col-span-1 text-blue-400 flex text-end items-center px-4">
-                      <strong className="w-full text-end ">
+                    <div className="col-span-1 text-blue-400 flex text-end items-center md:px-4">
+                      <strong className="w-full text-end text-xs md:text-base ">
                         {setTotalOrder}
                       </strong>
                     </div>

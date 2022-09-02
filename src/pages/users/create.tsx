@@ -5,11 +5,11 @@ import { UserSidebar } from "../../components/Sidebar/User";
 
 const Create: NextPage = () => {
   return (
-    <div className="w-full h-full items-center mt-20 justify-center ">
-      <div className="flex w-[900px] mx-auto flex-row p-4">
+    <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+      <div className="h-full flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
         <UserSidebar />
 
-        <main className="min-h-[65vh] w-full w-min[600px]">
+        <main className="w-full">
           <Search />
           <CreateComponent />
         </main>

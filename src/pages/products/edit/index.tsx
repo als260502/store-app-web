@@ -19,6 +19,7 @@ import {
   useUpdateProductByIdMutation,
 } from "../../../graphql/generated";
 import { CustomError, catchError } from "../../../utils/errorHandle";
+import classNames from "classnames";
 
 const createProductFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
@@ -128,19 +129,19 @@ const Edit: NextPage = () => {
 
   return (
     <>
-      <div className="w-full h-full items-center mt-20 justify-center ">
-        <div className="flex w-[900px] mx-auto flex-row p-4">
+      <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+        <div className="flex md:w-[900px] mx-auto flex-row px-1 md:p-4">
           <ProductSidebar />
 
-          <main className="h-full w-full w-min[600px]">
+          <main className="w-full">
             <SearchProduct setSearchData={handleSetProduct} />
-            <div className="bg-gray-200 min-h-[65vh]">
+            <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />
                 </div>
                 <form
-                  className="mt-8 w-[550px] flex flex-col gap-4"
+                  className="mt-8 flex flex-col gap-4"
                   onSubmit={handleSubmit(handleEditProduct)}
                 >
                   <Input
@@ -208,9 +209,9 @@ const Edit: NextPage = () => {
                     placeholder="10"
                     className="input input-text"
                   />
-                  <div className="flex flex-row gap-8 mt-4">
+                  <div className="flex flex-col md:flex-row  gap-2  md:gap-8 mt-1 md:mt-4">
                     <Button
-                      className="btn btn-primary btn-md w-28 "
+                      className="btn btn-primary btn-sm w-28"
                       type="submit"
                       disabled={loading}
                     >
@@ -228,7 +229,7 @@ const Edit: NextPage = () => {
                     <Button
                       type="button"
                       onClick={handleRemoveProduct}
-                      className="btn btn-outline btn-sm w-28"
+                      className={classNames("btn btn-outline btn-sm w-28", {})}
                     >
                       Excluir produto
                     </Button>

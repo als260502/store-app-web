@@ -48,58 +48,44 @@ export const SearchProduct = ({ setSearchData }: Props) => {
   );
 
   return (
-    <div className="h-16 bg-gray-300">
-      <div className="w-full h-full flex flex-row items-center justify-between">
-        <div className="h-8 w-full flex flex-row border-r-2 border-gray-400 items-center justify-between px-2 ">
-          <div className="flex flex-row gap-2">
-            <MagnifyingGlass size={20} color="#323238" />
-            <div className="fixed mx-8">
-              <input
-                className="w-96 px-1 bg-transparent focus:outline-none border-b-[1px] border-b-gray-400"
-                placeholder="buscar..."
-                onChange={e => onChangeHandler(e.target.value)}
-                value={text}
-                onBlur={() => {
-                  setTimeout(() => {
-                    setSuggestions([]);
-                  }, 100);
-                }}
-              />
-              {suggestions &&
-                suggestions.map(suggestion => (
+    <div className="relative w-full md:w-[41.8rem] h-16 bg-gray-300 px-8">
+      <div className="flex flex-row gap-2 h-full w-full mx-2 items-center">
+        <MagnifyingGlass size={20} color="#323238" />
+        <div className="w-full border-b-[1px] border-b-gray-400">
+          <input
+            className="w-full px-1 block bg-transparent focus:outline-none"
+            placeholder="buscar..."
+            onChange={e => onChangeHandler(e.target.value)}
+            value={text}
+            onBlur={() => {
+              setTimeout(() => {
+                setSuggestions([]);
+              }, 100);
+            }}
+          />
+          <ul className="absolute w-[20rem]">
+            {suggestions &&
+              suggestions.map(suggestion => (
+                <li key={suggestion.id} className="w-full">
                   <a
-                    key={suggestion.id}
+                    className="w-full"
                     onClick={() => setSearchData(suggestion)}
                   >
                     <div
                       onClick={() => setText("")}
-                      className="bg-gray-300 relative lg:w-[600px] font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors  md:w-[300px] px-4 border border-gray-400 border-t-0 my-1"
+                      className="bg-gray-300 font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors  md:w-[300px] px-4 border border-gray-400 border-t-0 my-1"
                     >
                       {`${suggestion.name}`}
                     </div>
                   </a>
-                ))}
-              {loading && (
-                <div className="absolute right-0 top-0 animate-spin">
-                  <CircleNotch size={20} />
-                </div>
-              )}
+                </li>
+              ))}
+          </ul>
+          {loading && (
+            <div className="absolute right-0 top-50 animate-spin">
+              <CircleNotch size={20} />
             </div>
-          </div>
-          <div className="relative">
-            {/* <span className="rounded-full w-3 block absolute top-0 right-1 z-10 text-center text-[8px] bg-blue-700 text-gray-50">
-              3
-            </span>
-            <Bell size="24" /> */}
-          </div>
-        </div>
-
-        <div className="w-[200px] flex items-center justify-center">
-          <Link href="/products/add">
-            <a>
-              <Button className="btn btn-primary btn-sm ">Novo Produto</Button>
-            </a>
-          </Link>
+          )}
         </div>
       </div>
     </div>

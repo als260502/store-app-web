@@ -81,14 +81,14 @@ const Inventory: NextPage = () => {
   );
 
   return (
-    <div className="w-full h-full items-center mt-20 justify-center ">
-      <div className="flex w-[900px] mx-auto flex-row p-4">
+    <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+      <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
         <ReportSidebar />
 
-        <main className="h-full min-h-[65vh] w-full w-min[600px] bg-gray-200">
+        <main className="w-full bg-gray-200">
           <SearchReportInventory handleSearch={handleSearch} />
 
-          <div className="px-8 my-4">
+          <div className="px-8 my-4 h-[100vh] md:h-[40rem]">
             <Header title="Itens em estoque" />
 
             <InventoryItems

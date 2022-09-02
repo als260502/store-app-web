@@ -97,19 +97,19 @@ const Create: NextPage = () => {
 
   return (
     <>
-      <div className="w-full h-full items-center mt-20 justify-center ">
-        <div className="flex w-[900px] mx-auto flex-row p-4">
+      <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
+        <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
           <ProductSidebar />
 
-          <main className="h-full w-full w-min[600px]">
+          <main className="w-full ">
             <Search />
-            <div className="bg-gray-200 min-h-[65vh]">
+            <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />
                 </div>
                 <form
-                  className="mt-8 w-[550px] flex flex-col gap-4"
+                  className="mt-8  flex flex-col gap-4"
                   onSubmit={handleSubmit(handleCreateProduct)}
                 >
                   <Input
@@ -174,13 +174,13 @@ const Create: NextPage = () => {
                     className="input input-text"
                   />
                   <div>
-                    <div className="grid grid-cols-3">
+                    <div className="flex flex-col md:flex-row md:gap-4  ">
                       <Select
                         {...register("categories")}
                         error={errors.categories}
                         name="categories"
                         label="Categoria"
-                        className="input col-span-1"
+                        className="input "
                         options={categoryData?.categories}
                       />
                       <Select
@@ -188,7 +188,7 @@ const Create: NextPage = () => {
                         error={errors.size}
                         name="size"
                         label="Tamanho"
-                        className="input col-span-1"
+                        className="input "
                         options={sizeData?.productSizeVariants}
                       />
                       <Select
@@ -196,14 +196,14 @@ const Create: NextPage = () => {
                         error={errors.color}
                         name="color"
                         label="Cor"
-                        className="input col-span-1"
+                        className="input "
                         options={colorData?.productColorVariants}
                       />
                     </div>
                   </div>
-                  <div className="flex flex-row gap-8 mt-4">
+                  <div className="flex flex-row  gap-4 md:gap-8 mt-4">
                     <Button
-                      className="btn btn-primary btn-md w-24 "
+                      className="btn btn-primary btn-md w-20 md:w-24"
                       type="submit"
                       disabled={loading}
                     >
@@ -213,7 +213,7 @@ const Create: NextPage = () => {
                     <Button
                       type="button"
                       onClick={handleReset}
-                      className="btn btn-outline btn-sm w-24"
+                      className="btn btn-outline btn-sm w-20 md:w-24"
                     >
                       Cancelar
                     </Button>
@@ -221,7 +221,7 @@ const Create: NextPage = () => {
                     <Button
                       type="button"
                       onClick={handleGoBack}
-                      className="btn btn-outline btn-sm w-24"
+                      className="btn btn-outline btn-sm w-20 md:w-24"
                     >
                       Voltar
                     </Button>
