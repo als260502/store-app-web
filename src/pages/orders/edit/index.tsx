@@ -28,7 +28,7 @@ const Edit: NextPage = () => {
     },
   });
 
-  const [finishOrderById, { loading: load }] = useUpdateOrderByIdMutation();
+  const [finishOrderById] = useUpdateOrderByIdMutation();
   const handleFinishOrder = useCallback(
     async (orderId: string) => {
       setLoading(loading => !loading);

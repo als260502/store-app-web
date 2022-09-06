@@ -13,11 +13,9 @@ import { Button } from "../../components/Button";
 import { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import {
-  Color,
   GetCategoriesQuery,
   GetColorVariantQuery,
   GetSizeVariantQuery,
-  ProductColorVariant,
   useGetCategoriesLazyQuery,
   useGetColorVariantLazyQuery,
   useGetSizeVariantLazyQuery,
