@@ -82,7 +82,7 @@ const Inventory: NextPage = () => {
 
   return (
     <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
-      <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
+      <div className="flex md:w-[900px] mx-auto flex-row px-1 md:p-4">
         <ReportSidebar />
 
         <main className="w-full bg-gray-200">

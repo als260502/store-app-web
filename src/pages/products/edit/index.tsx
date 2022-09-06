@@ -132,10 +132,10 @@ const Edit: NextPage = () => {
       <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
         <div className="flex md:w-[900px] mx-auto flex-row px-1 md:p-4">
           <ProductSidebar />
-
-          <main className="w-full">
+          <main className="w-full bg-gray-200">
             <SearchProduct setSearchData={handleSetProduct} />
-            <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
+
+            <div className="h-[100vh] md:h-[40rem]">
               <div className="p-8">
                 <div>
                   <Header title="Adicionar produto" loading={loading} />

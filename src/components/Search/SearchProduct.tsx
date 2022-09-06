@@ -48,7 +48,7 @@ export const SearchProduct = ({ setSearchData }: Props) => {
   );
 
   return (
-    <div className="relative w-full md:w-[41.8rem] h-16 bg-gray-300 px-8">
+    <div className="relative w-full md:w-[41.8rem] h-16 bg-gray-300 px-10">
       <div className="flex flex-row gap-2 h-full w-full mx-2 items-center">
         <MagnifyingGlass size={20} color="#323238" />
         <div className="w-full border-b-[1px] border-b-gray-400">
