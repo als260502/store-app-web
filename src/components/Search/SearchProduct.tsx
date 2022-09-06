@@ -48,7 +48,7 @@ export const SearchProduct = ({ setSearchData }: Props) => {
   );
 
   return (
-    <div className="relative w-full md:w-[41.8rem] h-16 bg-gray-300 px-10">
+    <div className="relative w-full md:w-[41.8rem] h-16 bg-gray-300 px-10 z-30">
       <div className="flex flex-row gap-2 h-full w-full mx-2 items-center">
         <MagnifyingGlass size={20} color="#323238" />
         <div className="w-full border-b-[1px] border-b-gray-400">
@@ -63,7 +63,7 @@ export const SearchProduct = ({ setSearchData }: Props) => {
               }, 100);
             }}
           />
-          <ul className="absolute w-[20rem]">
+          <ul className="absolute">
             {suggestions &&
               suggestions.map(suggestion => (
                 <li key={suggestion.id} className="w-full">
@@ -73,13 +73,23 @@ export const SearchProduct = ({ setSearchData }: Props) => {
                   >
                     <div
                       onClick={() => setText("")}
-                      className="bg-gray-300 font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors  md:w-[300px] px-4 border border-gray-400 border-t-0 my-1"
+                      className="bg-gray-300 font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors  w-[250px] sm:w-[30rem] px-4 border border-gray-400 border-t-0 my-1"
                     >
                       {`${suggestion.name}`}
                     </div>
                   </a>
                 </li>
               ))}
+            {/* <li className="">
+              <a className="">
+                <div
+                  onClick={() => setText("")}
+                  className="bg-gray-300 font-bold z-10 cursor-pointer hover:bg-gray-500 transition-colors px-4 border border-gray-400 border-t-0 my-1"
+                >
+                  Nike Air
+                </div>
+              </a>
+            </li> */}
           </ul>
           {loading && (
             <div className="absolute right-0 top-50 animate-spin">
