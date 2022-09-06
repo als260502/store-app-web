@@ -25,8 +25,8 @@ type FormData = {
 };
 
 const createVariantFormSchema = yup.object().shape({
-  color: yup.string().required("Nome da cor é obrigatório"),
-  size: yup.string().required("Tamanho é obrigatório"),
+  color: yup.string(),
+  size: yup.string(),
 });
 
 const Create: NextPage = () => {

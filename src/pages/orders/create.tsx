@@ -284,6 +284,10 @@ const Create: NextPage = () => {
       const updatedQuantity = Number(order.product?.quantity) - quantity;
 
       try {
+        if (!orderPaymentType || orderPaymentType === "Selecione") {
+          throw new CustomError("Selecione uma forma de pagamento");
+        }
+
         if (!hasOpenOrder) {
           const newOrder = {
             total: newTotal,
@@ -370,7 +374,9 @@ const Create: NextPage = () => {
           await updateTotalOrder();
         }
       } catch (error) {
-        toast.error("Erro ao adicionar pedido");
+        const erro = catchError(error);
+
+        toast.error(String(erro?.message));
         console.log("erro adicionar item ou criar criar pedido", error);
       } finally {
         setLoading(false);
@@ -384,7 +390,7 @@ const Create: NextPage = () => {
       orderPaymentType,
       createSingleOrder,
       parcel,
-      handleCloseOrder,
+      handleCloseOrderType,
       hasOpenOrder,
       createOrder,
       orderItems,
@@ -481,11 +487,11 @@ const Create: NextPage = () => {
 
   return (
     <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
-      <div className="flex md:w-[900px] mx-auto flex-row px-2 md:p-4">
+      <div className="flex  md:w-[900px] mx-auto flex-row px-2 md:p-4">
         <OrderSidebar />
-        <main className="w-full ">
+        <main className="w-full">
           <Search />
-          <div className="bg-gray-200 h-[100vh] md:h-[40rem]">
+          <div className="bg-gray-200 h-screen">
             <div className="p-8">
               <Header title={"Novo Pedido"} loading={loading} />
 

@@ -1,0 +1,5 @@
+mutation RemoveCategory($id: ID!) {
+  deleteCategory(where: { id: $id }) {
+    id
+  }
+}

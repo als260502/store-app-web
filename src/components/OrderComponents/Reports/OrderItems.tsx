@@ -37,7 +37,7 @@ export const OrderItems = ({
         <span className="col-span-1 md:col-span-2">Nome</span>
         <span className="col-span-1 hidden md:flex">Data</span>
         <span className="col-span-1 hidden md:flex">Total</span>
-        <span className="col-span-1 hidden md:flex">Em aberto</span>
+        <span className="col-span-1">Em aberto</span>
       </div>
       <div className="px-2 py-4 mt-2 border w-full min-h-[350px]  bg-gray-100">
         {loading ? (

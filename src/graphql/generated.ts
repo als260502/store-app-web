@@ -12026,6 +12026,13 @@ export type CreateStoreUserMutationVariables = Exact<{
 
 export type CreateStoreUserMutation = { createStoreUser?: { id: string } | null };
 
+export type RemoveCategoryMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveCategoryMutation = { deleteCategory?: { id: string } | null };
+
 export type RemoveOrderItemMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -12521,6 +12528,39 @@ export function useCreateStoreUserMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateStoreUserMutationHookResult = ReturnType<typeof useCreateStoreUserMutation>;
 export type CreateStoreUserMutationResult = Apollo.MutationResult<CreateStoreUserMutation>;
 export type CreateStoreUserMutationOptions = Apollo.BaseMutationOptions<CreateStoreUserMutation, CreateStoreUserMutationVariables>;
+export const RemoveCategoryDocument = gql`
+    mutation RemoveCategory($id: ID!) {
+  deleteCategory(where: {id: $id}) {
+    id
+  }
+}
+    `;
+export type RemoveCategoryMutationFn = Apollo.MutationFunction<RemoveCategoryMutation, RemoveCategoryMutationVariables>;
+
+/**
+ * __useRemoveCategoryMutation__
+ *
+ * To run a mutation, you first call `useRemoveCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCategoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCategoryMutation, { data, loading, error }] = useRemoveCategoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveCategoryMutation(baseOptions?: Apollo.MutationHookOptions<RemoveCategoryMutation, RemoveCategoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveCategoryMutation, RemoveCategoryMutationVariables>(RemoveCategoryDocument, options);
+      }
+export type RemoveCategoryMutationHookResult = ReturnType<typeof useRemoveCategoryMutation>;
+export type RemoveCategoryMutationResult = Apollo.MutationResult<RemoveCategoryMutation>;
+export type RemoveCategoryMutationOptions = Apollo.BaseMutationOptions<RemoveCategoryMutation, RemoveCategoryMutationVariables>;
 export const RemoveOrderItemDocument = gql`
     mutation RemoveOrderItem($id: ID!) {
   deleteOrderItem(where: {id: $id}) {

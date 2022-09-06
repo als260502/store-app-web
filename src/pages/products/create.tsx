@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { useProduct, ProductProps } from "../../context/ProductContext";
@@ -13,9 +13,14 @@ import { Button } from "../../components/Button";
 import { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import {
-  useGetCategoriesQuery,
-  useGetColorVariantQuery,
-  useGetSizeVariantQuery,
+  Color,
+  GetCategoriesQuery,
+  GetColorVariantQuery,
+  GetSizeVariantQuery,
+  ProductColorVariant,
+  useGetCategoriesLazyQuery,
+  useGetColorVariantLazyQuery,
+  useGetSizeVariantLazyQuery,
 } from "../../graphql/generated";
 import { ProductSidebar } from "../../components/Sidebar/product";
 import { Select } from "../../components/FormComponents/Select";
@@ -42,11 +47,29 @@ const Create: NextPage = () => {
     resolver: yupResolver(createProductFormSchema),
   });
 
-  const { data: categoryData } = useGetCategoriesQuery();
+  const [categories, setCategories] = useState<GetCategoriesQuery>();
+  const [size, setSize] = useState<GetSizeVariantQuery>();
+  const [color, setColor] = useState<GetColorVariantQuery>();
 
-  const { data: sizeData } = useGetSizeVariantQuery();
+  const [, { refetch: getCategories }] = useGetCategoriesLazyQuery();
 
-  const { data: colorData } = useGetColorVariantQuery();
+  const [, { refetch: getSize }] = useGetSizeVariantLazyQuery();
+
+  const [, { refetch: getColor }] = useGetColorVariantLazyQuery();
+
+  useEffect(() => {
+    const getVaraints = async () => {
+      const responseColor = await getColor();
+      const responseSize = await getSize();
+      const responseCategories = await getCategories();
+
+      setColor(responseColor.data);
+      setSize(responseSize.data);
+      setCategories(responseCategories.data);
+    };
+
+    getVaraints();
+  }, [getCategories, getColor, getSize]);
 
   const navigation = useRouter();
 
@@ -181,7 +204,7 @@ const Create: NextPage = () => {
                         name="categories"
                         label="Categoria"
                         className="input "
-                        options={categoryData?.categories}
+                        options={categories?.categories}
                       />
                       <Select
                         {...register("size")}
@@ -189,7 +212,7 @@ const Create: NextPage = () => {
                         name="size"
                         label="Tamanho"
                         className="input "
-                        options={sizeData?.productSizeVariants}
+                        options={size?.productSizeVariants}
                       />
                       <Select
                         {...register("color")}
@@ -197,7 +220,7 @@ const Create: NextPage = () => {
                         name="color"
                         label="Cor"
                         className="input "
-                        options={colorData?.productColorVariants}
+                        options={color?.productColorVariants}
                       />
                     </div>
                   </div>

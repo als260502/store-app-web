@@ -95,7 +95,7 @@ const Order: NextPage = () => {
         <main className="w-full bg-gray-200">
           <SearchReportOrder handleSearch={handleSearch} />
 
-          <div className="px-8 my-4 h-[100vh] md:h-[40rem] ">
+          <div className="px-8 my-4 h-[100vh] md:min-h-[40rem] ">
             <Header title="Pedidos" loading={loading} />
 
             <OrderItems

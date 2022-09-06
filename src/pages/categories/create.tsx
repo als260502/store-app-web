@@ -6,7 +6,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useCreateCategoryMutation } from "../../graphql/generated";
+import {
+  useCreateCategoryMutation,
+  useGetCategoriesQuery,
+  useRemoveCategoryMutation,
+} from "../../graphql/generated";
 
 import { Button } from "../../components/Button";
 import { Header } from "../../components/Header";
@@ -14,6 +18,7 @@ import { Search } from "../../components/Search";
 import { Input } from "../../components/FormComponents/Input";
 import { formatSlug } from "../../utils/formatSlug";
 import { ProductSidebar } from "../../components/Sidebar/product";
+import { useCallback, useRef, useState } from "react";
 
 const createCategoryFormSchema = yup.object().shape({
   name: yup.string().required("Nome obrigatório"),
@@ -26,6 +31,10 @@ type Props = {
 };
 
 const Create: NextPage = () => {
+  const [isRemovingCategory, setIsRemovingCategory] = useState(false);
+  const selectRef = useRef<HTMLSelectElement>(null);
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -35,13 +44,16 @@ const Create: NextPage = () => {
     resolver: yupResolver(createCategoryFormSchema),
   });
 
-  const [createCategory, { loading }] = useCreateCategoryMutation();
+  const [createCategory] = useCreateCategoryMutation();
+  const { data, refetch } = useGetCategoriesQuery();
 
   const handleCreateCategory: SubmitHandler<Props> = async values => {
     const newCategory = {
       ...values,
       slug: formatSlug(values.name),
     };
+
+    setLoading(loading => !loading);
 
     try {
       const response = await createCategory({
@@ -62,8 +74,29 @@ const Create: NextPage = () => {
           icon: "😒",
         }
       );
+    } finally {
+      setLoading(loading => !loading);
     }
   };
+
+  const [deleteCategory] = useRemoveCategoryMutation();
+  const handleRemoveCaregory = useCallback(async () => {
+    setLoading(loading => !loading);
+    try {
+      console.log(String(selectRef.current?.value));
+      await deleteCategory({
+        variables: {
+          id: String(selectRef.current?.value),
+        },
+      });
+      toast.success("Categoria removida com sucesso!");
+      refetch();
+    } catch (error) {
+      console.error("erro ao remover categoria", error);
+    } finally {
+      setLoading(loading => !loading);
+    }
+  }, [deleteCategory, refetch]);
 
   const handleReset = () => {
     reset();
@@ -124,6 +157,41 @@ const Create: NextPage = () => {
                     </Button>
                   </div>
                 </form>
+                <div className="mt-4 text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="text-2xl w-4 h-4 "
+                      onChange={() =>
+                        setIsRemovingCategory(
+                          isRemovingCategory => !isRemovingCategory
+                        )
+                      }
+                    />
+                    <span>Remover categoria</span>
+                  </div>
+                  {isRemovingCategory && (
+                    <>
+                      <select
+                        className="mt-4
+                         rounded-md h-8"
+                        ref={selectRef}
+                      >
+                        {data?.categories.map(category => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                      <Button
+                        className="btn btn-primary btn-md mt-4 w-24"
+                        onClick={handleRemoveCaregory}
+                      >
+                        Remover
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </main>
