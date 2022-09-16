@@ -11,7 +11,7 @@ export const OrderSidebar = () => {
       <MobileMenu>
         <SidebarHeader header="Pedidos|Pagamentos">
           <SidebarLink
-            linkUrl="/orders/create"
+            linkUrl="/orders/add"
             linkName="Novo Pedido"
             icon={<CreditCard size={18} />}
           />
@@ -30,7 +30,7 @@ export const OrderSidebar = () => {
       <DesktopMenu>
         <SidebarHeader header="Pedidos|Pagamentos">
           <SidebarLink
-            linkUrl="/orders/create"
+            linkUrl="/orders/add"
             linkName="Novo Pedido"
             icon={<CreditCard size={18} />}
           />

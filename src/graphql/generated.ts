@@ -12149,6 +12149,11 @@ export type GetProductByNameQueryVariables = Exact<{
 
 export type GetProductByNameQuery = { products: Array<{ id: string, name: string, price: number, slug: string, quantity: number, sellPrice: number }> };
 
+export type GetProductsByCategoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProductsByCategoryQuery = { categories: Array<{ id: string, name: string, products: Array<{ id: string, name: string, price: number, quantity: number, sellPrice: number }> }> };
+
 export type GetProductsGreaterThanZeroQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -13207,6 +13212,48 @@ export function useGetProductByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetProductByNameQueryHookResult = ReturnType<typeof useGetProductByNameQuery>;
 export type GetProductByNameLazyQueryHookResult = ReturnType<typeof useGetProductByNameLazyQuery>;
 export type GetProductByNameQueryResult = Apollo.QueryResult<GetProductByNameQuery, GetProductByNameQueryVariables>;
+export const GetProductsByCategoryDocument = gql`
+    query GetProductsByCategory {
+  categories {
+    id
+    name
+    products {
+      id
+      name
+      price
+      quantity
+      sellPrice
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProductsByCategoryQuery__
+ *
+ * To run a query within a React component, call `useGetProductsByCategoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductsByCategoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductsByCategoryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProductsByCategoryQuery(baseOptions?: Apollo.QueryHookOptions<GetProductsByCategoryQuery, GetProductsByCategoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductsByCategoryQuery, GetProductsByCategoryQueryVariables>(GetProductsByCategoryDocument, options);
+      }
+export function useGetProductsByCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductsByCategoryQuery, GetProductsByCategoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductsByCategoryQuery, GetProductsByCategoryQueryVariables>(GetProductsByCategoryDocument, options);
+        }
+export type GetProductsByCategoryQueryHookResult = ReturnType<typeof useGetProductsByCategoryQuery>;
+export type GetProductsByCategoryLazyQueryHookResult = ReturnType<typeof useGetProductsByCategoryLazyQuery>;
+export type GetProductsByCategoryQueryResult = Apollo.QueryResult<GetProductsByCategoryQuery, GetProductsByCategoryQueryVariables>;
 export const GetProductsGreaterThanZeroDocument = gql`
     query GetProductsGreaterThanZero {
   products(where: {quantity_gt: 0}) {
