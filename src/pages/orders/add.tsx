@@ -1,72 +1,16 @@
 import { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import { Header } from "@components/Header";
 import { Search } from "@components/Search";
 import { OrderSidebar } from "@components/Sidebar/order";
 
 import { Toaster } from "react-hot-toast";
-import { useCallback } from "react";
-import { useGetProductsByCategoryQuery } from "@graphql/generated";
-import { MinusCircle, PlusCircle } from "phosphor-react";
-
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  sellPrice: number;
-};
+import { useOrder } from "@context/OrderContext";
+import { OrderListItem } from "@components/OrderComponents/OrderListItem";
 
 const Add: NextPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  const { data: categoryData, refetch } = useGetProductsByCategoryQuery();
-
-  useEffect(() => {
-    const initialProducts: Product[] = [];
-    categoryData?.categories.map(c => {
-      return c.products.map(p => {
-        const newProduct = {
-          name: p.name,
-          id: p.id,
-          price: p.price,
-          sellPrice: p.sellPrice,
-          quantity: p.quantity,
-        };
-        initialProducts.push(newProduct);
-      });
-    });
-
-    setProducts(initialProducts);
-    setAllProducts(initialProducts);
-  }, [categoryData?.categories]);
-
-  const filterProducts = useCallback(() => {
-    try {
-      const id = selectRef.current?.value;
-
-      if (id === "Selecione") {
-        setProducts(allProducts);
-        return;
-      }
-
-      const filteredCategory = categoryData?.categories.filter(
-        category => category.id === id
-      );
-
-      if (filteredCategory) {
-        const newProducts = filteredCategory[0].products.map(
-          product => product
-        );
-        setProducts(newProducts);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [allProducts, categoryData?.categories]);
+  const { products, categories, cart, filterProducts } = useOrder();
 
   return (
     <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
@@ -81,11 +25,9 @@ const Add: NextPage = () => {
               <select
                 name="category"
                 className="input"
-                onChange={filterProducts}
-                ref={selectRef}
+                onChange={e => filterProducts(e.target.value)}
               >
-                <option>Selecione</option>
-                {categoryData?.categories.map(category => (
+                {categories?.map(category => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -102,28 +44,7 @@ const Add: NextPage = () => {
                   </li>
                   {products &&
                     products.map(product => (
-                      <li
-                        key={product.id}
-                        value={product.id}
-                        className="grid grid-cols-5 py-1 my-1"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 col-span-1 text-center"
-                        />
-
-                        <span className="h-4 col-span-2 w-full">
-                          {product.name}
-                        </span>
-                        <div className="flex flex-row items-center md:text-base gap-1 w-full text-xs ">
-                          <MinusCircle className="cursor-pointer hover:text-gray-500 hover:scale-125 transition-all duration-200 ease-in-out" />
-                          <span className="">100</span>
-                          <PlusCircle className="cursor-pointer hover:text-gray-500 hover:scale-125 transition-all duration-200 ease-in-out" />
-                        </div>
-                        <span className="col-span-1 text-center">
-                          {product.quantity}
-                        </span>
-                      </li>
+                      <OrderListItem key={product.id} product={product} />
                     ))}
                 </ul>
               </div>

@@ -4,14 +4,17 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "../lib/apollo";
 import { ProductProvider } from "../context/ProductContext";
 import { CompanyProvider } from "../context/CompanyContext";
+import { OrderProvider } from "@context/OrderContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <CompanyProvider>
-        <ProductProvider>
-          <Component {...pageProps} />
-        </ProductProvider>
+        <OrderProvider>
+          <ProductProvider>
+            <Component {...pageProps} />
+          </ProductProvider>
+        </OrderProvider>
       </CompanyProvider>
     </ApolloProvider>
   );
