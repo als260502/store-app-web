@@ -1,6 +1,7 @@
 import { useOrder } from "@context/OrderContext";
 import { Product } from "@hooks/orderReducer";
 import { MinusCircle, PlusCircle } from "phosphor-react";
+import { useRef } from "react";
 
 type Props = {
   product: Product;
@@ -20,7 +21,7 @@ export const OrderListItem = ({ product }: Props) => {
         className="w-4 h-4 cursor-pointer col-span-1 text-center"
         value={product.id}
         onChange={() => handleAddRemoveProductToCart(product)}
-        checked={product.checked}
+        checked={product?.checked || false}
       />
 
       <span className="h-4 col-span-2 w-full">{product.name}</span>

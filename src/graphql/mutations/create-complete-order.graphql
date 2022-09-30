@@ -1,0 +1,26 @@
+mutation MyMutation(
+  $ordertotal: Float!
+  $orderValue: Float!
+  $stripeCheckoutId: String!
+  $paymentType: String
+  $parcel: Int
+  $userEmail: String
+  $items: [OrderItemCreateInput!]!
+) {
+  createOrder(
+    data: {
+      total: $ordertotal
+      orderValue: $orderValue
+      stripeCheckoutId: $stripeCheckoutId
+      parcel: $parcel
+      paymentType: $paymentType
+      userEmail: $userEmail
+      orderItems: { create: $items }
+    }
+  ) {
+    id
+    orderItems {
+      id
+    }
+  }
+}

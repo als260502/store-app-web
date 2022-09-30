@@ -5,6 +5,7 @@ query GetProductsByCategory {
     products {
       id
       name
+      slug
       price
       quantity
       sellPrice

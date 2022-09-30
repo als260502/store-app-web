@@ -17,7 +17,10 @@ import {
   orderReducer,
   Product,
 } from "@hooks/orderReducer";
-import { useGetProductsByCategoryLazyQuery } from "@graphql/generated";
+import {
+  useGetAllProductsLazyQuery,
+  useGetProductsByCategoryLazyQuery,
+} from "@graphql/generated";
 
 type ContextProps = {
   cart?: Cart[];
@@ -27,6 +30,11 @@ type ContextProps = {
   handleProductQuantityAdd: (product: Product) => void;
   handleProductQuantitySub: (product: Product) => void;
   filterProducts: (categoryId: string) => Promise<void>;
+  setProducts: (product?: Product[]) => void;
+  getProducts: () => Promise<void>;
+  updateCartProductPrice: (product: Product, value: number) => void;
+  handleClearCart: () => void;
+  resetOrder: () => void;
 };
 
 const OrderContext = createContext({} as ContextProps);
@@ -42,6 +50,7 @@ export const OrderProvider = ({ children }: Props) => {
   );
 
   const [getDataFromApi] = useGetProductsByCategoryLazyQuery();
+  const [getAllProducts] = useGetAllProductsLazyQuery();
 
   useEffect(() => {
     const getData = async () => {
@@ -73,6 +82,25 @@ export const OrderProvider = ({ children }: Props) => {
     getData();
   }, [getDataFromApi]);
 
+  const setProducts = useCallback((product?: Product[]) => {
+    dispatch({ type: ActionTypes.getProducts, payload: product });
+  }, []);
+
+  const getProducts = useCallback(async () => {
+    const result = await getAllProducts();
+
+    const products = result.data?.products.map(product => {
+      return {
+        ...product,
+        qtd: 0,
+      };
+    });
+
+    if (products) {
+      dispatch({ type: ActionTypes.getProducts, payload: products });
+    }
+  }, [getAllProducts]);
+
   const filterProducts = useCallback(
     async (categoryId: string) => {
       const result = await getDataFromApi();
@@ -85,13 +113,27 @@ export const OrderProvider = ({ children }: Props) => {
           ...product,
           qtd: 0,
         }));
+
+        const newProduct = filteredProduct.map(p => {
+          const cartProduct = cart.find(c => c.id === p.id);
+
+          if (cartProduct) {
+            return {
+              ...p,
+              qtd: cartProduct.qtd,
+              checked: true,
+            };
+          }
+          return p;
+        }) as Product[];
+
         dispatch({
           type: ActionTypes.filterProducts,
-          payload: filteredProduct,
+          payload: newProduct,
         });
       }
     },
-    [getDataFromApi]
+    [cart, getDataFromApi]
   );
 
   const handleAddRemoveProductToCart = useCallback(
@@ -229,6 +271,53 @@ export const OrderProvider = ({ children }: Props) => {
     [cart, products]
   );
 
+  const updateCartProductPrice = useCallback(
+    (product: Product, newPrice: number) => {
+      const productPrice = products?.find(pro => pro.id === product.id);
+
+      const oldSellPrice = productPrice?.sellPrice as number;
+
+      const cartUpdatted = cart.map(p => {
+        if (p === product) {
+          return {
+            ...p,
+            sellPrice: newPrice ? newPrice : oldSellPrice,
+          };
+        }
+        return p;
+      });
+
+      dispatch({
+        type: ActionTypes.updateCartProductPrice,
+        payload: cartUpdatted,
+      });
+    },
+    [cart, products]
+  );
+
+  const handleClearCart = useCallback(() => {
+    const newCart = cart.filter(c => c.id === "123");
+    dispatch({
+      type: ActionTypes.clearCart,
+      payload: newCart,
+    });
+
+    const newProducts = products?.map(product => {
+      return {
+        ...product,
+        qtd: 0,
+        checked: false,
+      };
+    });
+    dispatch({ type: ActionTypes.getProducts, payload: newProducts });
+  }, [cart, products]);
+
+  const resetOrder = useCallback(() => {
+    dispatch({
+      type: ActionTypes.resetOrder,
+    });
+  }, []);
+
   return (
     <OrderContext.Provider
       value={{
@@ -239,6 +328,11 @@ export const OrderProvider = ({ children }: Props) => {
         handleProductQuantityAdd,
         handleProductQuantitySub,
         filterProducts,
+        setProducts,
+        getProducts,
+        updateCartProductPrice,
+        handleClearCart,
+        resetOrder,
       }}
     >
       {children}
