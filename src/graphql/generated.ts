@@ -5994,6 +5994,7 @@ export type OrderItem = Node & {
   scheduledIn: Array<ScheduledOperation>;
   /** System stage field */
   stage: Stage;
+  tax?: Maybe<Scalars['Int']>;
   total: Scalars['Float'];
   /** The time the document was updated */
   updatedAt: Scalars['DateTime'];
@@ -6096,6 +6097,7 @@ export type OrderItemCreateInput = {
   product?: InputMaybe<ProductCreateOneInlineInput>;
   profit?: InputMaybe<Scalars['Float']>;
   quantity: Scalars['Int'];
+  tax?: InputMaybe<Scalars['Int']>;
   /** total input for default locale (pt_BR) */
   total: Scalars['Float'];
   updatedAt?: InputMaybe<Scalars['DateTime']>;
@@ -6239,6 +6241,21 @@ export type OrderItemManyWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
+  tax?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  tax_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  tax_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  tax_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  /** All values less than the given value. */
+  tax_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  tax_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  tax_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  tax_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
   /** All values greater than the given value. */
   updatedAt_gt?: InputMaybe<Scalars['DateTime']>;
@@ -6268,6 +6285,8 @@ export enum OrderItemOrderByInput {
   PublishedAtDesc = 'publishedAt_DESC',
   QuantityAsc = 'quantity_ASC',
   QuantityDesc = 'quantity_DESC',
+  TaxAsc = 'tax_ASC',
+  TaxDesc = 'tax_DESC',
   TotalAsc = 'total_ASC',
   TotalDesc = 'total_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
@@ -6281,6 +6300,7 @@ export type OrderItemUpdateInput = {
   product?: InputMaybe<ProductUpdateOneInlineInput>;
   profit?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
+  tax?: InputMaybe<Scalars['Int']>;
   /** total input for default locale (pt_BR) */
   total?: InputMaybe<Scalars['Float']>;
 };
@@ -6326,6 +6346,7 @@ export type OrderItemUpdateManyInput = {
   localizations?: InputMaybe<OrderItemUpdateManyLocalizationsInput>;
   profit?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
+  tax?: InputMaybe<Scalars['Int']>;
   /** total input for default locale (pt_BR) */
   total?: InputMaybe<Scalars['Float']>;
 };
@@ -6498,6 +6519,21 @@ export type OrderItemWhereInput = {
   scheduledIn_every?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_none?: InputMaybe<ScheduledOperationWhereInput>;
   scheduledIn_some?: InputMaybe<ScheduledOperationWhereInput>;
+  tax?: InputMaybe<Scalars['Int']>;
+  /** All values greater than the given value. */
+  tax_gt?: InputMaybe<Scalars['Int']>;
+  /** All values greater than or equal the given value. */
+  tax_gte?: InputMaybe<Scalars['Int']>;
+  /** All values that are contained in given list. */
+  tax_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  /** All values less than the given value. */
+  tax_lt?: InputMaybe<Scalars['Int']>;
+  /** All values less than or equal the given value. */
+  tax_lte?: InputMaybe<Scalars['Int']>;
+  /** All values that are not equal to given value. */
+  tax_not?: InputMaybe<Scalars['Int']>;
+  /** All values that are not contained in given list. */
+  tax_not_in?: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
   total?: InputMaybe<Scalars['Float']>;
   /** All values greater than the given value. */
   total_gt?: InputMaybe<Scalars['Float']>;
@@ -12340,7 +12376,7 @@ export type CreateCategoryMutationVariables = Exact<{
 
 export type CreateCategoryMutation = { createCategory?: { slug: string, id: string, name: string } | null };
 
-export type MyMutationMutationVariables = Exact<{
+export type CreateCompleteOrderMutationVariables = Exact<{
   ordertotal: Scalars['Float'];
   orderValue: Scalars['Float'];
   stripeCheckoutId: Scalars['String'];
@@ -12351,7 +12387,7 @@ export type MyMutationMutationVariables = Exact<{
 }>;
 
 
-export type MyMutationMutation = { createOrder?: { id: string, orderItems: Array<{ id: string }> } | null };
+export type CreateCompleteOrderMutation = { createOrder?: { id: string, orderItems: Array<{ id: string }> } | null };
 
 export type CreateOrderItemMutationVariables = Exact<{
   orderId: Scalars['ID'];
@@ -12632,8 +12668,8 @@ export function useCreateCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCategoryMutation>;
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
-export const MyMutationDocument = gql`
-    mutation MyMutation($ordertotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $items: [OrderItemCreateInput!]!) {
+export const CreateCompleteOrderDocument = gql`
+    mutation CreateCompleteOrder($ordertotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $items: [OrderItemCreateInput!]!) {
   createOrder(
     data: {total: $ordertotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, userEmail: $userEmail, orderItems: {create: $items}}
   ) {
@@ -12644,20 +12680,20 @@ export const MyMutationDocument = gql`
   }
 }
     `;
-export type MyMutationMutationFn = Apollo.MutationFunction<MyMutationMutation, MyMutationMutationVariables>;
+export type CreateCompleteOrderMutationFn = Apollo.MutationFunction<CreateCompleteOrderMutation, CreateCompleteOrderMutationVariables>;
 
 /**
- * __useMyMutationMutation__
+ * __useCreateCompleteOrderMutation__
  *
- * To run a mutation, you first call `useMyMutationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMyMutationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateCompleteOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompleteOrderMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [myMutationMutation, { data, loading, error }] = useMyMutationMutation({
+ * const [createCompleteOrderMutation, { data, loading, error }] = useCreateCompleteOrderMutation({
  *   variables: {
  *      ordertotal: // value for 'ordertotal'
  *      orderValue: // value for 'orderValue'
@@ -12669,13 +12705,13 @@ export type MyMutationMutationFn = Apollo.MutationFunction<MyMutationMutation, M
  *   },
  * });
  */
-export function useMyMutationMutation(baseOptions?: Apollo.MutationHookOptions<MyMutationMutation, MyMutationMutationVariables>) {
+export function useCreateCompleteOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompleteOrderMutation, CreateCompleteOrderMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MyMutationMutation, MyMutationMutationVariables>(MyMutationDocument, options);
+        return Apollo.useMutation<CreateCompleteOrderMutation, CreateCompleteOrderMutationVariables>(CreateCompleteOrderDocument, options);
       }
-export type MyMutationMutationHookResult = ReturnType<typeof useMyMutationMutation>;
-export type MyMutationMutationResult = Apollo.MutationResult<MyMutationMutation>;
-export type MyMutationMutationOptions = Apollo.BaseMutationOptions<MyMutationMutation, MyMutationMutationVariables>;
+export type CreateCompleteOrderMutationHookResult = ReturnType<typeof useCreateCompleteOrderMutation>;
+export type CreateCompleteOrderMutationResult = Apollo.MutationResult<CreateCompleteOrderMutation>;
+export type CreateCompleteOrderMutationOptions = Apollo.BaseMutationOptions<CreateCompleteOrderMutation, CreateCompleteOrderMutationVariables>;
 export const CreateOrderItemDocument = gql`
     mutation CreateOrderItem($orderId: ID!, $productId: ID!, $quantity: Int!, $itemTotal: Float!) {
   createOrderItem(

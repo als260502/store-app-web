@@ -26,6 +26,8 @@ type ContextProps = {
   cart?: Cart[];
   categories?: Category[];
   products?: Product[];
+  parcel: number;
+  paymentType: string;
   handleAddRemoveProductToCart: (product: Product) => void;
   handleProductQuantityAdd: (product: Product) => void;
   handleProductQuantitySub: (product: Product) => void;
@@ -33,6 +35,9 @@ type ContextProps = {
   setProducts: (product?: Product[]) => void;
   getProducts: () => Promise<void>;
   updateCartProductPrice: (product: Product, value: number) => void;
+  updatePaymentTax: (product: Product, tax: number) => void;
+  handleSetParcelNumber: (value: number) => void;
+  handleSetPaymentType: (value: string) => void;
   handleClearCart: () => void;
   resetOrder: () => void;
 };
@@ -44,10 +49,8 @@ type Props = {
 };
 
 export const OrderProvider = ({ children }: Props) => {
-  const [{ products, cart, categories }, dispatch] = useReducer(
-    orderReducer,
-    initialState
-  );
+  const [{ products, cart, categories, parcel, paymentType }, dispatch] =
+    useReducer(orderReducer, initialState);
 
   const [getDataFromApi] = useGetProductsByCategoryLazyQuery();
   const [getAllProducts] = useGetAllProductsLazyQuery();
@@ -138,8 +141,9 @@ export const OrderProvider = ({ children }: Props) => {
 
   const handleAddRemoveProductToCart = useCallback(
     (product: Product) => {
-      if (cart?.find(p => p.id === product.id)) {
-        const newCart = cart.filter(cart => cart.id !== product.id);
+      const myCart = cart as Cart[];
+      if (myCart?.find(p => p.id === product.id)) {
+        const newCart = myCart.filter(cart => cart.id !== product.id);
         dispatch({
           type: ActionTypes.addOrRemoveProductToCart,
           payload: newCart,
@@ -184,8 +188,9 @@ export const OrderProvider = ({ children }: Props) => {
 
   const handleProductQuantityAdd = useCallback(
     (product: Product) => {
+      const myCart = cart as Cart[];
       try {
-        const findProduct = cart?.find(prod => prod.id === product.id);
+        const findProduct = myCart?.find(prod => prod.id === product.id);
 
         if (!findProduct) {
           throw new CustomError("Produto não selecionado!");
@@ -208,6 +213,7 @@ export const OrderProvider = ({ children }: Props) => {
               ...p,
               qtd: (p.qtd += 1),
               checked: true,
+              total: p.sellPrice * p.qtd,
             };
           }
           return p;
@@ -251,6 +257,7 @@ export const OrderProvider = ({ children }: Props) => {
           return {
             ...p,
             qtd: (p.qtd -= 1),
+            total: p.sellPrice * p.qtd,
           };
         }
         return p;
@@ -261,7 +268,8 @@ export const OrderProvider = ({ children }: Props) => {
         payload: newProduct,
       });
 
-      const newCart = cart.filter(f => f.qtd > 0);
+      const myCart = cart as Cart[];
+      const newCart = myCart.filter(f => f.qtd > 0);
 
       dispatch({
         type: ActionTypes.decrementCartProduct,
@@ -273,19 +281,24 @@ export const OrderProvider = ({ children }: Props) => {
 
   const updateCartProductPrice = useCallback(
     (product: Product, newPrice: number) => {
+      const myCart: Cart[] = cart;
       const productPrice = products?.find(pro => pro.id === product.id);
+      const productTotal = myCart.find(c => c.id === product.id) as Cart;
 
       const oldSellPrice = productPrice?.sellPrice as number;
+      const total = newPrice * productTotal.qtd;
 
       const cartUpdatted = cart.map(p => {
         if (p === product) {
           return {
             ...p,
             sellPrice: newPrice ? newPrice : oldSellPrice,
+            total: total,
+            tax: 0,
           };
         }
         return p;
-      });
+      }) as Cart[];
 
       dispatch({
         type: ActionTypes.updateCartProductPrice,
@@ -295,8 +308,36 @@ export const OrderProvider = ({ children }: Props) => {
     [cart, products]
   );
 
+  const updatePaymentTax = useCallback(
+    (product: Product, tax: number) => {
+      const cartUpdatted = cart.map((p: Cart) => {
+        if (p.id === product.id) {
+          if (tax) {
+            return {
+              ...p,
+              tax: tax,
+            };
+          } else {
+            return {
+              ...p,
+              tax: 0,
+            };
+          }
+        }
+        return p;
+      });
+
+      dispatch({
+        type: ActionTypes.updateCartProductPrice,
+        payload: cartUpdatted,
+      });
+    },
+    [cart]
+  );
+
   const handleClearCart = useCallback(() => {
-    const newCart = cart.filter(c => c.id === "123");
+    const myCart = cart as Cart[];
+    const newCart = myCart.filter(c => c.id === "123");
     dispatch({
       type: ActionTypes.clearCart,
       payload: newCart,
@@ -311,6 +352,21 @@ export const OrderProvider = ({ children }: Props) => {
     });
     dispatch({ type: ActionTypes.getProducts, payload: newProducts });
   }, [cart, products]);
+
+  const handleSetPaymentType = useCallback((paymentType: string) => {
+    dispatch({
+      type: ActionTypes.updatePaymentType,
+      payload: paymentType,
+    });
+  }, []);
+
+  const handleSetParcelNumber = useCallback((value: number) => {
+    console.log(parcel);
+    dispatch({
+      type: ActionTypes.updateParcel,
+      payload: value,
+    });
+  }, []);
 
   const resetOrder = useCallback(() => {
     dispatch({
@@ -333,6 +389,11 @@ export const OrderProvider = ({ children }: Props) => {
         updateCartProductPrice,
         handleClearCart,
         resetOrder,
+        updatePaymentTax,
+        handleSetPaymentType,
+        handleSetParcelNumber,
+        parcel,
+        paymentType,
       }}
     >
       {children}

@@ -7,6 +7,8 @@ export enum ActionTypes {
   incrementCartProduct = "INCREMENT_CART_PRODUCT",
   decrementCartProduct = "DECREMENT_CART_PRODUCT",
   updateCartProductPrice = "UPDATE_CART_PRODUCT_PRICE",
+  updatePaymentType = "UPDATE_PAYMENT_TYPE",
+  updateParcel = "UPDATE_PARCEL",
   clearCart = "CLEAR_CART",
   resetOrder = "RESET_ORDER",
 }
@@ -29,6 +31,9 @@ export type Cart = {
   sellPrice: number;
   qtd: number;
   slug: string;
+  tax?: number;
+  total?: number;
+  profit?: number;
 };
 
 export type Category = {
@@ -41,6 +46,8 @@ interface State {
   categories?: Category[];
   cart: Cart[];
   isLoading: boolean;
+  paymentType: string;
+  parcel: number;
 }
 
 export const initialState: State = {
@@ -48,22 +55,34 @@ export const initialState: State = {
   categories: [],
   cart: [],
   isLoading: false,
+  paymentType: "Dinheiro",
+  parcel: 1,
 };
 
 type Action =
-  | { type: ActionTypes.resetOrder }
-  | { type: ActionTypes.getProducts; payload: Product[] | undefined }
+  | { type: ActionTypes.resetOrder; payload?: string }
+  | { type: ActionTypes.updatePaymentType; payload?: string }
+  | { type: ActionTypes.updateParcel; payload: number }
   | { type: ActionTypes.getCategories; payload: Category[] | undefined }
+  | { type: ActionTypes.getProducts; payload: Product[] | undefined }
   | { type: ActionTypes.filterProducts; payload: Product[] }
   | { type: ActionTypes.addOrRemoveProductToCart; payload: Cart[] }
   | { type: ActionTypes.incrementCartProduct; payload: Product[] }
+  | { type: ActionTypes.decrementCartProduct; payload: Product[] }
   | { type: ActionTypes.updateCartProductPrice; payload: Cart[] }
-  | { type: ActionTypes.clearCart; payload: Cart[] }
-  | { type: ActionTypes.decrementCartProduct; payload: Product[] };
+  | { type: ActionTypes.clearCart; payload: Cart[] };
 
 export const orderReducer = (state: State, action: Action) => {
   const { type, payload } = action;
   switch (type) {
+    case "RESET_ORDER":
+      return {
+        ...state,
+        initialState,
+      };
+    case "UPDATE_PARCEL": {
+      return { ...state, parcel: payload };
+    }
     case "GET_CATEGORIES": {
       return {
         ...state,
@@ -100,15 +119,11 @@ export const orderReducer = (state: State, action: Action) => {
         ...state,
         cart: payload,
       };
+
     case "CLEAR_CART":
       return {
         ...state,
         cart: payload,
-      };
-    case "RESET_ORDER":
-      return {
-        ...state,
-        initialState,
       };
     default:
       return state;
