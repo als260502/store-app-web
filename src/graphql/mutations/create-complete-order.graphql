@@ -1,5 +1,5 @@
 mutation CreateCompleteOrder(
-  $ordertotal: Float!
+  $orderTotal: Float!
   $orderValue: Float!
   $stripeCheckoutId: String!
   $paymentType: String
@@ -9,7 +9,7 @@ mutation CreateCompleteOrder(
 ) {
   createOrder(
     data: {
-      total: $ordertotal
+      total: $orderTotal
       orderValue: $orderValue
       stripeCheckoutId: $stripeCheckoutId
       parcel: $parcel

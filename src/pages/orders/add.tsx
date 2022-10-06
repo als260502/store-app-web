@@ -105,15 +105,15 @@ const Add: NextPage = () => {
               currentPage={currentPage}
               linkUrl="/orders/add"
             /> */}
-            <div className="flex justify-end px-8 pb-8 gap-4">
+            <div className="flex justify-end items-center px-8 pb-8 gap-4">
               <Button
-                className="btn btn-outline btn-md w-32"
+                className="btn btn-outline btn-sm w-28"
                 onClick={handleClearCart}
               >
                 Limpar Carrinho
               </Button>
               <Button
-                className="btn btn-primary btn-md w-32"
+                className="btn btn-primary btn-sm w-28"
                 onClick={handleCloseOrder}
               >
                 Próximo

@@ -8,6 +8,8 @@ export enum ActionTypes {
   decrementCartProduct = "DECREMENT_CART_PRODUCT",
   updateCartProductPrice = "UPDATE_CART_PRODUCT_PRICE",
   updatePaymentType = "UPDATE_PAYMENT_TYPE",
+  updateTotalOrder = "UPDATE_TOTAL_ORDER",
+  updateProductProfit = "UPDATE_PRODUCT_PROFIT",
   updateParcel = "UPDATE_PARCEL",
   clearCart = "CLEAR_CART",
   resetOrder = "RESET_ORDER",
@@ -31,9 +33,9 @@ export type Cart = {
   sellPrice: number;
   qtd: number;
   slug: string;
-  tax?: number;
-  total?: number;
-  profit?: number;
+  total: number;
+  tax: number;
+  profit: number;
 };
 
 export type Category = {
@@ -48,6 +50,7 @@ interface State {
   isLoading: boolean;
   paymentType: string;
   parcel: number;
+  totalOrder: number;
 }
 
 export const initialState: State = {
@@ -57,19 +60,22 @@ export const initialState: State = {
   isLoading: false,
   paymentType: "Dinheiro",
   parcel: 1,
+  totalOrder: 0,
 };
 
 type Action =
   | { type: ActionTypes.resetOrder; payload?: string }
   | { type: ActionTypes.updatePaymentType; payload?: string }
   | { type: ActionTypes.updateParcel; payload: number }
+  | { type: ActionTypes.updateTotalOrder; payload: number }
   | { type: ActionTypes.getCategories; payload: Category[] | undefined }
   | { type: ActionTypes.getProducts; payload: Product[] | undefined }
   | { type: ActionTypes.filterProducts; payload: Product[] }
   | { type: ActionTypes.addOrRemoveProductToCart; payload: Cart[] }
-  | { type: ActionTypes.incrementCartProduct; payload: Product[] }
-  | { type: ActionTypes.decrementCartProduct; payload: Product[] }
+  | { type: ActionTypes.incrementCartProduct; payload: Cart[] }
+  | { type: ActionTypes.decrementCartProduct; payload: Cart[] }
   | { type: ActionTypes.updateCartProductPrice; payload: Cart[] }
+  | { type: ActionTypes.updateProductProfit; payload: Cart[] }
   | { type: ActionTypes.clearCart; payload: Cart[] };
 
 export const orderReducer = (state: State, action: Action) => {
@@ -82,6 +88,12 @@ export const orderReducer = (state: State, action: Action) => {
       };
     case "UPDATE_PARCEL": {
       return { ...state, parcel: payload };
+    }
+    case "UPDATE_TOTAL_ORDER": {
+      return {
+        ...state,
+        totalOrder: payload,
+      };
     }
     case "GET_CATEGORIES": {
       return {
@@ -100,6 +112,11 @@ export const orderReducer = (state: State, action: Action) => {
         products: payload,
       };
     case "ADD_ROMOVE_TO_CART":
+      return {
+        ...state,
+        cart: payload,
+      };
+    case "UPDATE_PRODUCT_PROFIT":
       return {
         ...state,
         cart: payload,

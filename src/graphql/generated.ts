@@ -12377,7 +12377,7 @@ export type CreateCategoryMutationVariables = Exact<{
 export type CreateCategoryMutation = { createCategory?: { slug: string, id: string, name: string } | null };
 
 export type CreateCompleteOrderMutationVariables = Exact<{
-  ordertotal: Scalars['Float'];
+  orderTotal: Scalars['Float'];
   orderValue: Scalars['Float'];
   stripeCheckoutId: Scalars['String'];
   paymentType?: InputMaybe<Scalars['String']>;
@@ -12669,9 +12669,9 @@ export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCatego
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateCompleteOrderDocument = gql`
-    mutation CreateCompleteOrder($ordertotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $items: [OrderItemCreateInput!]!) {
+    mutation CreateCompleteOrder($orderTotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $items: [OrderItemCreateInput!]!) {
   createOrder(
-    data: {total: $ordertotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, userEmail: $userEmail, orderItems: {create: $items}}
+    data: {total: $orderTotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, userEmail: $userEmail, orderItems: {create: $items}}
   ) {
     id
     orderItems {
@@ -12695,7 +12695,7 @@ export type CreateCompleteOrderMutationFn = Apollo.MutationFunction<CreateComple
  * @example
  * const [createCompleteOrderMutation, { data, loading, error }] = useCreateCompleteOrderMutation({
  *   variables: {
- *      ordertotal: // value for 'ordertotal'
+ *      orderTotal: // value for 'orderTotal'
  *      orderValue: // value for 'orderValue'
  *      stripeCheckoutId: // value for 'stripeCheckoutId'
  *      paymentType: // value for 'paymentType'

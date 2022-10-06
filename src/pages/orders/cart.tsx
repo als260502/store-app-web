@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { NextPage } from "next";
+import { v4 as uuid } from "uuid";
 
 import { Header } from "@components/Header";
 import { OrderSidebar } from "@components/Sidebar/order";
 
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useOrder } from "@context/OrderContext";
 import { CartListItem } from "@components/OrderComponents/CartListItem";
 import { Button } from "@components/Button";
@@ -15,7 +16,12 @@ import { Search } from "@components/Search";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Cart } from "@hooks/orderReducer";
+import {
+  OrderItemCreateInput,
+  useCreateCompleteOrderMutation,
+  useUpdateProductByIdMutation,
+} from "@graphql/generated";
+import { catchError, CustomError } from "@utils/errorHandle";
 
 type PaymentProps = {
   paymentType: string;
@@ -28,7 +34,7 @@ const createOrderFormSchema = yup.object().shape({
 });
 
 const Add: NextPage = () => {
-  const { cart, handleClearCart } = useOrder();
+  const { cart, handleClearCart, totalOrder, resetOrder } = useOrder();
 
   const { register, handleSubmit } = useForm<PaymentProps>({
     resolver: yupResolver(createOrderFormSchema),
@@ -52,29 +58,61 @@ const Add: NextPage = () => {
     router.back();
   }, [router]);
 
+  const [createOrder, { loading }] = useCreateCompleteOrderMutation();
+  const [updateProduct] = useUpdateProductByIdMutation();
   const handleCloseOrder: SubmitHandler<PaymentProps> = useCallback(
     async values => {
-      const { paymentType, parcel } = values;
+      try {
+        const { paymentType, parcel } = values;
 
-      const checkParcel = parcel ? parcel : 1;
+        const checkParcel = parcel ? parseInt(parcel) : 1;
 
-      const myCart = cart as Cart[];
+        console.log(totalOrder);
 
-      const orderTotal = myCart.map(order => {
-        console.log(order.total);
-      }, 0);
+        const orderItems = cart?.map(item => {
+          return {
+            quantity: item.qtd,
+            total: item.total,
+            profit: item.profit,
+            tax: item.tax,
+            product: { connect: { id: item.id } },
+          };
+        }) as OrderItemCreateInput[];
 
-      const orderItems = cart?.map(item => {
-        return {
-          quantity: item.quantity,
-          total: item.total,
-          profit: item.profit,
-          tax: item.tax,
-          product: { connect: { id: item.id } },
+        const order = {
+          orderTotal: totalOrder,
+          orderValue: totalOrder,
+          stripeCheckoutId: uuid(),
+          parcel: checkParcel,
+          paymentType,
+          items: orderItems,
         };
-      });
+        console.log(order);
+
+        await createOrder({
+          variables: order,
+        });
+
+        cart?.map(async c => {
+          const newObject = {
+            id: c.id,
+            quantity: c.quantity - c.qtd,
+          };
+          await updateProduct({
+            variables: newObject,
+          });
+        });
+
+        toast.success("Pedido criado com sucesso!");
+        handleClearCart();
+
+        router.back();
+      } catch (error) {
+        console.error("criando ordem avulsa", error);
+        toast.error("Erro ao criar o pedido!");
+      }
     },
-    []
+    [cart, createOrder, handleClearCart, router, totalOrder]
   );
 
   return (
@@ -91,6 +129,8 @@ const Add: NextPage = () => {
                   onClick={handleClearCart}
                   className="btn btn-outline btn-xs w-16 md:w-20"
                   type="button"
+                  disabled={loading}
+                  loading={loading}
                 >
                   Limpar
                 </Button>
@@ -98,6 +138,8 @@ const Add: NextPage = () => {
                   onClick={handleGoBack}
                   className="btn btn-outline btn-xs w-16 md:w-20"
                   type="button"
+                  disabled={loading}
+                  loading={loading}
                 >
                   Voltar
                 </Button>
@@ -167,7 +209,9 @@ const Add: NextPage = () => {
               <div className="flex md:items-center gap-4 md:justify-end px-8 pb-8">
                 <Button
                   className="btn btn-primary btn-sm w-20 md:w-24"
-                  onClick={handleCloseOrder}
+                  type="submit"
+                  disabled={loading}
+                  loading={loading}
                 >
                   Finalizar
                 </Button>
