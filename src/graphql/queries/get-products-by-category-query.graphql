@@ -9,6 +9,7 @@ query GetProductsByCategory {
       price
       quantity
       sellPrice
+      description
     }
   }
 }

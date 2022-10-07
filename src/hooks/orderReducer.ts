@@ -18,6 +18,7 @@ export enum ActionTypes {
 export type Product = {
   id: string;
   name: string;
+  description: string;
   price: number;
   slug: string;
   quantity: number;
@@ -28,6 +29,7 @@ export type Product = {
 export type Cart = {
   id: string;
   name: string;
+  description: string;
   price: number;
   quantity: number;
   sellPrice: number;

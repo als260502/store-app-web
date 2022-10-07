@@ -12601,7 +12601,7 @@ export type GetProductByNameQuery = { products: Array<{ id: string, name: string
 export type GetProductsByCategoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProductsByCategoryQuery = { categories: Array<{ id: string, name: string, products: Array<{ id: string, name: string, slug: string, price: number, quantity: number, sellPrice: number }> }> };
+export type GetProductsByCategoryQuery = { categories: Array<{ id: string, name: string, products: Array<{ id: string, name: string, slug: string, price: number, quantity: number, sellPrice: number, description: string }> }> };
 
 export type GetProductsGreaterThanZeroQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -13717,6 +13717,7 @@ export const GetProductsByCategoryDocument = gql`
       price
       quantity
       sellPrice
+      description
     }
   }
 }

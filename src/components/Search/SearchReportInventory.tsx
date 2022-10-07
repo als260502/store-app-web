@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+import { useOrder } from "@context/OrderContext";
 import Link from "next/link";
-import { CircleNotch, MagnifyingGlass } from "phosphor-react";
+import { CircleNotch, MagnifyingGlass, ShoppingCart } from "phosphor-react";
 import { useCallback, useState } from "react";
 import { useGetAllProductsLazyQuery } from "../../graphql/generated";
 import { Button } from "../Button";
