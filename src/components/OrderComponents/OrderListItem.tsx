@@ -14,7 +14,7 @@ export const OrderListItem = ({ product }: Props) => {
   } = useOrder();
 
   return (
-    <li value={product.id} className="grid grid-cols-5 py-1 my-1">
+    <li value={product.id} className="grid grid-cols-5 py-1 my-1 items-center">
       <input
         type="checkbox"
         className="w-4 h-4 cursor-pointer col-span-1 text-center"
@@ -23,7 +23,7 @@ export const OrderListItem = ({ product }: Props) => {
         checked={product?.checked || false}
       />
 
-      <span className="h-4 col-span-2 w-full">{product.name}</span>
+      <span className="col-span-2 w-full leading-4 ">{product.name}</span>
       <div className="flex flex-row items-center md:text-base gap-1 w-full text-xs ">
         <MinusCircle
           className="cursor-pointer text-blue-500 hover:text-blue-800 hover:scale-125 transition-all duration-200 ease-in-out"

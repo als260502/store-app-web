@@ -136,7 +136,7 @@ export const OrderProvider = ({ children }: Props) => {
                 checked: true,
               };
             }
-            return p;
+            return { ...p, qtd: 0 };
           })
           .filter(p => p.quantity > 0) as Product[];
         dispatch({ type: ActionTypes.getProducts, payload: allProducts });
