@@ -7,8 +7,7 @@ type Props = {
 };
 
 export const CartListItem = ({ product }: Props) => {
-  const { updateCartProductPrice, updatePaymentTax, updateProductProfit } =
-    useOrder();
+  const { updateCartProductPrice, updatePaymentTax } = useOrder();
 
   let tax = 0;
 

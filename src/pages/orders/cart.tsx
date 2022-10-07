@@ -19,9 +19,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   OrderItemCreateInput,
   useCreateCompleteOrderMutation,
+  useGetAllProductsLazyQuery,
   useUpdateProductByIdMutation,
 } from "@graphql/generated";
-import { catchError, CustomError } from "@utils/errorHandle";
 
 type PaymentProps = {
   paymentType: string;
@@ -34,7 +34,7 @@ const createOrderFormSchema = yup.object().shape({
 });
 
 const Add: NextPage = () => {
-  const { cart, handleClearCart, totalOrder, resetOrder } = useOrder();
+  const { cart, handleClearCart, totalOrder, setProducts } = useOrder();
 
   const { register, handleSubmit } = useForm<PaymentProps>({
     resolver: yupResolver(createOrderFormSchema),
@@ -58,6 +58,7 @@ const Add: NextPage = () => {
     router.back();
   }, [router]);
 
+  const [, { refetch }] = useGetAllProductsLazyQuery();
   const [createOrder, { loading }] = useCreateCompleteOrderMutation();
   const [updateProduct] = useUpdateProductByIdMutation();
   const handleCloseOrder: SubmitHandler<PaymentProps> = useCallback(
@@ -66,8 +67,6 @@ const Add: NextPage = () => {
         const { paymentType, parcel } = values;
 
         const checkParcel = parcel ? parseInt(parcel) : 1;
-
-        console.log(totalOrder);
 
         const orderItems = cart?.map(item => {
           return {
@@ -87,7 +86,6 @@ const Add: NextPage = () => {
           paymentType,
           items: orderItems,
         };
-        console.log(order);
 
         await createOrder({
           variables: order,
@@ -103,8 +101,17 @@ const Add: NextPage = () => {
           });
         });
 
-        toast.success("Pedido criado com sucesso!");
-        handleClearCart();
+        const response = await refetch();
+        const allProducts = response.data.products
+          .map(p => {
+            return {
+              ...p,
+              qtd: 0,
+            };
+          })
+          .filter(p => p.quantity > 0);
+
+        setProducts(allProducts);
 
         router.back();
       } catch (error) {
@@ -112,7 +119,7 @@ const Add: NextPage = () => {
         toast.error("Erro ao criar o pedido!");
       }
     },
-    [cart, createOrder, handleClearCart, router, totalOrder]
+    [cart, createOrder, refetch, router, setProducts, totalOrder, updateProduct]
   );
 
   return (
@@ -123,14 +130,13 @@ const Add: NextPage = () => {
           <Search />
           <div className="bg-gray-200 min-h-[600px]">
             <div className="px-8 pt-8">
-              <Header title={"Finalizar Pedido"} />
+              <Header title={"Finalizar Pedido"} loading={loading} />
               <div className="flex md:items-center gap-2 md:gap-4 justify-end pb-1">
                 <Button
                   onClick={handleClearCart}
                   className="btn btn-outline btn-xs w-16 md:w-20"
                   type="button"
                   disabled={loading}
-                  loading={loading}
                 >
                   Limpar
                 </Button>
@@ -139,7 +145,6 @@ const Add: NextPage = () => {
                   className="btn btn-outline btn-xs w-16 md:w-20"
                   type="button"
                   disabled={loading}
-                  loading={loading}
                 >
                   Voltar
                 </Button>
@@ -211,7 +216,6 @@ const Add: NextPage = () => {
                   className="btn btn-primary btn-sm w-20 md:w-24"
                   type="submit"
                   disabled={loading}
-                  loading={loading}
                 >
                   Finalizar
                 </Button>

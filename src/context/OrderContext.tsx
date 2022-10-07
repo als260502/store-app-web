@@ -7,6 +7,8 @@ import {
   useEffect,
   useReducer,
 } from "react";
+import { v4 as uuid } from "uuid";
+
 import toast from "react-hot-toast";
 import { catchError, CustomError } from "@utils/errorHandle";
 import {
@@ -18,8 +20,11 @@ import {
   Product,
 } from "@hooks/orderReducer";
 import {
+  OrderItemCreateInput,
+  useCreateCompleteOrderMutation,
   useGetAllProductsLazyQuery,
   useGetProductsByCategoryLazyQuery,
+  useUpdateProductByIdMutation,
 } from "@graphql/generated";
 
 type ContextProps = {
@@ -39,6 +44,7 @@ type ContextProps = {
   updatePaymentTax: (product: Product, tax: number) => void;
   handleSetParcelNumber: (value: number) => void;
   handleSetPaymentType: (value: string) => void;
+  closeOrder: (parcel: number, paymentType: string) => Promise<void>;
   handleClearCart: () => void;
   resetOrder: () => void;
 };
@@ -56,7 +62,9 @@ export const OrderProvider = ({ children }: Props) => {
   ] = useReducer(orderReducer, initialState);
 
   const [getDataFromApi] = useGetProductsByCategoryLazyQuery();
-  const [getAllProducts] = useGetAllProductsLazyQuery();
+  const [getAllProducts, { refetch }] = useGetAllProductsLazyQuery();
+  const [createOrder] = useCreateCompleteOrderMutation();
+  const [updateProduct] = useUpdateProductByIdMutation();
 
   useEffect(() => {
     const getData = async () => {
@@ -82,14 +90,20 @@ export const OrderProvider = ({ children }: Props) => {
       );
 
       dispatch({ type: ActionTypes.getCategories, payload: categories });
-      dispatch({ type: ActionTypes.getProducts, payload: product });
+      dispatch({
+        type: ActionTypes.getProducts,
+        payload: product.filter(p => p.quantity > 0),
+      });
     };
 
     getData();
   }, [getDataFromApi]);
 
   const setProducts = useCallback((product?: Product[]) => {
-    dispatch({ type: ActionTypes.getProducts, payload: product });
+    dispatch({
+      type: ActionTypes.getProducts,
+      payload: product?.filter(p => p.quantity > 0),
+    });
   }, []);
 
   const getProducts = useCallback(async () => {
@@ -415,6 +429,61 @@ export const OrderProvider = ({ children }: Props) => {
     });
   }, []);
 
+  const closeOrder = useCallback(
+    async (parcel: number, paymentType: string) => {
+      const orderItems = cart?.map(item => {
+        return {
+          quantity: item.qtd,
+          total: item.total,
+          profit: item.profit,
+          tax: item.tax,
+          product: { connect: { id: item.id } },
+        };
+      }) as OrderItemCreateInput[];
+
+      const order = {
+        orderTotal: totalOrder,
+        orderValue: totalOrder,
+        stripeCheckoutId: uuid(),
+        parcel,
+        paymentType,
+        items: orderItems,
+      };
+
+      await createOrder({
+        variables: order,
+      });
+
+      cart?.map(async c => {
+        const newObject = {
+          id: c.id,
+          quantity: c.quantity - c.qtd,
+        };
+        await updateProduct({
+          variables: newObject,
+        });
+      });
+
+      const response = await refetch();
+      const allProducts = response.data.products
+        .map(p => {
+          return {
+            ...p,
+            qtd: 0,
+          };
+        })
+        .filter(p => p.quantity > 0);
+
+      console.log(products);
+
+      dispatch({
+        type: ActionTypes.getProducts,
+        payload: allProducts,
+      });
+    },
+    [cart, createOrder, refetch, totalOrder, updateProduct, products]
+  );
+
   const resetOrder = useCallback(() => {
     dispatch({
       type: ActionTypes.resetOrder,
@@ -442,6 +511,7 @@ export const OrderProvider = ({ children }: Props) => {
         parcel,
         paymentType,
         totalOrder,
+        closeOrder,
       }}
     >
       {children}

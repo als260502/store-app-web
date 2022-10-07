@@ -9,8 +9,9 @@ import { useOrder } from "@context/OrderContext";
 import { OrderListItem } from "@components/OrderComponents/OrderListItem";
 import { Button } from "@components/Button";
 import { SearchOrderAdd } from "@components/Search/SearchOrderAdd";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
+import { Paginate } from "@components/Pagination/Paginate";
 
 const Add: NextPage = () => {
   const {
@@ -24,20 +25,20 @@ const Add: NextPage = () => {
 
   const router = useRouter();
 
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [registersPerPage] = useState(2);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [registersPerPage] = useState(10);
 
-  // const indexOfLastRegister = currentPage * registersPerPage;
-  // const indexOfFirstRegister = indexOfLastRegister - registersPerPage;
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const currentRegisters = products?.slice(
-  //   indexOfFirstRegister,
-  //   indexOfLastRegister
-  // );
+  const indexOfLastRegister = currentPage * registersPerPage;
+  const indexOfFirstRegister = indexOfLastRegister - registersPerPage;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const currentRegisters = products?.slice(
+    indexOfFirstRegister,
+    indexOfLastRegister
+  );
 
-  // // const paginate = useCallback((pageNumber: number) => {
-  // //   setCurrentPage(pageNumber);
-  // // }, []);
+  const paginate = useCallback((pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  }, []);
 
   const handleCloseOrder = () => {
     router.push("/orders/cart");
@@ -73,7 +74,7 @@ const Add: NextPage = () => {
 
               <select
                 name="category"
-                className="input"
+                className="input mt-4"
                 onChange={e => filterProducts(e.target.value)}
               >
                 {categories?.map(category => (
@@ -92,19 +93,19 @@ const Add: NextPage = () => {
                     <strong className="col-span-1 text-center">Estoque</strong>
                   </li>
                   {products &&
-                    products.map(product => (
+                    currentRegisters?.map(product => (
                       <OrderListItem key={product.id} product={product} />
                     ))}
                 </ul>
               </div>
             </div>
-            {/* <Paginate
+            <Paginate
               registersPerPage={registersPerPage}
               totalRegisters={products?.length}
               paginate={paginate}
               currentPage={currentPage}
               linkUrl="/orders/add"
-            /> */}
+            />
             <div className="flex justify-end items-center px-8 pb-8 gap-4">
               <Button
                 className="btn btn-outline btn-sm w-28"

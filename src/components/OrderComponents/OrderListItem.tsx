@@ -1,7 +1,6 @@
 import { useOrder } from "@context/OrderContext";
 import { Product } from "@hooks/orderReducer";
 import { MinusCircle, PlusCircle } from "phosphor-react";
-import { useRef } from "react";
 
 type Props = {
   product: Product;
