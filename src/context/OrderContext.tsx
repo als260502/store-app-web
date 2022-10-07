@@ -123,11 +123,32 @@ export const OrderProvider = ({ children }: Props) => {
 
   const filterProducts = useCallback(
     async (categoryId: string) => {
+      if (categoryId === "todos") {
+        const result = await getAllProducts();
+
+        const allProducts = result.data?.products
+          .map(p => {
+            const cartProduct = cart.find(c => c.id === p.id);
+            if (cartProduct) {
+              return {
+                ...p,
+                qtd: cartProduct.qtd,
+                checked: true,
+              };
+            }
+            return p;
+          })
+          .filter(p => p.quantity > 0) as Product[];
+        dispatch({ type: ActionTypes.getProducts, payload: allProducts });
+        return;
+      }
+
       const result = await getDataFromApi();
 
       const filteredCategory = result.data?.categories.filter(
         category => category.id === categoryId
       );
+
       if (filteredCategory) {
         const filteredProduct = filteredCategory[0].products.map(product => ({
           ...product,

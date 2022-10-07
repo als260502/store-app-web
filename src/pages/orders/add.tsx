@@ -77,6 +77,7 @@ const Add: NextPage = () => {
                 className="input mt-4"
                 onChange={e => filterProducts(e.target.value)}
               >
+                <option value="todos">Todos</option>
                 {categories?.map(category => (
                   <option key={category.id} value={category.id}>
                     {category.name}
