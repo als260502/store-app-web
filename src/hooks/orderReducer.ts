@@ -3,7 +3,7 @@ export enum ActionTypes {
   getCategories = "GET_CATEGORIES",
   getProducts = "GET_PRODUCTS",
   filterProducts = "FILTER_PRODUCTS",
-  addOrRemoveProductToCart = "ADD_ROMOVE_TO_CART",
+  addOrRemoveProductToCart = "ADD_REMOVE_TO_CART",
   incrementCartProduct = "INCREMENT_CART_PRODUCT",
   decrementCartProduct = "DECREMENT_CART_PRODUCT",
   updateCartProductPrice = "UPDATE_CART_PRODUCT_PRICE",
@@ -11,6 +11,7 @@ export enum ActionTypes {
   updateTotalOrder = "UPDATE_TOTAL_ORDER",
   updateProductProfit = "UPDATE_PRODUCT_PROFIT",
   updateParcel = "UPDATE_PARCEL",
+  setOrderUser = "SET_ORDER_USER",
   clearCart = "CLEAR_CART",
   resetOrder = "RESET_ORDER",
 }
@@ -45,6 +46,11 @@ export type Category = {
   name: string;
 };
 
+export type OrderUser = {
+  id: string;
+  email: string;
+};
+
 interface State {
   products?: Product[];
   categories?: Category[];
@@ -53,12 +59,14 @@ interface State {
   paymentType: string;
   parcel: number;
   totalOrder: number;
+  orderUser?: OrderUser;
 }
 
 export const initialState: State = {
   products: [],
   categories: [],
   cart: [],
+  orderUser: undefined,
   isLoading: false,
   paymentType: "Dinheiro",
   parcel: 1,
@@ -70,6 +78,7 @@ type Action =
   | { type: ActionTypes.updatePaymentType; payload?: string }
   | { type: ActionTypes.updateParcel; payload: number }
   | { type: ActionTypes.updateTotalOrder; payload: number }
+  | { type: ActionTypes.setOrderUser; payload: OrderUser }
   | { type: ActionTypes.getCategories; payload: Category[] | undefined }
   | { type: ActionTypes.getProducts; payload: Product[] | undefined }
   | { type: ActionTypes.filterProducts; payload: Product[] }
@@ -113,7 +122,7 @@ export const orderReducer = (state: State, action: Action) => {
         ...state,
         products: payload,
       };
-    case "ADD_ROMOVE_TO_CART":
+    case "ADD_REMOVE_TO_CART":
       return {
         ...state,
         cart: payload,
@@ -138,7 +147,11 @@ export const orderReducer = (state: State, action: Action) => {
         ...state,
         cart: payload,
       };
-
+    case "SET_ORDER_USER":
+      return {
+        ...state,
+        orderUser: payload,
+      };
     case "CLEAR_CART":
       return {
         ...state,

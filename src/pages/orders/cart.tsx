@@ -19,6 +19,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   OrderItemCreateInput,
   useCreateCompleteOrderMutation,
+  useCreateOrderWithoutUserMutation,
   useGetAllProductsLazyQuery,
   useUpdateProductByIdMutation,
 } from "@graphql/generated";
@@ -34,7 +35,8 @@ const createOrderFormSchema = yup.object().shape({
 });
 
 const Add: NextPage = () => {
-  const { cart, handleClearCart, totalOrder, setProducts } = useOrder();
+  const { cart, handleClearCart, totalOrder, setProducts, orderUser } =
+    useOrder();
 
   const { register, handleSubmit } = useForm<PaymentProps>({
     resolver: yupResolver(createOrderFormSchema),
@@ -60,6 +62,7 @@ const Add: NextPage = () => {
 
   const [, { refetch }] = useGetAllProductsLazyQuery();
   const [createOrder, { loading }] = useCreateCompleteOrderMutation();
+  const [createOrderWithoutUser] = useCreateOrderWithoutUserMutation();
   const [updateProduct] = useUpdateProductByIdMutation();
   const handleCloseOrder: SubmitHandler<PaymentProps> = useCallback(
     async values => {
@@ -78,18 +81,34 @@ const Add: NextPage = () => {
           };
         }) as OrderItemCreateInput[];
 
-        const order = {
-          orderTotal: totalOrder,
-          orderValue: totalOrder,
-          stripeCheckoutId: uuid(),
-          parcel: checkParcel,
-          paymentType,
-          items: orderItems,
-        };
+        if (orderUser) {
+          const order = {
+            orderTotal: totalOrder,
+            orderValue: totalOrder,
+            stripeCheckoutId: uuid(),
+            parcel: checkParcel,
+            paymentType,
+            userEmail: orderUser.email,
+            userId: orderUser.id,
+            items: orderItems,
+          };
+          await createOrder({
+            variables: order,
+          });
+        } else {
+          const order = {
+            orderTotal: totalOrder,
+            orderValue: totalOrder,
+            stripeCheckoutId: uuid(),
+            parcel: checkParcel,
+            paymentType,
+            items: orderItems,
+          };
 
-        await createOrder({
-          variables: order,
-        });
+          await createOrderWithoutUser({
+            variables: order,
+          });
+        }
 
         cart?.map(async c => {
           const newObject = {
@@ -100,6 +119,8 @@ const Add: NextPage = () => {
             variables: newObject,
           });
         });
+
+        handleClearCart();
 
         const response = await refetch();
         const allProducts = response.data.products
@@ -113,13 +134,26 @@ const Add: NextPage = () => {
 
         setProducts(allProducts);
 
+        toast.success("Pedido criado com sucesso!");
+
         router.back();
       } catch (error) {
         console.error("criando ordem avulsa", error);
         toast.error("Erro ao criar o pedido!");
       }
     },
-    [cart, createOrder, refetch, router, setProducts, totalOrder, updateProduct]
+    [
+      cart,
+      createOrder,
+      createOrderWithoutUser,
+      handleClearCart,
+      orderUser,
+      refetch,
+      router,
+      setProducts,
+      totalOrder,
+      updateProduct,
+    ]
   );
 
   return (
@@ -224,7 +258,7 @@ const Add: NextPage = () => {
           </div>
         </main>
       </div>
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

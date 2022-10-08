@@ -2443,6 +2443,7 @@ export type Company = Node & {
   updatedAt: Scalars['DateTime'];
   /** User that last updated this document */
   updatedBy?: Maybe<User>;
+  withUser?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -2512,6 +2513,7 @@ export type CompanyCreateInput = {
   logo?: InputMaybe<AssetCreateOneInlineInput>;
   name?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
+  withUser?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type CompanyCreateManyInlineInput = {
@@ -2658,6 +2660,9 @@ export type CompanyManyWhereInput = {
   /** All values that are not contained in given list. */
   updatedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
   updatedBy?: InputMaybe<UserWhereInput>;
+  withUser?: InputMaybe<Scalars['Boolean']>;
+  /** All values that are not equal to given value. */
+  withUser_not?: InputMaybe<Scalars['Boolean']>;
 };
 
 export enum CompanyOrderByInput {
@@ -2672,13 +2677,16 @@ export enum CompanyOrderByInput {
   PublishedAtAsc = 'publishedAt_ASC',
   PublishedAtDesc = 'publishedAt_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC'
+  UpdatedAtDesc = 'updatedAt_DESC',
+  WithUserAsc = 'withUser_ASC',
+  WithUserDesc = 'withUser_DESC'
 }
 
 export type CompanyUpdateInput = {
   cnpj?: InputMaybe<Scalars['String']>;
   logo?: InputMaybe<AssetUpdateOneInlineInput>;
   name?: InputMaybe<Scalars['String']>;
+  withUser?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type CompanyUpdateManyInlineInput = {
@@ -2701,6 +2709,7 @@ export type CompanyUpdateManyInlineInput = {
 export type CompanyUpdateManyInput = {
   cnpj?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+  withUser?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type CompanyUpdateManyWithNestedWhereInput = {
@@ -2874,6 +2883,9 @@ export type CompanyWhereInput = {
   /** All values that are not contained in given list. */
   updatedAt_not_in?: InputMaybe<Array<InputMaybe<Scalars['DateTime']>>>;
   updatedBy?: InputMaybe<UserWhereInput>;
+  withUser?: InputMaybe<Scalars['Boolean']>;
+  /** All values that are not equal to given value. */
+  withUser_not?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** The document in stages filter allows specifying a stage entry to cross compare the same document between different stages */
@@ -12383,6 +12395,7 @@ export type CreateCompleteOrderMutationVariables = Exact<{
   paymentType?: InputMaybe<Scalars['String']>;
   parcel?: InputMaybe<Scalars['Int']>;
   userEmail?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['ID']>;
   items: Array<OrderItemCreateInput> | OrderItemCreateInput;
 }>;
 
@@ -12398,6 +12411,18 @@ export type CreateOrderItemMutationVariables = Exact<{
 
 
 export type CreateOrderItemMutation = { createOrderItem?: { id: string } | null };
+
+export type CreateOrderWithoutUserMutationVariables = Exact<{
+  orderTotal: Scalars['Float'];
+  orderValue: Scalars['Float'];
+  stripeCheckoutId: Scalars['String'];
+  paymentType?: InputMaybe<Scalars['String']>;
+  parcel?: InputMaybe<Scalars['Int']>;
+  items: Array<OrderItemCreateInput> | OrderItemCreateInput;
+}>;
+
+
+export type CreateOrderWithoutUserMutation = { createOrder?: { id: string, orderItems: Array<{ id: string }> } | null };
 
 export type CreateOrderMutationVariables = Exact<{
   total: Scalars['Float'];
@@ -12570,7 +12595,7 @@ export type GetCompanyDataQueryVariables = Exact<{
 }>;
 
 
-export type GetCompanyDataQuery = { company?: { cnpj?: string | null, name?: string | null, id: string, logo?: { url: string } | null } | null };
+export type GetCompanyDataQuery = { company?: { cnpj?: string | null, name?: string | null, withUser?: boolean | null, id: string, logo?: { url: string } | null } | null };
 
 export type GetCompleteOrderByIdQueryVariables = Exact<{
   orderId: Scalars['ID'];
@@ -12669,9 +12694,9 @@ export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCatego
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const CreateCompleteOrderDocument = gql`
-    mutation CreateCompleteOrder($orderTotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $items: [OrderItemCreateInput!]!) {
+    mutation CreateCompleteOrder($orderTotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $userEmail: String, $userId: ID, $items: [OrderItemCreateInput!]!) {
   createOrder(
-    data: {total: $orderTotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, userEmail: $userEmail, orderItems: {create: $items}}
+    data: {total: $orderTotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, userEmail: $userEmail, orderItems: {create: $items}, storeUser: {connect: {id: $userId}}}
   ) {
     id
     orderItems {
@@ -12701,6 +12726,7 @@ export type CreateCompleteOrderMutationFn = Apollo.MutationFunction<CreateComple
  *      paymentType: // value for 'paymentType'
  *      parcel: // value for 'parcel'
  *      userEmail: // value for 'userEmail'
+ *      userId: // value for 'userId'
  *      items: // value for 'items'
  *   },
  * });
@@ -12750,6 +12776,49 @@ export function useCreateOrderItemMutation(baseOptions?: Apollo.MutationHookOpti
 export type CreateOrderItemMutationHookResult = ReturnType<typeof useCreateOrderItemMutation>;
 export type CreateOrderItemMutationResult = Apollo.MutationResult<CreateOrderItemMutation>;
 export type CreateOrderItemMutationOptions = Apollo.BaseMutationOptions<CreateOrderItemMutation, CreateOrderItemMutationVariables>;
+export const CreateOrderWithoutUserDocument = gql`
+    mutation CreateOrderWithoutUser($orderTotal: Float!, $orderValue: Float!, $stripeCheckoutId: String!, $paymentType: String, $parcel: Int, $items: [OrderItemCreateInput!]!) {
+  createOrder(
+    data: {total: $orderTotal, orderValue: $orderValue, stripeCheckoutId: $stripeCheckoutId, parcel: $parcel, paymentType: $paymentType, orderItems: {create: $items}}
+  ) {
+    id
+    orderItems {
+      id
+    }
+  }
+}
+    `;
+export type CreateOrderWithoutUserMutationFn = Apollo.MutationFunction<CreateOrderWithoutUserMutation, CreateOrderWithoutUserMutationVariables>;
+
+/**
+ * __useCreateOrderWithoutUserMutation__
+ *
+ * To run a mutation, you first call `useCreateOrderWithoutUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrderWithoutUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrderWithoutUserMutation, { data, loading, error }] = useCreateOrderWithoutUserMutation({
+ *   variables: {
+ *      orderTotal: // value for 'orderTotal'
+ *      orderValue: // value for 'orderValue'
+ *      stripeCheckoutId: // value for 'stripeCheckoutId'
+ *      paymentType: // value for 'paymentType'
+ *      parcel: // value for 'parcel'
+ *      items: // value for 'items'
+ *   },
+ * });
+ */
+export function useCreateOrderWithoutUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateOrderWithoutUserMutation, CreateOrderWithoutUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateOrderWithoutUserMutation, CreateOrderWithoutUserMutationVariables>(CreateOrderWithoutUserDocument, options);
+      }
+export type CreateOrderWithoutUserMutationHookResult = ReturnType<typeof useCreateOrderWithoutUserMutation>;
+export type CreateOrderWithoutUserMutationResult = Apollo.MutationResult<CreateOrderWithoutUserMutation>;
+export type CreateOrderWithoutUserMutationOptions = Apollo.BaseMutationOptions<CreateOrderWithoutUserMutation, CreateOrderWithoutUserMutationVariables>;
 export const CreateOrderDocument = gql`
     mutation CreateOrder($total: Float!, $userId: ID, $itemQuantity: Int!, $totalItem: Float!, $productId: ID!, $userEmail: String, $parcel: Int, $paymentType: String) {
   createOrder(
@@ -13486,6 +13555,7 @@ export const GetCompanyDataDocument = gql`
   company(where: {id: $id}) {
     cnpj
     name
+    withUser
     logo {
       url
     }

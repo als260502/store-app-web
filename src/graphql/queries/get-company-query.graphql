@@ -2,6 +2,7 @@ query GetCompanyData($id: ID!) {
   company(where: { id: $id }) {
     cnpj
     name
+    withUser
     logo {
       url
     }

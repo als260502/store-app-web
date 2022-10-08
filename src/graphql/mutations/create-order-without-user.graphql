@@ -1,11 +1,9 @@
-mutation CreateCompleteOrder(
+mutation CreateOrderWithoutUser(
   $orderTotal: Float!
   $orderValue: Float!
   $stripeCheckoutId: String!
   $paymentType: String
   $parcel: Int
-  $userEmail: String
-  $userId: ID
   $items: [OrderItemCreateInput!]!
 ) {
   createOrder(
@@ -15,9 +13,7 @@ mutation CreateCompleteOrder(
       stripeCheckoutId: $stripeCheckoutId
       parcel: $parcel
       paymentType: $paymentType
-      userEmail: $userEmail
       orderItems: { create: $items }
-      storeUser: { connect: { id: $userId } }
     }
   ) {
     id

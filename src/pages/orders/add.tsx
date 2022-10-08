@@ -12,6 +12,7 @@ import { SearchOrderAdd } from "@components/Search/SearchOrderAdd";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { Paginate } from "@components/Pagination/Paginate";
+import { SearchUserStore } from "@components/Search/SearchUserStore";
 
 const Add: NextPage = () => {
   const {
@@ -71,6 +72,8 @@ const Add: NextPage = () => {
           <div className="bg-gray-200 min-h-[600px]">
             <div className="px-8 pt-8">
               <Header title={"Novo Pedido"} />
+
+              <SearchUserStore />
 
               <select
                 name="category"

@@ -22,7 +22,7 @@ export const SearchOrderAdd = ({ handleSearch }: Props) => {
             <div className="w-full border-b-[1px] border-b-gray-400">
               <input
                 className="px-1 bg-transparent focus:outline-none "
-                placeholder="Buscar..."
+                placeholder="Buscar produto ..."
                 onChange={e => handleSearch(e.target.value)}
               />
             </div>

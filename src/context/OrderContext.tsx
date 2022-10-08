@@ -17,6 +17,7 @@ import {
   Category,
   initialState,
   orderReducer,
+  OrderUser,
   Product,
 } from "@hooks/orderReducer";
 import {
@@ -34,12 +35,14 @@ type ContextProps = {
   parcel: number;
   paymentType: string;
   totalOrder: number;
+  orderUser: OrderUser | undefined;
   handleAddRemoveProductToCart: (product: Product) => void;
   handleProductQuantityAdd: (product: Product) => void;
   handleProductQuantitySub: (product: Product) => void;
   filterProducts: (categoryId: string) => Promise<void>;
   setProducts: (product?: Product[]) => void;
   getProducts: () => Promise<void>;
+  setOrderUser: (user: OrderUser) => void;
   updateCartProductPrice: (product: Product, value: number) => void;
   updatePaymentTax: (product: Product, tax: number) => void;
   handleSetParcelNumber: (value: number) => void;
@@ -57,7 +60,7 @@ type Props = {
 
 export const OrderProvider = ({ children }: Props) => {
   const [
-    { products, cart, categories, parcel, paymentType, totalOrder },
+    { products, cart, categories, parcel, paymentType, totalOrder, orderUser },
     dispatch,
   ] = useReducer(orderReducer, initialState);
 
@@ -174,7 +177,7 @@ export const OrderProvider = ({ children }: Props) => {
         });
       }
     },
-    [cart, getDataFromApi]
+    [cart, getAllProducts, getDataFromApi]
   );
 
   const handleAddRemoveProductToCart = useCallback(
@@ -505,6 +508,13 @@ export const OrderProvider = ({ children }: Props) => {
     [cart, createOrder, refetch, totalOrder, updateProduct, products]
   );
 
+  const setOrderUser = useCallback((user: OrderUser) => {
+    dispatch({
+      type: ActionTypes.setOrderUser,
+      payload: user,
+    });
+  }, []);
+
   const resetOrder = useCallback(() => {
     dispatch({
       type: ActionTypes.resetOrder,
@@ -529,6 +539,8 @@ export const OrderProvider = ({ children }: Props) => {
         updatePaymentTax,
         handleSetPaymentType,
         handleSetParcelNumber,
+        setOrderUser,
+        orderUser,
         parcel,
         paymentType,
         totalOrder,
