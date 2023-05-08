@@ -22,7 +22,7 @@ export const ReportSidebar = () => {
           />
 
           <SidebarLink linkName={"Cadastros"} linkUrl={"/users/create"} />
-          <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/create"} />
+          <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/add"} />
           <SidebarLink linkName={"Prodtos"} linkUrl={"/products/create"} />
         </SidebarHeader>
       </MobileMenu>
@@ -40,7 +40,7 @@ export const ReportSidebar = () => {
           />
 
           <SidebarLink linkName={"Cadastros"} linkUrl={"/users/create"} />
-          <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/create"} />
+          <SidebarLink linkName={"Pedidos"} linkUrl={"/orders/add"} />
           <SidebarLink linkName={"Prodtos"} linkUrl={"/products/create"} />
         </SidebarHeader>
       </DesktopMenu>

@@ -30,7 +30,12 @@ export const SidebarLink = ({ linkName, linkUrl, icon, ...rest }: Props) => {
           )}
         >
           {icon}
-          <span className="font-medium text-sm">
+          <span
+            className={classNames(" text-sm", {
+              "font-bold": isLinkActive,
+              "font-normal": !isLinkActive,
+            })}
+          >
             {linkName}
             {isLinkActive && <hr className="border-gray-900" />}
           </span>

@@ -10,7 +10,9 @@ type Props = {
   handleSearch: (text: string) => void;
 };
 
-export const SearchReportInventory = ({ handleSearch }: Props) => {
+export const SearchOrderAdd = ({ handleSearch }: Props) => {
+  const { cart } = useOrder();
+
   return (
     <div className="h-16 bg-gray-300 px-4">
       <div className="w-full h-full flex flex-row items-center justify-between">
@@ -23,6 +25,14 @@ export const SearchReportInventory = ({ handleSearch }: Props) => {
                 placeholder="Buscar..."
                 onChange={e => handleSearch(e.target.value)}
               />
+            </div>
+            <div className="px-6 relative ">
+              <ShoppingCart size={20} />
+              {cart && (
+                <span className="text-base font-bold ml-1 absolute text-blue-600 top-0 right-0">
+                  {cart.length > 0 ? cart.length : ""}
+                </span>
+              )}
             </div>
           </div>
         </div>

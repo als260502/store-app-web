@@ -1,0 +1,15 @@
+query GetProductsByCategory {
+  categories {
+    id
+    name
+    products {
+      id
+      name
+      slug
+      price
+      quantity
+      sellPrice
+      description
+    }
+  }
+}
