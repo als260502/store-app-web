@@ -31,13 +31,12 @@ export const CompanyProvider = ({ children }: CompanyProviderProps) => {
 
   useEffect(() => {
     const { "@company.id": company_id } = parseCookies();
-
     const getCompanyData = async () => {
       try {
         if (!company_id) {
           const response = await getCompany({
             variables: {
-              id: String(process.env.NEXT_PUBLIC_COMPANY_HASH),
+              id: "clmdowoj43sez0am072a3g15o",
             },
           });
 

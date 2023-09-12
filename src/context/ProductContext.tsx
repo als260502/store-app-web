@@ -4,6 +4,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from "react";
 import toast from "react-hot-toast";
@@ -223,19 +224,30 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
     [product]
   );
 
+  const productObject = useMemo(() => {
+    return {
+      product,
+      addProduct,
+      addProductVariant,
+      productVariant,
+      addProductSize,
+      addProductColor,
+      loading,
+      populateProduct,
+    };
+  }, [
+    addProduct,
+    addProductColor,
+    addProductSize,
+    addProductVariant,
+    loading,
+    populateProduct,
+    product,
+    productVariant,
+  ]);
+
   return (
-    <ProductContext.Provider
-      value={{
-        product,
-        addProduct,
-        addProductVariant,
-        productVariant,
-        addProductSize,
-        addProductColor,
-        loading,
-        populateProduct,
-      }}
-    >
+    <ProductContext.Provider value={productObject}>
       {children}
     </ProductContext.Provider>
   );
