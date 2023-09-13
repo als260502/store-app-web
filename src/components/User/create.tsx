@@ -10,6 +10,7 @@ import { Button } from "../Button";
 import { Input } from "../FormComponents/Input";
 import { Header } from "../Header";
 import { formatTelephone } from "../../utils/formatSlug";
+import { generateEmail } from "@utils/generateEmail";
 
 interface CreateUserFormData {
   name: string;
@@ -47,6 +48,7 @@ export const CreateComponent = () => {
     const data = {
       ...formData,
       phones: formatTelephone(formData.phones),
+      email: formData.email === "" ? generateEmail(formData) : formData.email,
     };
 
     try {

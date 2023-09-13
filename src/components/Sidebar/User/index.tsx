@@ -22,7 +22,7 @@ export const UserSidebar = () => {
           />
 
           <SidebarLink linkUrl="/products/create" linkName="Produtos" />
-          <SidebarLink linkUrl="/orders/add" linkName="Pedidos" />
+          <SidebarLink linkUrl="/orders/create" linkName="Pedidos" />
           <SidebarLink linkUrl="/reports/inventory" linkName="Relatórios" />
         </SidebarHeader>
       </MobileMenu>
@@ -40,7 +40,7 @@ export const UserSidebar = () => {
           />
 
           <SidebarLink linkUrl="/products/create" linkName="Produtos" />
-          <SidebarLink linkUrl="/orders/add" linkName="Pedidos" />
+          <SidebarLink linkUrl="/orders/create" linkName="Pedidos" />
           <SidebarLink linkUrl="/reports/inventory" linkName="Relatórios" />
         </SidebarHeader>
       </DesktopMenu>

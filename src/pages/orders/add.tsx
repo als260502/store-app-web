@@ -108,7 +108,7 @@ const Add: NextPage = () => {
               totalRegisters={products?.length}
               paginate={paginate}
               currentPage={currentPage}
-              linkUrl="/orders/add"
+              linkUrl="/orders/create"
             />
             <div className="flex justify-end items-center px-8 pb-8 gap-4">
               <Button

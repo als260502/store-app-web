@@ -33,7 +33,7 @@ const Home: NextPage = () => {
                 </Button>
               </a>
             </Link>
-            <Link href="/orders/add">
+            <Link href="/orders/create">
               <a>
                 <Button className="btn btn-primary btn-xs w-20">Pedidos</Button>
               </a>
