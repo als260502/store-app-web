@@ -10,6 +10,9 @@ query GetOrders {
     storeUser {
       name
       surname
+      nickname
+      phones
+      description
     }
   }
 }

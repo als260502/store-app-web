@@ -27,7 +27,7 @@ const Add: NextPage = () => {
   const router = useRouter();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [registersPerPage] = useState(10);
+  const [registersPerPage] = useState(3);
 
   const indexOfLastRegister = currentPage * registersPerPage;
   const indexOfFirstRegister = indexOfLastRegister - registersPerPage;

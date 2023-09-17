@@ -38,6 +38,13 @@ const Home: NextPage = () => {
                 <Button className="btn btn-primary btn-xs w-20">Pedidos</Button>
               </a>
             </Link>
+            <Link href="/reports/order">
+              <a>
+                <Button className="btn btn-primary btn-xs w-20">
+                  Relatório
+                </Button>
+              </a>
+            </Link>
           </div>
         </div>
       </div>

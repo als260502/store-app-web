@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { Header } from "@components/Header";
-import { useGetOrdersLazyQuery } from "@graphql/generated";
+import {
+  useGetOrdersLazyQuery,
+  useGetOrdersPaginationLazyQuery,
+} from "@graphql/generated";
 import { ReportSidebar } from "@components/Sidebar/report";
 import { Paginate } from "@components/Pagination/Paginate";
 import { OrderItems } from "@components/OrderComponents/Reports/OrderItems";
@@ -14,34 +17,35 @@ type User = {
 
 type OrderProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  createdAt: any;
-  id: string;
-  parcel?: number | null | undefined;
-  orderValue: number;
-  paymentType?: string | null | undefined;
-  total: number;
-  userEmail?: string | null | undefined;
-  storeUser?: User | null | undefined;
+  node: {
+    createdAt: any;
+    id: string;
+    parcel?: number | null;
+    orderValue: number;
+    paymentType?: string | null;
+    total: number;
+    userEmail?: string | null;
+    storeUser?: User | null;
+  };
+};
+type PaginationInfo = {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  pageSize?: number | null | undefined;
 };
 
 const Order: NextPage = () => {
   const [getAllOrders, { refetch: getOders, loading }] =
-    useGetOrdersLazyQuery();
+    useGetOrdersPaginationLazyQuery();
   const [orders, setOrders] = useState<OrderProps[]>();
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [skip, setSkip] = useState(0);
+  const [first] = useState(10);
   const [registersPerPage] = useState(10);
 
   const [isSearching, setIsSearching] = useState(false);
-
-  useEffect(() => {
-    const getAllOrders = async () => {
-      const response = await getOders();
-
-      setOrders(response.data.orders);
-    };
-    getAllOrders();
-  }, [getOders]);
 
   const indexOfLastRegister = currentPage * registersPerPage;
   const indexOfFirstRegister = indexOfLastRegister - registersPerPage;
@@ -50,9 +54,48 @@ const Order: NextPage = () => {
     indexOfLastRegister
   );
 
-  const paginate = useCallback((pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  }, []);
+  const paginate = useCallback(
+    (pageNumber: number) => {
+      const newSkip = (pageNumber - 1) * registersPerPage;
+      setSkip(newSkip);
+      setCurrentPage(pageNumber);
+    },
+    [registersPerPage]
+  );
+
+  const handlePaginate = useCallback(async () => {
+    const response = await getAllOrders({
+      variables: {
+        skip: skip,
+        first,
+      },
+    });
+    const orders = response?.data?.ordersConnection.edges;
+    setOrders(orders);
+    setPaginationInfo(response.data?.ordersConnection.pageInfo);
+    await getOders();
+  }, [first, getAllOrders, getOders, skip]);
+  useEffect(() => {
+    handlePaginate();
+  }, [handlePaginate, skip]);
+
+  const handleNextPage = useCallback(async () => {
+    console.log();
+    const newSkip = skip + registersPerPage;
+    setSkip(newSkip);
+    const response = await getAllOrders({
+      variables: {
+        skip: skip,
+      },
+    });
+    const orders = response?.data?.ordersConnection.edges;
+    setOrders(orders);
+    setPaginationInfo(response.data?.ordersConnection.pageInfo);
+    await getOders();
+  }, [getAllOrders, getOders, registersPerPage, skip]);
+  useEffect(() => {
+    handlePaginate();
+  }, [handlePaginate, skip]);
 
   const formatMonetaryValues = useCallback((value: number) => {
     const formatValue = new Intl.NumberFormat("pt-BT", {
@@ -63,6 +106,23 @@ const Order: NextPage = () => {
     return formatValue;
   }, []);
 
+  const handlePreviousPage = useCallback(async () => {
+    const newSkip = skip - registersPerPage;
+    setSkip(newSkip);
+    const response = await getAllOrders({
+      variables: {
+        skip: skip,
+      },
+    });
+    const orders = response?.data?.ordersConnection.edges;
+    setOrders(orders);
+    setPaginationInfo(response.data?.ordersConnection.pageInfo);
+    await getOders();
+  }, [getAllOrders, getOders, registersPerPage, skip]);
+  useEffect(() => {
+    handlePaginate();
+  }, [handlePaginate, skip]);
+
   const handleSearch = useCallback(
     async (text: string) => {
       if (text.length > 2) {
@@ -71,20 +131,25 @@ const Order: NextPage = () => {
 
         const newOrders = orders?.filter(
           order =>
-            regex.test(String(order.storeUser?.name)) ||
-            regex.test(String(order.userEmail)) ||
-            regex.test(String(order.storeUser?.surname))
+            regex.test(String(order.node.storeUser?.name)) ||
+            regex.test(String(order.node.userEmail)) ||
+            regex.test(String(order.node.storeUser?.surname))
         );
 
         setOrders(newOrders);
       } else {
-        const response = await getAllOrders();
+        const response = await getAllOrders({
+          variables: {
+            skip: skip,
+            first,
+          },
+        });
 
-        setOrders(response.data?.orders);
+        setOrders(response.data?.ordersConnection.edges);
         setIsSearching(isSearching => !isSearching);
       }
     },
-    [getAllOrders, orders]
+    [first, getAllOrders, orders, skip]
   );
 
   return (
@@ -99,7 +164,7 @@ const Order: NextPage = () => {
             <Header title="Pedidos" loading={loading} />
 
             <OrderItems
-              currentRegisters={currentRegisters}
+              currentRegisters={orders}
               formatMonetaryValues={formatMonetaryValues}
               loading={loading}
             />
@@ -111,6 +176,9 @@ const Order: NextPage = () => {
                 paginate={paginate}
                 linkUrl="/reports/order"
                 currentPage={currentPage}
+                pageInfo={paginationInfo}
+                handleNextPage={handleNextPage}
+                handlePreviousPage={handlePreviousPage}
               />
             )}
           </div>

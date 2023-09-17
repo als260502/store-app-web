@@ -1,0 +1,27 @@
+query GetOrdersPagination($first: Int, $skip: Int) {
+  ordersConnection(first: $first, skip: $skip) {
+    edges {
+      node {
+        createdAt
+        id
+        parcel
+        orderValue
+        paymentType
+        total
+        userEmail
+        storeUser {
+          name
+          surname
+          nickname
+          phones
+          description
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      pageSize
+    }
+  }
+}

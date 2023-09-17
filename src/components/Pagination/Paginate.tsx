@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { Button } from "@components/Button";
 import classNames from "classnames";
 import Link from "next/link";
 
@@ -8,24 +9,39 @@ type Props = {
   paginate: (value: number) => void;
   linkUrl: string;
   currentPage: number;
+  pageInfo: PageInfo | undefined;
+  handleNextPage: () => void;
+  handlePreviousPage: () => void;
+};
+
+type PageInfo = {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  pageSize?: number | null | undefined;
 };
 
 export const Paginate = ({
   registersPerPage,
-  totalRegisters = 0,
-  paginate,
-  linkUrl,
-  currentPage,
+  handleNextPage,
+  handlePreviousPage,
+  pageInfo,
 }: Props) => {
   const pageNumbers = [];
 
-  for (let i = 1; i <= Math.ceil(totalRegisters / registersPerPage); i++) {
+  for (let i = 1; i <= registersPerPage; i++) {
     pageNumbers.push(i);
   }
 
   return (
     <div className="flex items-center justify-center w-full mt-2 p-4">
-      <ul className="flex flex-row gap-1">
+      <Button
+        className="btn btn-primary btn-xs w-16 mx-2"
+        disabled={!pageInfo?.hasPreviousPage}
+        onClick={handlePreviousPage}
+      >
+        Anterior
+      </Button>
+      {/*       <ul className="flex flex-row gap-1">
         {pageNumbers.map(number => (
           <li
             key={number}
@@ -41,7 +57,14 @@ export const Paginate = ({
             </button>
           </li>
         ))}
-      </ul>
+      </ul> */}
+      <Button
+        className="btn btn-primary btn-xs w-16 mx-2 disabled:bg-gray-800"
+        disabled={!pageInfo?.hasNextPage}
+        onClick={handleNextPage}
+      >
+        Próximo
+      </Button>
     </div>
   );
 };
