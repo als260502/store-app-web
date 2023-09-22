@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import { Header } from "@components/Header";
-import {
-  useGetOrdersLazyQuery,
-  useGetOrdersPaginationLazyQuery,
-} from "@graphql/generated";
+import { useGetOrdersPaginationLazyQuery } from "@graphql/generated";
 import { ReportSidebar } from "@components/Sidebar/report";
 import { Paginate } from "@components/Pagination/Paginate";
 import { OrderItems } from "@components/OrderComponents/Reports/OrderItems";
@@ -37,6 +34,7 @@ type PaginationInfo = {
 const Order: NextPage = () => {
   const [getAllOrders, { refetch: getOders, loading }] =
     useGetOrdersPaginationLazyQuery();
+
   const [orders, setOrders] = useState<OrderProps[]>();
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>();
 
@@ -46,13 +44,6 @@ const Order: NextPage = () => {
   const [registersPerPage] = useState(10);
 
   const [isSearching, setIsSearching] = useState(false);
-
-  const indexOfLastRegister = currentPage * registersPerPage;
-  const indexOfFirstRegister = indexOfLastRegister - registersPerPage;
-  const currentRegisters = orders?.slice(
-    indexOfFirstRegister,
-    indexOfLastRegister
-  );
 
   const paginate = useCallback(
     (pageNumber: number) => {

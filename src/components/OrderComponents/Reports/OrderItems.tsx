@@ -8,9 +8,9 @@ import { dateFormated } from "@utils/formatDate";
 type User = {
   name: string;
   surname: string;
-  nickname: string;
-  phones: string[];
-  description: string;
+  nickname?: string;
+  phones?: string[];
+  description?: string;
 };
 type OrderProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

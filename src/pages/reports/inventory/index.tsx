@@ -58,6 +58,14 @@ const Inventory: NextPage = () => {
     [getProducts, products, setProducts]
   );
 
+  const handleNextPage = useCallback(() => {
+    console.log("has next page");
+  }, []);
+
+  const handlePreviousPage = useCallback(() => {
+    console.log("has previous page");
+  }, []);
+
   return (
     <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
       <div className="flex md:w-[900px] mx-auto flex-row px-1 md:p-4">
@@ -95,6 +103,13 @@ const Inventory: NextPage = () => {
                 paginate={paginate}
                 currentPage={currentPage}
                 linkUrl="/reports/inventory"
+                handleNextPage={handleNextPage}
+                handlePreviousPage={handlePreviousPage}
+                pageInfo={{
+                  pageSize: 1,
+                  hasNextPage: false,
+                  hasPreviousPage: false,
+                }}
               />
             )}
           </div>

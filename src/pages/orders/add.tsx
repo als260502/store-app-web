@@ -63,6 +63,13 @@ const Add: NextPage = () => {
     [getProducts, products, setProducts]
   );
 
+  const handleNextPage = useCallback(() => {
+    console.log("has next page");
+  }, []);
+
+  const handlePreviousPage = useCallback(() => {
+    console.log("has previous page");
+  }, []);
   return (
     <div className="w-full h-full items-center mt-2 md:mt-20 justify-center ">
       <div className="flex  md:w-[900px] mx-auto flex-row px-2 md:p-4">
@@ -104,11 +111,18 @@ const Add: NextPage = () => {
               </div>
             </div>
             <Paginate
-              registersPerPage={registersPerPage}
+              registersPerPage={5}
               totalRegisters={products?.length}
               paginate={paginate}
               currentPage={currentPage}
               linkUrl="/orders/create"
+              handleNextPage={handleNextPage}
+              handlePreviousPage={handlePreviousPage}
+              pageInfo={{
+                pageSize: 1,
+                hasNextPage: false,
+                hasPreviousPage: false,
+              }}
             />
             <div className="flex justify-end items-center px-8 pb-8 gap-4">
               <Button
